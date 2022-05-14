@@ -8,12 +8,10 @@ export function getTasks(): Task[] {
     let lsTasks = localStorage.getItem("tasks");
     if (lsTasks) return JSON.parse(lsTasks);
   } catch (e) {}
-  let tasks = new Array(Math.ceil(Math.random() * 10))
-    .fill(0)
-    .map((_, idx) => ({
-      id: String(idx + 1),
-      task: `Task #${idx + 1}`,
-    }));
+  let tasks = new Array(20).fill(0).map((_, idx) => ({
+    id: String(idx + 1),
+    task: `Task #${idx + 1}`,
+  }));
   localStorage.setItem("tasks", JSON.stringify(tasks));
   return tasks;
 }

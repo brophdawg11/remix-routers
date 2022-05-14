@@ -1,15 +1,10 @@
 <script lang="ts">
 import { ActionFunction, LoaderFunction } from "@remix-run/router";
-import { defineComponent, effect } from "vue";
+import { defineComponent } from "vue";
 
-import {
-  Form,
-  Link,
-  Outlet,
-  useLoaderData,
-  useNavigation,
-} from "../remix-router-vue";
+import { Form, Link, Outlet, useLoaderData } from "../remix-router-vue";
 import { deleteTask, getTasks } from "../tasks";
+import TaskItem from "./TaskItem.vue";
 
 export const loader: LoaderFunction = async () => {
   await new Promise((r) => setTimeout(r, 1000));
@@ -31,16 +26,13 @@ export default defineComponent({
     Form,
     Link,
     Outlet,
+    TaskItem,
   },
   setup() {
     let data = useLoaderData();
-    let navigation = useNavigation();
-    let isDeleting = (id: string) =>
-      navigation.value?.formData?.get("taskId") === id;
 
     return {
       data,
-      isDeleting,
     };
   },
 });
@@ -54,19 +46,7 @@ export default defineComponent({
   </p>
   <ul>
     <li v-for="task in data.tasks" :key="task.id">
-      {{ task.task }}
-      <Link :to="`/tasks/${task.id}`">Open</Link>
-      &nbsp;
-      <Form style="display: inline" action="/tasks" method="post">
-        <button
-          type="submit"
-          name="taskId"
-          :value="task.id"
-          :disabled="isDeleting(task.id)"
-        >
-          {{ isDeleting(task.id) ? "Deleting..." : "❌" }}
-        </button>
-      </Form>
+      <TaskItem :task="task" />
     </li>
   </ul>
   <Outlet />

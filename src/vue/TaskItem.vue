@@ -1,0 +1,39 @@
+<script lang="ts">
+import { computed, defineComponent, watchEffect } from "vue";
+
+import { Link, useFetcher } from "../remix-router-vue";
+
+export default defineComponent({
+  name: "TaskItem",
+  components: {
+    Link,
+  },
+  props: {
+    task: {
+      type: Object,
+      required: true,
+    },
+  },
+  setup(props) {
+    let { Form, fetcher } = useFetcher();
+    let isDeleting = computed(() => fetcher.value.formData != null);
+
+    return {
+      task: props.task,
+      Form,
+      isDeleting,
+    };
+  },
+});
+</script>
+
+<template>
+  {{ task.task }}
+  <Link :to="`/tasks/${task.id}`">Open</Link>
+  &nbsp;
+  <component :is="Form" style="display: inline" action="/tasks" method="post">
+    <button type="submit" name="taskId" :value="task.id" :disabled="isDeleting">
+      {{ isDeleting ? "Deleting..." : "❌" }}
+    </button>
+  </component>
+</template>

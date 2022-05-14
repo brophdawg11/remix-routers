@@ -2,33 +2,28 @@ import {
   Component,
   computed,
   defineComponent,
+  effect,
+  onUnmounted,
   Ref,
   ShallowRef,
   shallowRef,
   VNode,
+  watch,
 } from "vue";
-import { h, inject, provide, ref } from "vue";
+import { h, inject, provide, ref, watchEffect } from "vue";
 import {
-  FormEncType,
   FormMethod,
   Location,
   Router,
   DataRouteMatch,
   DataRouteObject,
   RouterState,
-  RouteData,
   Navigation,
   Fetcher,
   resolveTo,
-  Path,
-  To,
 } from "@remix-run/router";
 import { createBrowserRouter, invariant } from "@remix-run/router";
-import {
-  getFormSubmissionInfo,
-  shouldProcessLinkClick,
-  SubmitOptions,
-} from "./dom";
+import { shouldProcessLinkClick, submitForm, SubmitOptions } from "./dom";
 
 ////////////////////////////////////////////////////////////////////////////////
 //#region Types/Globals/Utils
@@ -108,72 +103,79 @@ export function useFormAction(action = "."): string {
   return path.pathname + search;
 }
 
-// function createFetcherForm(fetcherKey: string) {
-//   let FetcherForm = React.forwardRef<HTMLFormElement, FormProps>(
-//     (props, ref) => {
-//       return <FormImpl {...props} ref={ref} fetcherKey={fetcherKey} />;
-//     }
-//   );
-//   return FetcherForm;
-// }
+let fetcherId = 0;
 
-// let fetcherId = 0;
+type FetcherWithComponents<TData> = {
+  fetcher: ShallowRef<Fetcher<TData>>;
+  Form: Component;
+  submit(
+    target:
+      | HTMLFormElement
+      | HTMLButtonElement
+      | HTMLInputElement
+      | FormData
+      | URLSearchParams
+      | { [name: string]: string }
+      | null,
+    options?: SubmitOptions
+  ): void;
+  load: (href: string) => void;
+};
 
-// type FetcherWithComponents<TData> = Fetcher<TData> & {
-//   Form: ReturnType<typeof createFetcherForm>;
-//   submit: ReturnType<typeof useSubmitImpl>;
-//   load: (href: string) => void;
-// };
+export function useFetcher<TData = any>(): FetcherWithComponents<TData> {
+  let { router, stateRef } = getRouterContext();
+  let defaultAction = useFormAction();
+  let fetcherKey = String(++fetcherId);
+  let fetcherRef = shallowRef<Fetcher<TData>>(
+    router.getFetcher<TData>(fetcherKey)
+  );
+  let fetcher = computed(() => fetcherRef.value);
 
-// export function useFetcher<TData = any>(): FetcherWithComponents<TData> {
-//   let router = React.useContext(UNSAFE_DataRouterContext);
-//   invariant(router, `useFetcher must be used within a DataRouter`);
+  watch(
+    stateRef,
+    () => (fetcherRef.value = router.getFetcher<TData>(fetcherKey))
+  );
 
-//   let [fetcherKey] = React.useState(() => String(++fetcherId));
-//   let [Form] = React.useState(() => createFetcherForm(fetcherKey));
-//   let [load] = React.useState(() => (href: string) => {
-//     invariant(router, `No router available for fetcher.load()`);
-//     router.fetch(fetcherKey, href);
-//   });
-//   let submit = useSubmitImpl(fetcherKey);
+  onUnmounted(() => {
+    if (!router) {
+      console.warn("No fetcher available to clean up from useFetcher()");
+      return;
+    }
+    router.deleteFetcher(fetcherKey);
+  });
 
-//   let fetcher = router.getFetcher<TData>(fetcherKey);
+  return {
+    Form: defineComponent({
+      name: "fetcher.Form",
+      props: {
+        replace: {
+          type: Boolean,
+          default: false,
+        },
+        onSubmit: {
+          type: Function,
+          default: undefined,
+        },
+      },
+      setup:
+        (props, { slots }) =>
+        () =>
+          h(FormImpl, { ...props, fetcherKey }, slots.default),
+    }),
+    submit(target, options = {}) {
+      return submitForm(router, defaultAction, target, options, fetcherKey);
+    },
+    load(href) {
+      return router.fetch(fetcherKey, href);
+    },
+    fetcher,
+  };
+}
 
-//   let fetcherWithComponents = React.useMemo(
-//     () => ({
-//       Form,
-//       submit,
-//       load,
-//       ...fetcher,
-//     }),
-//     [fetcher, Form, submit, load]
-//   );
-
-//   React.useEffect(() => {
-//     // Is this busted when the React team gets real weird and calls effects
-//     // twice on mount?  We really just need to garbage collect here when this
-//     // fetcher is no longer around.
-//     return () => {
-//       if (!router) {
-//         console.warn("No fetcher available to clean up from useFetcher()");
-//         return;
-//       }
-//       router.deleteFetcher(fetcherKey);
-//     };
-//   }, [router, fetcherKey]);
-
-//   return fetcherWithComponents;
-// }
-
-// /**
-//  * Provides all fetchers currently on the page. Useful for layouts and parent
-//  * routes that need to provide pending/optimistic UI regarding the fetch.
-//  */
-// export function useFetchers(): Fetcher[] {
-//   let router = React.useContext(UNSAFE_DataRouterContext);
-//   invariant(router, `useFetcher must be used within a DataRouter`);
-//   return [...router.state.fetchers.values()];
-// }
+export function useFetchers(): Fetcher[] {
+  let { stateRef } = getRouterContext();
+  return [...stateRef.value.fetchers.values()];
+}
 //#endregion
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -187,7 +189,7 @@ export const DataBrowserRouter = defineComponent({
       required: true,
     },
     fallbackElement: {
-      type: Object,
+      type: [Object, Function],
       required: false,
     },
   },
@@ -255,13 +257,14 @@ export const Outlet = defineComponent({
       let { matches } = router.state;
       let idx = matches.findIndex((m) => m.route.id === id);
       if (idx < 0) {
-        console.error("No current match found for outlet");
+        throw new Error(`Unable to find <Outlet /> match for route id: ${id}`);
+      }
+      if (!matches[idx + 1]) {
+        // We found an <Outlet /> but do not have deeper matching paths so we
+        // end the render tree here
         return null;
       }
-      let match = matches[idx + 1];
-      return match
-        ? renderRouteWrapper(match, stateRef.value.location.key)
-        : null;
+      return renderRouteWrapper(matches[idx + 1], stateRef.value.location.key);
     };
   },
 });
@@ -296,98 +299,69 @@ export const Link = defineComponent({
   },
 });
 
-// TODO: Get from react router dom
-export interface SubmitFunction {
-  (
-    /**
-     * Specifies the `<form>` to be submitted to the server, a specific
-     * `<button>` or `<input type="submit">` to use to submit the form, or some
-     * arbitrary data to submit.
-     *
-     * Note: When using a `<button>` its `name` and `value` will also be
-     * included in the form data that is submitted.
-     */
-    target:
-      | HTMLFormElement
-      | HTMLButtonElement
-      | HTMLInputElement
-      | FormData
-      | URLSearchParams
-      | { [name: string]: string }
-      | null,
+type HTMLFormSubmitter = HTMLButtonElement | HTMLInputElement;
 
-    /**
-     * Options that override the `<form>`'s own attributes. Required when
-     * submitting arbitrary data without a backing `<form>`.
-     */
-    options?: SubmitOptions
-  ): void;
-}
-
-function useSubmitImpl(router: Router, fetcherKey?: string): SubmitFunction {
-  let defaultAction = useFormAction();
-  return (target, options = {}) => {
-    invariant(
-      router != null,
-      "useSubmit() must be used within a <DataBrowserRouter>"
-    );
-
-    let { method, encType, formData, url } = getFormSubmissionInfo(
-      target,
-      defaultAction,
-      options
-    );
-
-    let href = url.pathname + url.search;
-    let opts = {
-      replace: options.replace,
-      formData,
-      formMethod: method as FormMethod,
-      formEncType: encType as FormEncType,
-    };
-    if (fetcherKey) {
-      router.fetch(fetcherKey, href, opts);
-    } else {
-      router.navigate(href, opts);
-    }
-  };
-}
-
-export const Form = defineComponent({
-  name: "Form",
+const FormImpl = defineComponent({
+  name: "FormImpl",
+  props: {
+    replace: {
+      type: Boolean,
+      default: false,
+    },
+    onSubmit: {
+      type: Function,
+      default: undefined,
+    },
+    fetcherKey: {
+      type: String,
+      default: null,
+    },
+  },
   setup(props, { attrs, slots }) {
-    const { router } = getRouterContext();
-    const submit = useSubmitImpl(router);
-    const el = ref();
-    const btnEl = ref();
-
+    let { router } = getRouterContext();
+    let defaultAction = useFormAction(attrs.action as string);
     return () =>
       h(
         "form",
         {
-          ref: el,
           ...attrs,
-          onClick(e: MouseEvent) {
-            let submitButton = (
-              e?.target as HTMLButtonElement | HTMLInputElement
-            )?.closest<HTMLButtonElement | HTMLInputElement>(
-              "button,input[type=submit]"
-            );
-            if (
-              submitButton &&
-              submitButton?.form === el.value &&
-              submitButton?.type === "submit"
-            ) {
-              btnEl.value = submitButton;
+          onSubmit(event: SubmitEvent) {
+            props.onSubmit && props.onSubmit(event);
+            if (event.defaultPrevented) {
+              return;
             }
-          },
-          onSubmit(e: SubmitEvent) {
-            e.preventDefault();
-            submit(btnEl.value || el.value);
-            btnEl.value = null;
+            event.preventDefault();
+            submitForm(
+              router,
+              defaultAction,
+              (event.submitter as HTMLFormSubmitter) || event.currentTarget,
+              {
+                method: attrs.method as FormMethod,
+                replace: props.replace,
+              },
+              props.fetcherKey
+            );
           },
         },
         slots.default?.()
       );
   },
+});
+
+export const Form = defineComponent({
+  name: "Form",
+  props: {
+    replace: {
+      type: Boolean,
+      default: false,
+    },
+    onSubmit: {
+      type: Function,
+      default: undefined,
+    },
+  },
+  setup:
+    (props, { slots }) =>
+    () =>
+      h(FormImpl, { ...props }, slots.default),
 });
