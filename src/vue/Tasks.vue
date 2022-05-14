@@ -35,12 +35,8 @@ export default defineComponent({
   setup() {
     let data = useLoaderData();
     let navigation = useNavigation();
-    let isDeleting = (id: string) => {
-      console.log("checking deletion for id", id, navigation.value);
-      return navigation.value?.formData?.get("taskId") === id;
-    };
-
-    effect(() => console.log(navigation.value));
+    let isDeleting = (id: string) =>
+      navigation.value?.formData?.get("taskId") === id;
 
     return {
       data,

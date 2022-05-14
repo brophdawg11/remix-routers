@@ -1,4 +1,12 @@
-import { computed, defineComponent, reactive, Ref, VNode } from "vue";
+import {
+  Component,
+  computed,
+  defineComponent,
+  Ref,
+  ShallowRef,
+  shallowRef,
+  VNode,
+} from "vue";
 import { h, inject, provide, ref } from "vue";
 import {
   FormEncType,
@@ -22,15 +30,12 @@ import {
   SubmitOptions,
 } from "./dom";
 
-export interface RemixRouterReactiveState {
-  location: Location;
-  navigation: Navigation;
-  loaderData: RouteData;
-}
+////////////////////////////////////////////////////////////////////////////////
+//#region Types/Globals/Utils
 
 export interface RouterContext {
   router: Router;
-  reactiveState: RemixRouterReactiveState;
+  stateRef: ShallowRef<RouterState>;
 }
 
 export interface RouteContext {
@@ -41,42 +46,52 @@ export interface RouteContext {
 let RouterContextSymbol = Symbol();
 let RouteContextSymbol = Symbol();
 
-function useRouterContext(): RouterContext {
+function getRouterContext(): RouterContext {
   let ctx = inject<RouterContext>(RouterContextSymbol);
   invariant(ctx != null, "No RouterContext available");
   return ctx;
 }
 
-function useRouteContext(): RouteContext {
+function getRouteContext(): RouteContext {
   let ctx = inject<RouteContext>(RouteContextSymbol);
   invariant(ctx != null, "No RouteContext available");
   return ctx;
 }
+//#endregion
+
+////////////////////////////////////////////////////////////////////////////////
+//#region Hooks
 
 export function useNavigate(): Router["navigate"] {
-  let ctx = useRouterContext();
+  let ctx = getRouterContext();
   return ctx.router.navigate;
 }
 
 export function useLocation(): Ref<Location> {
-  let ctx = useRouterContext();
-  return computed(() => ctx.reactiveState.location);
+  let ctx = getRouterContext();
+  return computed(() => ctx.stateRef.value.location);
 }
 
 export function useNavigation(): Ref<Navigation> {
-  let ctx = useRouterContext();
-  return computed(() => ctx.reactiveState.navigation);
+  let ctx = getRouterContext();
+  return computed(() => ctx.stateRef.value.navigation);
 }
 
 export function useLoaderData(): Ref<any> {
-  let ctx = useRouterContext();
-  let routeId = useRouteContext().id;
-  return computed(() => ctx.reactiveState.loaderData[routeId]);
+  let ctx = getRouterContext();
+  let routeId = getRouteContext().id;
+  return computed(() => ctx.stateRef.value.loaderData[routeId]);
+}
+
+export function useActionData(): Ref<any> {
+  let ctx = getRouterContext();
+  let routeId = getRouteContext().id;
+  return computed(() => ctx.stateRef.value.actionData?.[routeId]);
 }
 
 export function useFormAction(action = "."): string {
-  let { router } = useRouterContext();
-  let route = useRouteContext();
+  let { router } = getRouterContext();
+  let route = getRouteContext();
   let location = useLocation();
 
   let path = resolveTo(
@@ -159,44 +174,42 @@ export function useFormAction(action = "."): string {
 //   invariant(router, `useFetcher must be used within a DataRouter`);
 //   return [...router.state.fetchers.values()];
 // }
+//#endregion
 
-export const BrowserRouter = defineComponent({
-  name: "BrowserRouter",
+////////////////////////////////////////////////////////////////////////////////
+//#region Components
+
+export const DataBrowserRouter = defineComponent({
+  name: "DataBrowserRouter",
   props: {
     routes: {
       type: Array,
       required: true,
     },
+    fallbackElement: {
+      type: Object,
+      required: false,
+    },
   },
   setup(props) {
-    let router = createBrowserRouter({
-      routes: props.routes as DataRouteObject[],
-    });
-
-    // Create reactive object to trigger re-renders on state changes
-    let { location, navigation, loaderData } = router.state;
-    let reactiveState: RemixRouterReactiveState = reactive({
-      location,
-      navigation,
-      loaderData,
-    });
-
-    // Update reactive state on router changes
-    router.subscribe((state) =>
-      Object.assign(reactiveState, {
-        location: state.location,
-        navigation: state.navigation,
-        loaderData: state.loaderData,
-      })
-    );
+    let routes = props.routes as DataRouteObject[];
+    let router = createBrowserRouter({ routes }).initialize();
+    let stateRef = shallowRef<RouterState>(router.state);
+    router.subscribe((state) => (stateRef.value = state));
 
     provide<RouterContext>(RouterContextSymbol, {
       router,
-      reactiveState,
+      stateRef,
     });
 
-    return () =>
-      renderRouteWrapper(router.state.matches[0], reactiveState.location?.key);
+    return () => {
+      let state = stateRef.value;
+      if (!state.initialized) {
+        return h(props.fallbackElement as Component) || h("span");
+      }
+
+      return renderRouteWrapper(state.matches[0], state.location?.key);
+    };
   },
 });
 
@@ -236,8 +249,8 @@ export const RouteWrapper = defineComponent({
 export const Outlet = defineComponent({
   name: "Outlet",
   setup() {
-    let { reactiveState, router } = useRouterContext();
-    let { id } = useRouteContext();
+    let { stateRef, router } = getRouterContext();
+    let { id } = getRouteContext();
     return () => {
       let { matches } = router.state;
       let idx = matches.findIndex((m) => m.route.id === id);
@@ -247,7 +260,7 @@ export const Outlet = defineComponent({
       }
       let match = matches[idx + 1];
       return match
-        ? renderRouteWrapper(match, reactiveState.location.key)
+        ? renderRouteWrapper(match, stateRef.value.location.key)
         : null;
     };
   },
@@ -262,7 +275,7 @@ export const Link = defineComponent({
     },
   },
   setup(props, { slots, attrs }) {
-    const { router } = useRouterContext();
+    const { router } = getRouterContext();
     return () =>
       h(
         "a",
@@ -316,7 +329,7 @@ function useSubmitImpl(router: Router, fetcherKey?: string): SubmitFunction {
   return (target, options = {}) => {
     invariant(
       router != null,
-      "useSubmit() must be used within a <BrowserRouter>"
+      "useSubmit() must be used within a <DataBrowserRouter>"
     );
 
     let { method, encType, formData, url } = getFormSubmissionInfo(
@@ -341,9 +354,9 @@ function useSubmitImpl(router: Router, fetcherKey?: string): SubmitFunction {
 }
 
 export const Form = defineComponent({
-  name: "VuemixForm",
+  name: "Form",
   setup(props, { attrs, slots }) {
-    const { router } = useRouterContext();
+    const { router } = getRouterContext();
     const submit = useSubmitImpl(router);
     const el = ref();
     const btnEl = ref();

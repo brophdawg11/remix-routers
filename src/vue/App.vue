@@ -1,7 +1,8 @@
 <script lang="ts">
 import type { DataRouteObject } from "@remix-run/router";
+import { defineComponent, h } from "vue";
 
-import { BrowserRouter } from "../remix-router-vue";
+import { DataBrowserRouter } from "../remix-router-vue";
 import Root from "./Root.vue";
 import Tasks, {
   loader as tasksLoader,
@@ -9,12 +10,12 @@ import Tasks, {
 } from "./Tasks.vue";
 import Task, { loader as taskLoader } from "./Task.vue";
 import NewTask, { action as newTaskAction } from "./NewTask.vue";
-import Index from "./Index.vue";
+import Index, { loader as indexLoader } from "./Index.vue";
 
 export default {
   name: "App",
   components: {
-    BrowserRouter,
+    DataBrowserRouter,
   },
   setup() {
     let routes: DataRouteObject[] = [
@@ -26,6 +27,7 @@ export default {
           {
             id: "index",
             index: true,
+            loader: indexLoader,
             element: Index,
           },
           {
@@ -55,11 +57,12 @@ export default {
 
     return {
       routes,
+      fallbackElement: () => h("p", "Loading..."),
     };
   },
 };
 </script>
 
 <template>
-  <BrowserRouter :routes="routes" />
+  <DataBrowserRouter :routes="routes" :fallbackElement="fallbackElement" />
 </template>

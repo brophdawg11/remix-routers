@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
+    "clean": "rm -rf dist",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
