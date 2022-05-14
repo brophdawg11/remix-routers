@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from "vue";
+import { defineComponent } from "vue";
 
 import { Link, Outlet, useLocation, useNavigation } from "../remix-router-vue";
 
@@ -12,7 +12,7 @@ export default defineComponent({
   setup() {
     return {
       location: useLocation(),
-      transition: useNavigation(),
+      navigation: useNavigation(),
     };
   },
 });
@@ -28,12 +28,12 @@ export default defineComponent({
     <Link to="/tasks/new">Add Task</Link>
   </nav>
   <p>Current location: {{ location.pathname }}</p>
-  <p>Current transition: {{ transition.state }}/{{ transition.type }}</p>
+  <p>Current transition: {{ navigation.state }}/{{ navigation.type }}</p>
   <div
     :style="{
       border: '1px dotted grey',
       padding: '1rem',
-      //opacity: transition.state === 'idle' ? 1 : 0.25,
+      opacity: navigation.state === 'idle' ? 1 : 0.25,
     }"
   >
     <Outlet />

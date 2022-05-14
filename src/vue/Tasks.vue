@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ActionFunctionArgs } from "@remix-run/router";
+import { ActionFunction, LoaderFunction } from "@remix-run/router";
 import { defineComponent, effect } from "vue";
 
 import {
@@ -11,18 +11,19 @@ import {
 } from "../remix-router-vue";
 import { deleteTask, getTasks } from "../tasks";
 
-export async function loader() {
+export const loader: LoaderFunction = async () => {
   await new Promise((r) => setTimeout(r, 1000));
   return {
     tasks: getTasks(),
   };
-}
+};
 
-export async function action({ formData }: ActionFunctionArgs) {
+export const action: ActionFunction = async ({ request }) => {
+  let formData = await request.formData();
   await new Promise((r) => setTimeout(r, 1000));
   deleteTask(formData.get("taskId") as string);
   return {};
-}
+};
 
 export default defineComponent({
   name: "Tasks",
@@ -33,13 +34,13 @@ export default defineComponent({
   },
   setup() {
     let data = useLoaderData();
-    let transition = useNavigation();
+    let navigation = useNavigation();
     let isDeleting = (id: string) => {
-      console.log("checkig deletion for id", id, transition.value);
-      return transition.value?.formData?.get("taskId") === id;
+      console.log("checking deletion for id", id, navigation.value);
+      return navigation.value?.formData?.get("taskId") === id;
     };
 
-    effect(() => console.log(transition.value));
+    effect(() => console.log(navigation.value));
 
     return {
       data,

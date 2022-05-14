@@ -1,11 +1,12 @@
 <script lang="ts">
-import { ActionFunctionArgs } from "@remix-run/router";
+import { ActionFunction } from "@remix-run/router";
 import { computed, defineComponent } from "vue";
 
 import { Form, useNavigation } from "../remix-router-vue";
 import { addTask } from "../tasks";
 
-export async function action({ formData }: ActionFunctionArgs) {
+export const action: ActionFunction = async ({ request }) => {
+  let formData = await request.formData();
   await new Promise((r) => setTimeout(r, 1000));
   addTask(formData.get("newTask") as string);
   throw new Response(null, {
@@ -14,7 +15,7 @@ export async function action({ formData }: ActionFunctionArgs) {
       location: "/tasks",
     },
   });
-}
+};
 
 export default defineComponent({
   name: "NewTask",
@@ -22,8 +23,8 @@ export default defineComponent({
     Form,
   },
   setup() {
-    let transition = useNavigation();
-    let isAdding = computed(() => transition.value.state !== "idle");
+    let navigation = useNavigation();
+    let isAdding = computed(() => navigation.value.state !== "idle");
     return {
       isAdding,
     };
