@@ -1,7 +1,13 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-import { Link, Outlet, useLocation, useNavigation } from "../remix-router-vue";
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useMatches,
+  useNavigation,
+} from "../remix-router-vue";
 
 export default defineComponent({
   name: "Root",
@@ -13,6 +19,7 @@ export default defineComponent({
     return {
       location: useLocation(),
       navigation: useNavigation(),
+      matches: useMatches(),
     };
   },
 });
@@ -28,7 +35,8 @@ export default defineComponent({
     <Link to="/tasks/new">Add Task</Link>
   </nav>
   <p>Current location: {{ location.pathname }}</p>
-  <p>Current transition: {{ navigation.state }}/{{ navigation.type }}</p>
+  <p>Current navigation: {{ navigation.state }}</p>
+  <p>Current matches: {{ matches }}</p>
   <div
     :style="{
       border: '1px dotted grey',

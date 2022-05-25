@@ -2,7 +2,6 @@ import {
   Component,
   computed,
   defineComponent,
-  effect,
   onUnmounted,
   Ref,
   ShallowRef,
@@ -10,7 +9,7 @@ import {
   VNode,
   watch,
 } from "vue";
-import { h, inject, provide, ref, watchEffect } from "vue";
+import { h, inject, provide } from "vue";
 import {
   FormMethod,
   Location,
@@ -21,9 +20,15 @@ import {
   Navigation,
   Fetcher,
   resolveTo,
+  FormEncType,
 } from "@remix-run/router";
 import { createBrowserRouter, invariant } from "@remix-run/router";
-import { shouldProcessLinkClick, submitForm, SubmitOptions } from "./dom";
+import {
+  getFormSubmissionInfo,
+  shouldProcessLinkClick,
+  SubmitOptions,
+} from "./dom";
+import { jSXText } from "@babel/types";
 
 ////////////////////////////////////////////////////////////////////////////////
 //#region Types/Globals/Utils
@@ -37,6 +42,10 @@ export interface RouteContext {
   id: string;
   index: boolean;
 }
+//#endregion
+
+////////////////////////////////////////////////////////////////////////////////
+//#region Composition API
 
 let RouterContextSymbol = Symbol();
 let RouteContextSymbol = Symbol();
@@ -52,10 +61,6 @@ function getRouteContext(): RouteContext {
   invariant(ctx != null, "No RouteContext available");
   return ctx;
 }
-//#endregion
-
-////////////////////////////////////////////////////////////////////////////////
-//#region Hooks
 
 export function useNavigate(): Router["navigate"] {
   let ctx = getRouterContext();
@@ -65,6 +70,23 @@ export function useNavigate(): Router["navigate"] {
 export function useLocation(): Ref<Location> {
   let ctx = getRouterContext();
   return computed(() => ctx.stateRef.value.location);
+}
+
+/**
+ * Returns the active route matches, useful for accessing loaderData for
+ * parent/child routes or the route "handle" property
+ */
+export function useMatches() {
+  let ctx = getRouterContext();
+  return computed(() =>
+    ctx.stateRef.value.matches.map((match) => ({
+      id: match.route.id,
+      pathname: match.pathname,
+      params: match.params,
+      data: ctx.stateRef.value.loaderData[match.route.id],
+      handle: match.route.handle,
+    }))
+  );
 }
 
 export function useNavigation(): Ref<Navigation> {
@@ -190,7 +212,7 @@ export const DataBrowserRouter = defineComponent({
     },
     fallbackElement: {
       type: [Object, Function],
-      required: false,
+      required: true,
     },
   },
   setup(props) {
@@ -199,10 +221,7 @@ export const DataBrowserRouter = defineComponent({
     let stateRef = shallowRef<RouterState>(router.state);
     router.subscribe((state) => (stateRef.value = state));
 
-    provide<RouterContext>(RouterContextSymbol, {
-      router,
-      stateRef,
-    });
+    provide<RouterContext>(RouterContextSymbol, { router, stateRef });
 
     return () => {
       let state = stateRef.value;
@@ -214,18 +233,6 @@ export const DataBrowserRouter = defineComponent({
     };
   },
 });
-
-function renderRouteWrapper(match: DataRouteMatch, locationKey: string): VNode {
-  return h(
-    RouteWrapper,
-    {
-      id: match.route.id,
-      index: match.route.index === true,
-      key: `${match.route.id}:${locationKey}`,
-    },
-    () => h(match.route.element as ReturnType<typeof defineComponent>)
-  );
-}
 
 export const RouteWrapper = defineComponent({
   name: "RouteWrapper",
@@ -365,3 +372,57 @@ export const Form = defineComponent({
     () =>
       h(FormImpl, { ...props }, slots.default),
 });
+//#endregion
+
+////////////////////////////////////////////////////////////////////////////////
+//#region Utils
+
+function renderRouteWrapper(match: DataRouteMatch, locationKey: string): VNode {
+  return h(
+    RouteWrapper,
+    {
+      id: match.route.id,
+      index: match.route.index === true,
+      key: `${match.route.id}:${locationKey}`,
+    },
+    () => h(match.route.element as ReturnType<typeof defineComponent>)
+  );
+}
+
+export function submitForm(
+  router: Router,
+  defaultAction: string,
+  target:
+    | HTMLFormElement
+    | HTMLButtonElement
+    | HTMLInputElement
+    | FormData
+    | URLSearchParams
+    | { [name: string]: string }
+    | null,
+  options: SubmitOptions = {},
+  fetcherKey?: string
+): void {
+  if (typeof document === "undefined") {
+    throw new Error("Unable to submit during server render");
+  }
+
+  let { method, encType, formData, url } = getFormSubmissionInfo(
+    target,
+    defaultAction,
+    options
+  );
+
+  let href = url.pathname + url.search;
+  let opts = {
+    replace: options.replace,
+    formData,
+    formMethod: method as FormMethod,
+    formEncType: encType as FormEncType,
+  };
+  if (fetcherKey) {
+    router.fetch(fetcherKey, href, opts);
+  } else {
+    router.navigate(href, opts);
+  }
+}

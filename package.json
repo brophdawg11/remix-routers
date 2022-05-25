@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@remix-run/router": "file:../../react-router/build/node_modules/@remix-run/router",
+    "@remix-run/router": "0.1.0",
     "vue": "3.2.33"
   },
   "devDependencies": {

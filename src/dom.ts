@@ -1,11 +1,7 @@
-import type {
-  FormEncType,
-  FormMethod,
-  Router as DataRouter,
-} from "@remix-run/router";
+import type { FormEncType, FormMethod } from "@remix-run/router";
 
 export const defaultMethod = "get";
-export const defaultEncType = "application/x-www-form-urlencoded";
+const defaultEncType = "application/x-www-form-urlencoded";
 
 export function isHtmlElement(object: any): object is HTMLElement {
   return object != null && typeof object.tagName === "string";
@@ -149,14 +145,14 @@ export function getFormSubmissionInfo(
   options: SubmitOptions
 ): {
   url: URL;
-  method: string;
-  encType: string;
-  formData: FormData;
+  method: string | undefined;
+  encType: string | undefined;
+  formData: FormData | undefined;
 } {
-  let method: string;
+  let method: string | undefined;
   let action: string;
-  let encType: string;
-  let formData: FormData;
+  let encType: string | undefined;
+  let formData: FormData | undefined;
 
   if (isFormElement(target)) {
     let submissionTrigger: HTMLButtonElement | HTMLInputElement = (
@@ -251,42 +247,4 @@ export function getFormSubmissionInfo(
   }
 
   return { url, method, encType, formData };
-}
-
-export function submitForm(
-  router: DataRouter,
-  defaultAction: string,
-  target:
-    | HTMLFormElement
-    | HTMLButtonElement
-    | HTMLInputElement
-    | FormData
-    | URLSearchParams
-    | { [name: string]: string }
-    | null,
-  options: SubmitOptions = {},
-  fetcherKey?: string
-): void {
-  if (typeof document === "undefined") {
-    throw new Error("Unable to submit during server render");
-  }
-
-  let { method, encType, formData, url } = getFormSubmissionInfo(
-    target,
-    defaultAction,
-    options
-  );
-
-  let href = url.pathname + url.search;
-  let opts = {
-    replace: options.replace,
-    formData,
-    formMethod: method as FormMethod,
-    formEncType: encType as FormEncType,
-  };
-  if (fetcherKey) {
-    router.fetch(fetcherKey, href, opts);
-  } else {
-    router.navigate(href, opts);
-  }
 }
