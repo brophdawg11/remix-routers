@@ -1,20 +1,14 @@
 <script lang="ts">
-import { ActionFunction } from "@remix-run/router";
+import { ActionFunction, redirect } from "@remix-run/router";
+import { Form, useNavigation } from "remix-router-vue";
 import { computed, defineComponent } from "vue";
 
-import { Form, useNavigation } from "../remix-router-vue";
 import { addTask } from "../tasks";
 
 export const action: ActionFunction = async ({ request }) => {
   let formData = await request.formData();
-  await new Promise((r) => setTimeout(r, 1000));
   addTask(formData.get("newTask") as string);
-  throw new Response(null, {
-    status: 302,
-    headers: {
-      location: "/tasks",
-    },
-  });
+  return redirect("/tasks", { status: 302 });
 };
 
 export default defineComponent({

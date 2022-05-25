@@ -1,13 +1,12 @@
 <script lang="ts">
-import { defineComponent } from "vue";
-
 import {
   Link,
   Outlet,
   useLocation,
   useMatches,
   useNavigation,
-} from "../remix-router-vue";
+} from "remix-router-vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "Root",

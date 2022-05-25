@@ -1,7 +1,6 @@
 <script lang="ts">
+import { Link, useFetcher } from "remix-router-vue";
 import { computed, defineComponent, watchEffect } from "vue";
-
-import { Link, useFetcher } from "../remix-router-vue";
 
 export default defineComponent({
   name: "TaskItem",

@@ -1,16 +1,16 @@
 <script lang="ts">
 import type { DataRouteObject } from "@remix-run/router";
-import { defineComponent, h } from "vue";
+import { DataBrowserRouter } from "remix-router-vue";
+import { h } from "vue";
 
-import { DataBrowserRouter } from "../remix-router-vue";
-import Root from "./Root.vue";
+import Root from "./app/Root.vue";
 import Tasks, {
   loader as tasksLoader,
   action as tasksAction,
-} from "./Tasks.vue";
-import Task, { loader as taskLoader } from "./Task.vue";
-import NewTask, { action as newTaskAction } from "./NewTask.vue";
-import Index, { loader as indexLoader } from "./Index.vue";
+} from "./app/Tasks.vue";
+import Task, { loader as taskLoader } from "./app/Task.vue";
+import NewTask, { action as newTaskAction } from "./app/NewTask.vue";
+import Index, { loader as indexLoader } from "./app/Index.vue";
 
 export default {
   name: "App",

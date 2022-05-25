@@ -2,7 +2,7 @@
 import { ActionFunction, LoaderFunction } from "@remix-run/router";
 import { defineComponent } from "vue";
 
-import { Form, Link, Outlet, useLoaderData } from "../remix-router-vue";
+import { Form, Link, Outlet, useLoaderData } from "remix-router-vue";
 import { deleteTask, getTasks } from "../tasks";
 import TaskItem from "./TaskItem.vue";
 
@@ -40,10 +40,6 @@ export default defineComponent({
 
 <template>
   <h3>Tasks</h3>
-  <p>
-    Tasks listing - using a client side
-    <code>loader</code> / <code>useLoaderData</code>
-  </p>
   <ul>
     <li v-for="task in data.tasks" :key="task.id">
       <TaskItem :task="task" />

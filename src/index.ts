@@ -28,7 +28,6 @@ import {
   shouldProcessLinkClick,
   SubmitOptions,
 } from "./dom";
-import { jSXText } from "@babel/types";
 
 ////////////////////////////////////////////////////////////////////////////////
 //#region Types/Globals/Utils

@@ -1,8 +1,8 @@
 <script lang="ts">
 import type { LoaderFunction } from "@remix-run/router";
+import { useLoaderData } from "remix-router-vue";
 import { defineComponent } from "vue";
 
-import { useLoaderData } from "../remix-router-vue";
 import { getTasks } from "../tasks";
 
 export const loader: LoaderFunction = async ({ params }) => {
