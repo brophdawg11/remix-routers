@@ -1,0 +1,6 @@
+{
+  "**/*.{js,ts}": [
+    "eslint --ext .js,.ts",
+    "prettier --write --ignore-unknown"
+  ]
+}

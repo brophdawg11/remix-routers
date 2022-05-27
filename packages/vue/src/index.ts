@@ -82,8 +82,9 @@ export function useMatches() {
       id: match.route.id,
       pathname: match.pathname,
       params: match.params,
-      data: ctx.stateRef.value.loaderData[match.route.id],
-      handle: match.route.handle,
+      // TODO: Change to "unknown" in @remix-run/router?
+      data: ctx.stateRef.value.loaderData[match.route.id] as unknown,
+      handle: match.route.handle as unknown,
     }))
   );
 }
@@ -93,16 +94,16 @@ export function useNavigation(): Ref<Navigation> {
   return computed(() => ctx.stateRef.value.navigation);
 }
 
-export function useLoaderData(): Ref<any> {
+export function useLoaderData(): Ref<unknown> {
   let ctx = getRouterContext();
   let routeId = getRouteContext().id;
-  return computed(() => ctx.stateRef.value.loaderData[routeId]);
+  return computed(() => ctx.stateRef.value.loaderData[routeId] as unknown);
 }
 
-export function useActionData(): Ref<any> {
+export function useActionData(): Ref<unknown> {
   let ctx = getRouterContext();
   let routeId = getRouteContext().id;
-  return computed(() => ctx.stateRef.value.actionData?.[routeId]);
+  return computed(() => ctx.stateRef.value.actionData?.[routeId] as unknown);
 }
 
 export function useFormAction(action = "."): string {
@@ -143,7 +144,7 @@ type FetcherWithComponents<TData> = {
   load: (href: string) => void;
 };
 
-export function useFetcher<TData = any>(): FetcherWithComponents<TData> {
+export function useFetcher<TData = unknown>(): FetcherWithComponents<TData> {
   let { router, stateRef } = getRouterContext();
   let defaultAction = useFormAction();
   let fetcherKey = String(++fetcherId);
@@ -384,7 +385,8 @@ function renderRouteWrapper(match: DataRouteMatch, locationKey: string): VNode {
       index: match.route.index === true,
       key: `${match.route.id}:${locationKey}`,
     },
-    () => h(match.route.element as ReturnType<typeof defineComponent>)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    () => h(match.route.element)
   );
 }
 
