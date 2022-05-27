@@ -2,11 +2,13 @@
   "compilerOptions": {
     "allowJs": false,
     "declaration": true,
+    "emitDeclarationOnly": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "Node",
     "strict": true,
-    "target": "ES6"
-  }
+    "target": "ESNext"
+  },
+  "exclude": ["./**/example"]
 }

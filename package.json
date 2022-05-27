@@ -7,7 +7,7 @@
     "packages/vue"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "rollup -c rollup.config.js && npm run build --workspaces",
     "clean": "git clean -fX .",
     "lint": "eslint --ext .js,.ts .",
     "prettier": "prettier --write .",
@@ -16,6 +16,8 @@
   },
   "devDependencies": {
     "@babel/types": "7.18.2",
+    "@rollup/plugin-commonjs": "22.0.0",
+    "@rollup/plugin-typescript": "8.3.2",
     "@typescript-eslint/eslint-plugin": "5.26.0",
     "eslint": "8.16.0",
     "eslint-config-prettier": "8.5.0",
@@ -23,6 +25,7 @@
     "lint-staged": "12.4.2",
     "patch-package": "6.4.7",
     "prettier": "2.6.2",
+    "rollup": "2.75.0",
     "typescript": "4.6.4"
   }
 }

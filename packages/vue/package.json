@@ -4,8 +4,9 @@
   "description": "A Vue UI layer for nested + data-driven routing via @remix-run/router",
   "author": "matt@brophy.org",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/src/index.d.ts",
   "sideEffects": false,
   "keywords": [
     "remix",
@@ -22,8 +23,11 @@
   "bugs": {
     "url": "https://github.com/brophdawg11/remix-routers/issues"
   },
+  "files": [
+    "dist/**"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -b",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
