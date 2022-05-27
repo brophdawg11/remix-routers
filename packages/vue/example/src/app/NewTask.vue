@@ -6,6 +6,7 @@ import { computed, defineComponent } from "vue";
 import { addTask } from "../tasks";
 
 export const action: ActionFunction = async ({ request }) => {
+  await new Promise((r) => setTimeout(r, 1000));
   let formData = await request.formData();
   addTask(formData.get("newTask") as string);
   return redirect("/tasks", { status: 302 });

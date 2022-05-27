@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
-    "strict": true,
+    "declaration": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "Node"
-  },
-  "include": ["src/"]
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "commonjs",
+    "moduleResolution": "Node",
+    "strict": true,
+    "target": "ES6"
+  }
 }

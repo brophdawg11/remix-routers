@@ -233,7 +233,7 @@ export const DataBrowserRouter = defineComponent({
   },
 });
 
-export const RouteWrapper = defineComponent({
+const RouteWrapper = defineComponent({
   name: "RouteWrapper",
   props: {
     id: {
@@ -388,7 +388,7 @@ function renderRouteWrapper(match: DataRouteMatch, locationKey: string): VNode {
   );
 }
 
-export function submitForm(
+function submitForm(
   router: Router,
   defaultAction: string,
   target:
