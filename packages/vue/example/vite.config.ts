@@ -8,5 +8,6 @@ export default defineConfig({
     alias: {
       "remix-router-vue": path.resolve(__dirname, "../src/index.ts"),
     },
+    dedupe: ["vue"],
   },
 });

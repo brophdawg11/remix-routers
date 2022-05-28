@@ -1,16 +1,17 @@
 <script lang="ts">
-import type { DataRouteObject } from "@remix-run/router";
+import type { RouteObject } from "@remix-run/router";
 import { DataBrowserRouter } from "remix-router-vue";
 import { h } from "vue";
 
-import Root from "./app/Root.vue";
+import Root from "./app/routes/Root.vue";
+import Index from "./app/routes/Index.vue";
+import Page1, { loader as page1Loader } from "./app/routes/Page1.vue";
 import Tasks, {
   loader as tasksLoader,
   action as tasksAction,
-} from "./app/Tasks.vue";
-import Task, { loader as taskLoader } from "./app/Task.vue";
-import NewTask, { action as newTaskAction } from "./app/NewTask.vue";
-import Index, { loader as indexLoader } from "./app/Index.vue";
+} from "./app/routes/Tasks.vue";
+import Task, { loader as taskLoader } from "./app/routes/Task.vue";
+import NewTask, { action as newTaskAction } from "./app/routes/NewTask.vue";
 
 export default {
   name: "App",
@@ -18,33 +19,32 @@ export default {
     DataBrowserRouter,
   },
   setup() {
-    let routes: DataRouteObject[] = [
+    let routes: RouteObject[] = [
       {
-        id: "root",
         path: "/",
         element: Root,
         children: [
           {
-            id: "index",
             index: true,
-            loader: indexLoader,
             element: Index,
           },
           {
-            id: "tasks",
+            path: "page1",
+            loader: page1Loader,
+            element: Page1,
+          },
+          {
             path: "tasks",
             loader: tasksLoader,
             action: tasksAction,
             element: Tasks,
             children: [
               {
-                id: "tasksId",
                 path: ":id",
                 loader: taskLoader,
                 element: Task,
               },
               {
-                id: "newTask",
                 path: "new",
                 action: newTaskAction,
                 element: NewTask,

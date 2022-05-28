@@ -15,8 +15,8 @@ import {
   Location,
   Router,
   DataRouteMatch,
-  DataRouteObject,
   RouterState,
+  RouteObject,
   Navigation,
   Fetcher,
   resolveTo,
@@ -216,7 +216,7 @@ export const DataBrowserRouter = defineComponent({
     },
   },
   setup(props) {
-    let routes = props.routes as DataRouteObject[];
+    let routes = props.routes as RouteObject[];
     let router = createBrowserRouter({ routes }).initialize();
     let stateRef = shallowRef<RouterState>(router.state);
     router.subscribe((state) => (stateRef.value = state));

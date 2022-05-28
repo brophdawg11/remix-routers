@@ -28,6 +28,7 @@
   ],
   "scripts": {
     "build": "tsc -b",
+    "example": "cd example && npm run build && npm run preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

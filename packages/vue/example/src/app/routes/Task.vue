@@ -1,30 +1,24 @@
 <script lang="ts">
 import type { LoaderFunction } from "@remix-run/router";
 import { useLoaderData } from "remix-router-vue";
-import { defineComponent } from "vue";
 
-import { getTasks } from "../tasks";
+import { getTasks } from "../../tasks";
+import { sleep } from "../../utils";
 
 export const loader: LoaderFunction = async ({ params }) => {
-  await new Promise((r) => setTimeout(r, 1000));
+  await sleep();
   return {
     task: getTasks().find((t) => t.id === params.id),
   };
 };
+</script>
 
-export default defineComponent({
-  name: "Task",
-  setup() {
-    let data = useLoaderData();
-    return {
-      data,
-    };
-  },
-});
+<script setup lang="ts">
+const data = useLoaderData();
 </script>
 
 <template>
-  <h4>Task</h4>
+  <h3>Task</h3>
   <p>
     {{ data.task.task }}
   </p>

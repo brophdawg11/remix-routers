@@ -1,34 +1,26 @@
 <script lang="ts">
 import { ActionFunction, redirect } from "@remix-run/router";
 import { Form, useNavigation } from "remix-router-vue";
-import { computed, defineComponent } from "vue";
+import { computed } from "vue";
 
-import { addTask } from "../tasks";
+import { addTask } from "../../tasks";
+import { sleep } from "../../utils";
 
 export const action: ActionFunction = async ({ request }) => {
-  await new Promise((r) => setTimeout(r, 1000));
+  await sleep();
   let formData = await request.formData();
   addTask(formData.get("newTask") as string);
   return redirect("/tasks", { status: 302 });
 };
+</script>
 
-export default defineComponent({
-  name: "NewTask",
-  components: {
-    Form,
-  },
-  setup() {
-    let navigation = useNavigation();
-    let isAdding = computed(() => navigation.value.state !== "idle");
-    return {
-      isAdding,
-    };
-  },
-});
+<script setup lang="ts">
+const navigation = useNavigation();
+const isAdding = computed(() => navigation.value.state !== "idle");
 </script>
 
 <template>
-  <h4>New Task</h4>
+  <h3>New Task</h3>
   <Form method="post" action="/tasks/new">
     <input name="newTask" />
     <button type="submit" :disabled="isAdding">
