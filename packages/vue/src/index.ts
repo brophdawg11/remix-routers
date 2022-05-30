@@ -32,11 +32,13 @@ import {
 ////////////////////////////////////////////////////////////////////////////////
 //#region Types/Globals/Utils
 
+// Global context holding the singleton router and the current state
 export interface RouterContext {
   router: Router;
   stateRef: ShallowRef<RouterState>;
 }
 
+// Wrapper context holding the route location in the current hierarchy
 export interface RouteContext {
   id: string;
   index: boolean;
@@ -45,6 +47,8 @@ export interface RouteContext {
 
 ////////////////////////////////////////////////////////////////////////////////
 //#region Composition API
+
+// TODO: Change "any" types to "unknown" in @remix-run/router?
 
 let RouterContextSymbol = Symbol();
 let RouteContextSymbol = Symbol();
@@ -71,10 +75,6 @@ export function useLocation(): Ref<Location> {
   return computed(() => ctx.stateRef.value.location);
 }
 
-/**
- * Returns the active route matches, useful for accessing loaderData for
- * parent/child routes or the route "handle" property
- */
 export function useMatches() {
   let ctx = getRouterContext();
   return computed(() =>
@@ -82,7 +82,6 @@ export function useMatches() {
       id: match.route.id,
       pathname: match.pathname,
       params: match.params,
-      // TODO: Change to "unknown" in @remix-run/router?
       data: ctx.stateRef.value.loaderData[match.route.id] as unknown,
       handle: match.route.handle as unknown,
     }))

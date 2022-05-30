@@ -8,28 +8,27 @@
   "module": "dist/index.esm.js",
   "types": "dist/src/index.d.ts",
   "sideEffects": false,
+  "homepage": "https://github.com/brophdawg11/remix-routers#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brophdawg11/remix-routers.git",
+    "directory": "packages/vue"
+  },
+  "bugs": {
+    "url": "https://github.com/brophdawg11/remix-routers/issues"
+  },
   "keywords": [
     "remix",
     "remix-run",
     "router",
     "vue"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/brophdawg11/remix-routers.git",
-    "directory": "packages/vue"
-  },
-  "homepage": "https://github.com/brophdawg11/remix-routers#readme",
-  "bugs": {
-    "url": "https://github.com/brophdawg11/remix-routers/issues"
-  },
   "files": [
     "dist/**"
   ],
   "scripts": {
     "build": "tsc -b",
-    "example": "cd example && npm run build && npm run preview",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "example": "cd example && npm install && npm run build && npm run preview"
   },
   "dependencies": {
     "@remix-run/router": "0.1.0"

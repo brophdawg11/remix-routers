@@ -3,7 +3,7 @@ import type { LoaderFunction } from "@remix-run/router";
 import { sleep } from "../../utils";
 
 export const loader: LoaderFunction = async () => {
-  await sleep(3000);
+  await sleep();
   return {};
 };
 </script>
