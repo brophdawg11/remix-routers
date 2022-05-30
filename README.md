@@ -117,12 +117,12 @@ _TODO..._
 
 ### Repository Setup
 
-This repository uses [npm workspaces][workspaces], and each implementation should be a new `packages/{library}` workspace. Each implementation should provide the following:
+This repository uses [yarn workspaces][workspaces], and each implementation should be a new `packages/{library}` workspace. Each implementation should provide the following:
 
-- A `package.json` with at least `build` and `reference-app` scripts
+- A `package.json` with at least `build` and `integration` scripts
 - A `src/` folder containing the UI implementation
 - A `reference-app/` folder containing the reference application
 - A `vite.config.ts` configuration to build the library (via `vite build`) and also serve the reference app (via `vite dev`)
 
 [rr-beta-docs]: https://beta.reactrouter.com/en/v6.4.0-pre.2
-[workspaces]: https://docs.npmjs.com/cli/v8/using-npm/workspaces
+[workspaces]: https://classic.yarnpkg.com/lang/en/docs/workspaces/
