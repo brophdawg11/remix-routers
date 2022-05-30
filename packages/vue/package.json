@@ -35,10 +35,13 @@
   "scripts": {
     "build": "vite build && tsc -b",
     "clean": "git clean -fX .",
-    "reference-app": "vite dev --mode=production"
+    "integration:start": "vite dev --mode=production --port 3000",
+    "integration:test": "cypress run --config-file ./../../cypress.json",
+    "integration": "start-server-and-test integration:start http-get://localhost:3000/ integration:test"
   },
   "dependencies": {
-    "@remix-run/router": "0.1.0"
+    "@remix-run/router": "0.1.0",
+    "vue": "3.2.36"
   },
   "peerDependencies": {
     "vue": ">=3.2.0"

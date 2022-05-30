@@ -2,25 +2,31 @@
   "private": true,
   "name": "remix-routers",
   "description": "Monorepo for remix routers for different UI libraries",
-  "version": "0.1.0",
-  "workspaces": [
-    "packages/vue"
-  ],
+  "version": "0.0.0",
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/*react*",
+      "**/@types/*react*",
+      "**/*vue*"
+    ]
+  },
   "scripts": {
-    "validate": "npm run clean && npm ci && npm run build && npm run lint && npm run integration",
-    "build": "npm run build --workspaces",
+    "validate": "yarn clean && yarn && yarn build && yarn lint && yarn integration",
+    "build": "yarn workspaces run build",
     "clean": "git clean -fX .",
     "lint": "eslint --ext .js,.ts .",
-    "integration:start": "npm run reference-app --workspace packages/vue",
-    "integration:test": "cypress run",
-    "integration": "start-server-and-test integration:start http-get://localhost:3000/ integration:test",
+    "integration": "yarn workspaces run integration",
     "prettier": "prettier --write .",
     "postinstall": "patch-package",
     "prepare": "husky install"
   },
   "devDependencies": {
     "@babel/types": "7.18.2",
-    "@typescript-eslint/eslint-plugin": "5.26.0",
+    "@typescript-eslint/eslint-plugin": "5.27.0",
+    "@typescript-eslint/parser": "5.27.0",
     "cypress": "9.7.0",
     "eslint": "8.16.0",
     "eslint-config-prettier": "8.5.0",
