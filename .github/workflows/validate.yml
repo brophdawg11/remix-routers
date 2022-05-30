@@ -1,0 +1,32 @@
+name: Validate
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  Lint:
+    name: "🔎 Lint"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - uses: bahmutov/npm-install@v1
+      - run: npm run lint
+
+  Build:
+    name: "⚙️ Build"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - uses: bahmutov/npm-install@v1
+      - run: npm run build
+
+  Integration:
+    name: "🧪 Test"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - uses: bahmutov/npm-install@v1
+      - run: npm run integration
