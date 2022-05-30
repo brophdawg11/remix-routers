@@ -36,10 +36,15 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | API                        | React Router | Vue |
 | -------------------------- | ------------ | --- |
 | **ROUTE**                  | -            | -   |
-| `Route`                    | ✅           | ❌  |
 | `action`                   | ✅           | ✅  |
+| `caseSensitive`            | ✅           | ✅  |
+| `children`                 | ✅           | ✅  |
+| `element`                  | ✅           | ✅  |
 | `errorElement`             | ✅           | ⏳  |
+| `id`                       | ✅           | ✅  |
+| `index`                    | ✅           | ✅  |
 | `loader`                   | ✅           | ✅  |
+| `path`                     | ✅           | ✅  |
 | `shouldRevalidate`         | ✅           | ✅  |
 | **COMPONENTS**             | -            | -   |
 | `Form`                     | ✅           | ✅  |
