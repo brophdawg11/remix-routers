@@ -24,8 +24,17 @@ const matches = computed(() => JSON.stringify(useMatches().value));
     &nbsp;
     <Link to="/tasks/new">Add Task</Link>
   </nav>
-  <p>Location: <pre id="location">{{ location }}</pre></p>
-  <p>Navigation: <pre id="navigation">{{ navigation }}</pre></p>
-  <p>Matches: <pre id="matches">{{ matches }}</pre></p>
+  <div>
+    Location:
+    <pre id="location">{{ location }}</pre>
+  </div>
+  <div>
+    Navigation:
+    <pre id="navigation">{{ navigation }}</pre>
+  </div>
+  <div>
+    Matches:
+    <pre id="matches">{{ matches }}</pre>
+  </div>
   <Outlet />
 </template>

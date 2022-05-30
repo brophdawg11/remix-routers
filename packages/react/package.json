@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "remix-router-react-stub",
+  "version": "0.0.0",
+  "description": "Stub package to implement a react-router-dom reference app",
+  "author": "matt@brophy.org",
+  "license": "MIT",
+  "scripts": {
+    "build": "vite build && tsc -b",
+    "clean": "git clean -fX .",
+    "integration:start": "vite build && vite preview --port 3000",
+    "integration:test": "cypress run --config-file ./../../cypress.json",
+    "integration": "start-server-and-test integration:start http-get://localhost:3000/ integration:test"
+  },
+  "dependencies": {
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
+    "react-router-dom": "6.4.0-pre.2"
+  },
+  "devDependencies": {
+    "@types/react": "18.0.9",
+    "@types/react-dom": "18.0.5",
+    "@vitejs/plugin-react": "1.3.2"
+  }
+}

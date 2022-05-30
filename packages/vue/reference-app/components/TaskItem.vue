@@ -27,7 +27,8 @@ export default defineComponent({
 </script>
 
 <template>
-  {{ task.task }}
+  <span>{{ task.task }}</span>
+  &nbsp;
   <Link :to="`/tasks/${task.id}`">Open</Link>
   &nbsp;
   <component :is="Form" style="display: inline" action="/tasks" method="post">
