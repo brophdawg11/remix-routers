@@ -1,9 +1,11 @@
 # 💿 Remix Routers
 
-Remix Routers is a collection of libraries that port `react-router-dom` to different UI rendering libraries, all based on the underlying `@remix-run/router` package. This only exists for _Vue_ at the moment but I hope to see that expand in the future (with community support 😉).
+Remix Routers is a collection of libraries that port `react-router-dom` to different UI rendering libraries, all based on the underlying `@remix-run/router` package. This only exists for **Vue** at the moment but I hope to see that expand in the future (with community support 😉).
 
 ⚠️ ⚠️ ⚠️
+
 **This is very much in an alpha state and thus production usage is _highly discouraged_. APIs will very likely change without notice until the API surface stabilizes a bit further.**
+
 ⚠️ ⚠️ ⚠️
 
 ## Installation
@@ -12,7 +14,7 @@ Remix Routers is a collection of libraries that port `react-router-dom` to diffe
 
 ## Design Goals
 
-In order to keep things consistent between `react-router-dom` and these implementations, we lay out some explicit rules to guide the implementations. Therefore, implementations will:
+In order to keep things consistent between `react-router-dom` and these implementations, we lay out some explicit rules. All implementations:
 
 1. Only provide data routers, and will not provide the non-data-routers present in `react-router@6.3.0` and prior (`BrowserRouter`, etc.)
 2. Be strictly a _subset_ of the public API of `react-router-dom`, and will not provide any APIs that go beyond `react-router-dom`
@@ -27,17 +29,19 @@ In order to keep things consistent between `react-router-dom` and these implemen
 
 ## API
 
-In the interest of time (for now) please refer to the [beta docs for `react-router@6.4`](https://beta.reactrouter.com/en/v6.4.0-pre.2) since we're aiming to be API compatible. The following table documents the current state of the UI libraries and the APIs implemented.
+In the interest of time (for now) please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] since we're aiming to be API compatible. The following table documents the current state of the UI libraries and the APIs implemented.
+
+_Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status unknown)
 
 | API                        | React Router | Vue |
 | -------------------------- | ------------ | --- |
-| _ROUTE_                    | -            | -   |
+| **ROUTE**                  | -            | -   |
 | `Route`                    | ✅           | ❌  |
 | `action`                   | ✅           | ✅  |
 | `errorElement`             | ✅           | ⏳  |
 | `loader`                   | ✅           | ✅  |
 | `shouldRevalidate`         | ✅           | ✅  |
-| _COMPONENTS_               | -            | -   |
+| **COMPONENTS**             | -            | -   |
 | `Form`                     | ✅           | ✅  |
 | `Link`                     | ✅           | ✅  |
 | `NavLink`                  | ✅           | ⏳  |
@@ -46,7 +50,7 @@ In the interest of time (for now) please refer to the [beta docs for `react-rout
 | `Route`                    | ✅           | ❌  |
 | `Routes`                   | ✅           | ❌  |
 | `ScrollRestoration`        | ✅           | ⏳  |
-| _ROUTERS_                  | -            | -   |
+| **ROUTERS**                | -            | -   |
 | `BrowserRouter`            | ✅           | ❌  |
 | `DataBrowserRouter`        | ✅           | ✅  |
 | `DataHashRouter`           | ✅           | ⏳  |
@@ -57,7 +61,7 @@ In the interest of time (for now) please refer to the [beta docs for `react-rout
 | `NativeRouter`             | ✅           | ❌  |
 | `Router`                   | ✅           | ❌  |
 | `StaticRouter`             | ✅           | ❌  |
-| _HOOKS_                    | -            | -   |
+| **HOOKS**                  | -            | -   |
 | `useActionData`            | ✅           | ✅  |
 | `useFetcher`               | ✅           | ✅  |
 | `useFetchers`              | ✅           | ✅  |
@@ -83,11 +87,11 @@ In the interest of time (for now) please refer to the [beta docs for `react-rout
 | `useRoutes`                | ✅           | ❌  |
 | `useSearchParams`          | ✅           |     |
 | `useSubmit`                | ✅           | ⏳  |
-| _FETCH UTILITIES_          | -            | -   |
+| **FETCH UTILITIES**        | -            | -   |
 | `isRouteErrorResponse`     | ✅           | ⏳  |
 | `json`                     | ✅           | ⏳  |
 | `redirect`                 | ✅           | ⏳  |
-| _UTILITIES_                | -            | -   |
+| **UTILITIES**              | -            | -   |
 | `createRoutesFromChildren` | ✅           | ❌  |
 | `createSearchParams`       | ✅           |     |
 | `generatePath`             | ✅           |     |
@@ -96,10 +100,24 @@ In the interest of time (for now) please refer to the [beta docs for `react-rout
 | `renderMatches`            | ✅           |     |
 | `resolvePath`              | ✅           |     |
 
-Legend: ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status unknown)
-
 ## Notable API Differences
 
 ### Vue
 
-- For now, you must provide your routes through the `DataBrowserRouter` `routes` prop, we don't support the declarative JSX-style `<Route>` children approach used by `react-router`
+- For now, you must provide your routes through the `DataBrowserRouter` `routes` prop, we don't support the declarative JSX-style `<Route>` children approach used by `react-router-dom`
+
+## Contributing
+
+_TODO..._
+
+### Repository Setup
+
+This repository uses [npm workspaces][workspaces], and each implementation should be a new `packages/{library}` workspace. Each implementation should provide the following:
+
+- A `package.json` with at least `build` and `reference-app` scripts
+- A `src/` folder containing the UI implementation
+- A `reference-app/` folder containing the reference application
+- A `vite.config.ts` configuration to build the library (via `vite build`) and also serve the reference app (via `vite dev`)
+
+[rr-beta-docs]: https://beta.reactrouter.com/en/v6.4.0-pre.2
+[workspaces]: https://docs.npmjs.com/cli/v8/using-npm/workspaces
