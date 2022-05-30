@@ -4,9 +4,15 @@
   "description": "A Vue UI layer for nested + data-driven routing via @remix-run/router",
   "author": "matt@brophy.org",
   "license": "MIT",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/remix-router-vue.umd.js",
+  "module": "dist/remix-router-vue.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/remix-router-vue.es.js",
+      "require": "./dist/remix-router-vue.umd.js"
+    }
+  },
   "sideEffects": false,
   "homepage": "https://github.com/brophdawg11/remix-routers#readme",
   "repository": {
@@ -27,13 +33,17 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "tsc -b",
-    "example": "cd example && npm install && npm run build && npm run preview"
+    "build": "vite build && tsc -b",
+    "clean": "git clean -fX .",
+    "reference-app": "vite dev --mode=production"
   },
   "dependencies": {
     "@remix-run/router": "0.1.0"
   },
   "peerDependencies": {
     "vue": ">=3.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "2.3.3"
   }
 }

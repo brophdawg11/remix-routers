@@ -2,8 +2,8 @@
 import { ActionFunction, LoaderFunction } from "@remix-run/router";
 import { Outlet, useLoaderData } from "remix-router-vue";
 
-import { deleteTask, getTasks } from "../../tasks";
-import { sleep } from "../../utils";
+import { deleteTask, getTasks } from "../tasks";
+import { sleep } from "../utils";
 import TaskItem from "../components/TaskItem.vue";
 
 export const loader: LoaderFunction = async () => {

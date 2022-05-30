@@ -7,20 +7,19 @@
     "packages/vue"
   ],
   "scripts": {
-    "build": "rollup -c rollup.config.js && npm run build --workspaces",
+    "validate": "npm run clean && npm ci && npm run build && npm run lint && npm run integration",
+    "build": "npm run build --workspaces",
     "clean": "git clean -fX .",
     "lint": "eslint --ext .js,.ts .",
-    "integration:start": "npm run example --workspace packages/vue",
+    "integration:start": "npm run reference-app --workspace packages/vue",
     "integration:test": "cypress run",
-    "integration": "start-server-and-test integration:start 3000 integration:test",
+    "integration": "start-server-and-test integration:start http-get://localhost:3000/ integration:test",
     "prettier": "prettier --write .",
     "postinstall": "patch-package",
     "prepare": "husky install"
   },
   "devDependencies": {
     "@babel/types": "7.18.2",
-    "@rollup/plugin-commonjs": "22.0.0",
-    "@rollup/plugin-typescript": "8.3.2",
     "@typescript-eslint/eslint-plugin": "5.26.0",
     "cypress": "9.7.0",
     "eslint": "8.16.0",
@@ -30,8 +29,8 @@
     "lint-staged": "12.4.2",
     "patch-package": "6.4.7",
     "prettier": "2.6.2",
-    "rollup": "2.75.0",
     "start-server-and-test": "1.14.0",
-    "typescript": "4.6.4"
+    "typescript": "4.6.4",
+    "vite": "2.9.9"
   }
 }

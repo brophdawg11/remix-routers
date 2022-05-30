@@ -3,8 +3,8 @@ import { ActionFunction, redirect } from "@remix-run/router";
 import { Form, useNavigation } from "remix-router-vue";
 import { computed } from "vue";
 
-import { addTask } from "../../tasks";
-import { sleep } from "../../utils";
+import { addTask } from "../tasks";
+import { sleep } from "../utils";
 
 export const action: ActionFunction = async ({ request }) => {
   await sleep();

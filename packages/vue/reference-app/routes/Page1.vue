@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { LoaderFunction } from "@remix-run/router";
-import { sleep } from "../../utils";
+import { sleep } from "../utils";
 
 export const loader: LoaderFunction = async () => {
   await sleep();

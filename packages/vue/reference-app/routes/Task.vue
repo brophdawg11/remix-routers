@@ -2,8 +2,8 @@
 import type { LoaderFunction } from "@remix-run/router";
 import { useLoaderData } from "remix-router-vue";
 
-import { getTasks } from "../../tasks";
-import { sleep } from "../../utils";
+import { getTasks } from "../tasks";
+import { sleep } from "../utils";
 
 export const loader: LoaderFunction = async ({ params }) => {
   await sleep();
