@@ -72,7 +72,7 @@ Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for referen
   <h1>Welcome to my Vue Application!</h1>
   <div>
     Location:
-    <pre id="location">{{ location }}</pre>
+    <pre>{{ location }}</pre>
   </div>
   <!-- Render matching child routes here -->
   <Outlet />
