@@ -8,6 +8,8 @@ Remix Routers is a collection of libraries that port `react-router-dom` to diffe
 
 👷‍♂️ _Not published yet, soon!_
 
+_Note: If you are using TypeScript you will need to use `patch-package` and copy the `@remix-run+router+0.1.0.patch` patch from this repo to internally change the `RouteObject.element` type from `ReactNode` to `any` for use with Vue components._
+
 ## Design Goals
 
 For simplicity and to keep things consistent between `react-router-dom` and these implementations, these implementations follow a few guidelines:
