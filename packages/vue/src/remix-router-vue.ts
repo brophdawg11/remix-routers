@@ -126,9 +126,9 @@ export function useFormAction(action = "."): string {
 
 let fetcherId = 0;
 
-type FetcherWithComponents<TData> = {
-  fetcher: ShallowRef<Fetcher<TData>>;
+type FetcherWithComponents<TData> = Fetcher<TData> & {
   Form: Component;
+  // TODO: abstract via useSubmitImpl
   submit(
     target:
       | HTMLFormElement
@@ -143,54 +143,51 @@ type FetcherWithComponents<TData> = {
   load: (href: string) => void;
 };
 
-export function useFetcher<TData = unknown>(): FetcherWithComponents<TData> {
+export function useFetcher<TData = unknown>(): Ref<
+  FetcherWithComponents<TData>
+> {
   let { router, stateRef } = getRouterContext();
   let defaultAction = useFormAction();
   let fetcherKey = String(++fetcherId);
   let fetcherRef = shallowRef<Fetcher<TData>>(
     router.getFetcher<TData>(fetcherKey)
   );
-  let fetcher = computed(() => fetcherRef.value);
 
   watch(
     stateRef,
     () => (fetcherRef.value = router.getFetcher<TData>(fetcherKey))
   );
 
-  onUnmounted(() => {
-    if (!router) {
-      console.warn("No fetcher available to clean up from useFetcher()");
-      return;
-    }
-    router.deleteFetcher(fetcherKey);
+  onUnmounted(() => router.deleteFetcher(fetcherKey));
+
+  let Form = defineComponent({
+    name: "fetcher.Form",
+    props: {
+      replace: {
+        type: Boolean,
+        default: false,
+      },
+      onSubmit: {
+        type: Function,
+        default: undefined,
+      },
+    },
+    setup:
+      (props, { slots }) =>
+      () =>
+        h(FormImpl, { ...props, fetcherKey }, slots.default),
   });
 
-  return {
-    Form: defineComponent({
-      name: "fetcher.Form",
-      props: {
-        replace: {
-          type: Boolean,
-          default: false,
-        },
-        onSubmit: {
-          type: Function,
-          default: undefined,
-        },
-      },
-      setup:
-        (props, { slots }) =>
-        () =>
-          h(FormImpl, { ...props, fetcherKey }, slots.default),
-    }),
+  return computed(() => ({
+    ...fetcherRef.value,
+    Form,
     submit(target, options = {}) {
       return submitForm(router, defaultAction, target, options, fetcherKey);
     },
     load(href) {
       return router.fetch(fetcherKey, href);
     },
-    fetcher,
-  };
+  }));
 }
 
 export function useFetchers(): Fetcher[] {

@@ -21,8 +21,8 @@ const isAdding = computed(() => navigation.value.state !== "idle");
 
 <template>
   <h3>New Task</h3>
-  <Form method="post" action="/tasks/new">
-    <input name="newTask" />
+  <Form method="post">
+    <input name="newTask" placeholder="Add a task..." :disabled="isAdding" />
     <button type="submit" :disabled="isAdding">
       {{ isAdding ? "Adding..." : "Add" }}
     </button>

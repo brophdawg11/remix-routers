@@ -14,12 +14,12 @@ export default defineComponent({
     },
   },
   setup(props) {
-    let { Form, fetcher } = useFetcher();
+    let fetcher = useFetcher();
     let isDeleting = computed(() => fetcher.value.formData != null);
 
     return {
+      fetcher,
       task: props.task,
-      Form,
       isDeleting,
     };
   },
@@ -31,7 +31,12 @@ export default defineComponent({
   &nbsp;
   <Link :to="`/tasks/${task.id}`">Open</Link>
   &nbsp;
-  <component :is="Form" style="display: inline" action="/tasks" method="post">
+  <component
+    :is="fetcher.Form"
+    style="display: inline"
+    action="/tasks"
+    method="post"
+  >
     <button type="submit" name="taskId" :value="task.id" :disabled="isDeleting">
       {{ isDeleting ? "Deleting..." : "❌" }}
     </button>
