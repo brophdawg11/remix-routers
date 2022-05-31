@@ -14,18 +14,19 @@ Remix Routers is a collection of libraries that port `react-router-dom` to diffe
 
 ## Design Goals
 
-In order to keep things consistent between `react-router-dom` and these implementations, we lay out some explicit rules. All implementations:
+For simplicity and to keep things consistent between `react-router-dom` and these implementations, these implementations follow a few guidelines:
 
-1. Only provide data routers, and will not provide the non-data-routers present in `react-router@6.3.0` and prior (`BrowserRouter`, etc.)
-2. Be strictly a _subset_ of the public API of `react-router-dom`, and will not provide any APIs that go beyond `react-router-dom`
-   - Implementations may not implement _every_ API in `react-router-dom`
-   - There were no data APIs prior to React Router 6.4, so APIs may be skipped that are no longer as relevant in a data-router-only landscape
-3. Remain as close to the `react-router-dom` behavior as possible, barring differences that are unavoidable due to library implementation details
-   - To achieve this we will aim to implement the same reference app for each library, and run the same E2E test suite against the reference apps
+1. Implementations only provide data routers (no `BrowserRouter`, `HashRouter`, etc.)
+2. Implementations will not provide any new APIs that are not in `react-router-dom`
+3. Implementations will likely not provide all public APIs of `react-router-dom`
+   - Some APIs may not be as relevant in a data-router-only landscape
+   - Some APIs may not be compatible with a given UI library
+4. Implementations will remain as close to the `react-router-dom` behavior as possible, barring differences that are unavoidable due to UI library implementation details
+   - To this end, each package in this repository will implement the same reference app that must pass a shared Cypress test suite
 
 ## Non-Goals
 
-1. SSR is not something we intend to handle in these implementations
+1. SSR is not something we intend to handle in these implementations, at least for now
 
 ## API
 
