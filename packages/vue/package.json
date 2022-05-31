@@ -6,7 +6,7 @@
   "license": "MIT",
   "main": "dist/remix-router-vue.umd.js",
   "module": "dist/remix-router-vue.es.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/remix-router-vue.es.js",
