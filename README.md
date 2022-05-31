@@ -6,9 +6,9 @@ Remix Routers is a collection of libraries that port `react-router-dom` to diffe
 
 ## Installation
 
-👷‍♂️ _Not published yet, soon!_
+Please refer to the documentation for the UI library of your choice:
 
-_Note: If you are using TypeScript you will need to use `patch-package` and copy the `@remix-run+router+0.1.0.patch` patch from this repo to internally change the `RouteObject.element` type from `ReactNode` to `any` for use with Vue components._
+- [Vue][vue-readme]
 
 ## Design Goals
 
@@ -104,15 +104,9 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `renderMatches`            | ✅           |     |
 | `resolvePath`              | ✅           |     |
 
-## Notable API Differences
-
-### Vue
-
-- For now, you must provide your routes through the `DataBrowserRouter` `routes` prop, we don't support the declarative JSX-style `<Route>` children approach used by `react-router-dom`
-
 ## Contributing
 
-_TODO..._
+_Coming soon..._
 
 ### Repository Setup
 
@@ -124,4 +118,5 @@ This repository uses [yarn workspaces][workspaces], and each implementation shou
 - A `vite.config.ts` configuration to build the library (via `vite build`) and also serve the reference app (via `vite dev`)
 
 [rr-beta-docs]: https://beta.reactrouter.com/en/v6.4.0-pre.2
-[workspaces]: https://classic.yarnpkg.com/lang/en/docs/workspaces/
+[workspaces]: https://classic.yarnpkg.com/lang/en/docs/workspaces
+[vue-readme]: ./packages/vue#readme
