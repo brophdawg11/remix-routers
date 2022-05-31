@@ -63,7 +63,6 @@ Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for referen
 ```html
 <script setup>
   import { Outlet, useLocation } from "remix-router-vue";
-  import { computed } from "vue";
 
   const location = useLocation();
 </script>
