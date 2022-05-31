@@ -35,7 +35,7 @@ Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for referen
 
   // Define your routes in a nested array, providing loaders and actions where
   // appropriate
-  const routes: RouteObject[] = [
+  const routes = [
     {
       path: "/",
       element: Layout,
@@ -50,7 +50,7 @@ Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for referen
   ];
 
   // Provide a fallbackElement to be displayed during the initial data load
-  const fallbackElement: () => h("p", "Loading..."),
+  const fallbackElement = () => h("p", "Loading..."),
 </script>
 
 <template>
