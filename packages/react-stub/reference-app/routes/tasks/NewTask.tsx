@@ -5,8 +5,8 @@ import {
   useNavigation,
 } from "react-router-dom";
 
-import { addTask } from "../tasks";
-import { sleep } from "../utils";
+import { addTask } from "~/tasks";
+import { sleep } from "~/utils";
 
 export const action: ActionFunction = async ({ request }) => {
   await sleep();

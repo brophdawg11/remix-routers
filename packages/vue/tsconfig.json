@@ -1,9 +1,24 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "rootDir": ".",
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "declaration": true,
     "declarationDir": "dist",
-    "outDir": "dist"
+    "emitDeclarationOnly": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "outDir": "dist",
+    "paths": {
+      "~/*": ["./reference-app/*"],
+      "remix-router-vue": ["./src/index.ts"]
+    },
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "strict": true,
+    "target": "ESNext"
   },
-  "include": ["global.d.ts", "src/index.ts"]
+  "include": ["./**/*.ts", "./**/*.vue"]
 }

@@ -32,6 +32,9 @@ import {
 ////////////////////////////////////////////////////////////////////////////////
 //#region Types/Globals/Utils
 
+// Re-exports from remix router
+export { json, redirect, isRouteErrorResponse } from "@remix-run/router";
+
 // Global context holding the singleton router and the current state
 export interface RouterContext {
   router: Router;

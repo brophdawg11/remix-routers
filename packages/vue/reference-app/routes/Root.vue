@@ -18,7 +18,9 @@ const matches = computed(() => JSON.stringify(useMatches().value));
   <nav>
     <Link to="/">Index</Link>
     &nbsp;
-    <Link to="/page1">Page 1</Link>
+    <Link to="/parent">Parent</Link>
+    &nbsp;
+    <Link to="/parent/child">Child</Link>
     &nbsp;
     <Link to="/tasks">Tasks</Link>
     &nbsp;

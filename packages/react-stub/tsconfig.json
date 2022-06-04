@@ -1,11 +1,24 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "allowJs": false,
     "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "declaration": true,
     "declarationDir": "dist",
+    "emitDeclarationOnly": true,
+    "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "outDir": "dist",
-    "rootDir": "."
+    "paths": {
+      "~/*": ["./reference-app/*"]
+    },
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "strict": true,
+    "target": "ESNext"
   },
-  "include": ["reference-app/"]
+  "include": ["./**/*.ts", "./**/*.tsx"]
 }

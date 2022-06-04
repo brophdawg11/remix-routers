@@ -4,14 +4,15 @@ import { DataBrowserRouter } from "remix-router-vue";
 import { h } from "vue";
 
 import Root from "./routes/Root.vue";
+import Child, { loader as childLoader } from "./routes/nested/Child.vue";
 import Index from "./routes/Index.vue";
-import Page1, { loader as page1Loader } from "./routes/Page1.vue";
+import Parent, { loader as parentLoader } from "./routes/nested/Parent.vue";
 import Tasks, {
   loader as tasksLoader,
   action as tasksAction,
-} from "./routes/Tasks.vue";
-import Task, { loader as taskLoader } from "./routes/Task.vue";
-import NewTask, { action as newTaskAction } from "./routes/NewTask.vue";
+} from "./routes/tasks/Tasks.vue";
+import Task, { loader as taskLoader } from "./routes/tasks/Task.vue";
+import NewTask, { action as newTaskAction } from "./routes/tasks/NewTask.vue";
 
 export default {
   name: "App",
@@ -29,9 +30,16 @@ export default {
             element: Index,
           },
           {
-            path: "page1",
-            loader: page1Loader,
-            element: Page1,
+            path: "parent",
+            loader: parentLoader,
+            element: Parent,
+            children: [
+              {
+                path: "child",
+                loader: childLoader,
+                element: Child,
+              },
+            ],
           },
           {
             path: "tasks",

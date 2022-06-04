@@ -5,9 +5,9 @@ import {
   useLoaderData,
 } from "react-router-dom";
 
-import { deleteTask, getTasks, Task } from "../tasks";
-import { sleep } from "../utils";
-import TaskItem from "../components/TaskItem";
+import { deleteTask, getTasks, Task } from "~/tasks";
+import { sleep } from "~/utils";
+import TaskItem from "~/components/TaskItem";
 
 export const loader: LoaderFunction = async () => {
   await sleep();

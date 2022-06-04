@@ -1,4 +1,4 @@
-import path from "path";
+import { resolve } from "path";
 
 import vue from "@vitejs/plugin-vue";
 import { defineConfig } from "vite";
@@ -27,8 +27,8 @@ export default defineConfig(({ command, mode }) => {
     },
     resolve: {
       alias: {
-        // eslint-disable-next-line
-        "remix-router-vue": path.resolve(__dirname, "src/index.ts"),
+        "~": resolve(__dirname, "./reference-app"),
+        "remix-router-vue": resolve(__dirname, "src/index.ts"),
       },
       dedupe: ["vue"],
     },

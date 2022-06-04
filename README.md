@@ -92,9 +92,9 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `useSearchParams`          | ✅           |     |
 | `useSubmit`                | ✅           | ⏳  |
 | **FETCH UTILITIES**        | -            | -   |
-| `isRouteErrorResponse`     | ✅           | ⏳  |
-| `json`                     | ✅           | ⏳  |
-| `redirect`                 | ✅           | ⏳  |
+| `isRouteErrorResponse`     | ✅           | ✅  |
+| `json`                     | ✅           | ✅  |
+| `redirect`                 | ✅           | ✅  |
 | **UTILITIES**              | -            | -   |
 | `createRoutesFromChildren` | ✅           | ❌  |
 | `createSearchParams`       | ✅           |     |
