@@ -11,20 +11,20 @@ import { computed } from "vue";
 const location = computed(() => JSON.stringify(useLocation().value));
 const navigation = computed(() => JSON.stringify(useNavigation().value));
 const matches = computed(() => JSON.stringify(useMatches().value));
+const links = {
+  Index: "/",
+  Parent: "/parent",
+  Child: "/parent/child",
+  Redirect: "/redirect?location=%2Fparent%2Fchild",
+  Tasks: "/tasks",
+  "Add Task": "/tasks/new",
+};
 </script>
 
 <template>
   <h1>Root Layout</h1>
   <nav>
-    <Link to="/">Index</Link>
-    &nbsp;
-    <Link to="/parent">Parent</Link>
-    &nbsp;
-    <Link to="/parent/child">Child</Link>
-    &nbsp;
-    <Link to="/tasks">Tasks</Link>
-    &nbsp;
-    <Link to="/tasks/new">Add Task</Link>
+    <Link v-for="(href, text) in links" :key="href" :to="href">{{ text }}</Link>
   </nav>
   <div>
     Location:

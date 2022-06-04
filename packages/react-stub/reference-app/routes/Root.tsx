@@ -10,18 +10,22 @@ export default function Root() {
   let location = JSON.stringify(useLocation());
   let navigation = JSON.stringify(useNavigation());
   let matches = JSON.stringify(useMatches());
+  let links = {
+    Index: "/",
+    Parent: "/parent",
+    Child: "/parent/child",
+    Redirect: "/redirect?location=%2Fparent%2Fchild",
+    Tasks: "/tasks",
+    "Add Task": "/tasks/new",
+  };
 
   return (
     <>
       <h1>Root Layout</h1>
       <nav>
-        <Link to="/">Index</Link>
-        &nbsp;
-        <Link to="/page1">Page 1</Link>
-        &nbsp;
-        <Link to="/tasks">Tasks</Link>
-        &nbsp;
-        <Link to="/tasks/new">Add Task</Link>
+        {Object.entries(links).map(([text, href]) => (
+          <Link to={href}>{text}</Link>
+        ))}
       </nav>
       <div>
         Location: <pre id="location">{location}</pre>

@@ -8,7 +8,7 @@ interface LoaderData {
 
 export const loader: LoaderFunction = async () => {
   await sleep();
-  return json<LoaderData>({ data: "child loader data" });
+  return json<LoaderData>({ data: "parent loader data" });
 };
 
 export default function Parent() {

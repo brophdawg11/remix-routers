@@ -16,7 +16,7 @@ export default function Child() {
 
   return (
     <>
-      <h2>Child Route</h2>
+      <h3>Child Route</h3>
       <p id="child">Child data: {data.data}</p>
     </>
   );

@@ -7,6 +7,7 @@ import Root from "./routes/Root.vue";
 import Child, { loader as childLoader } from "./routes/nested/Child.vue";
 import Index from "./routes/Index.vue";
 import Parent, { loader as parentLoader } from "./routes/nested/Parent.vue";
+import Redirect, { loader as redirectLoader } from "~/routes/Redirect.vue";
 import Tasks, {
   loader as tasksLoader,
   action as tasksAction,
@@ -40,6 +41,11 @@ export default {
                 element: Child,
               },
             ],
+          },
+          {
+            path: "redirect",
+            loader: redirectLoader,
+            element: Redirect,
           },
           {
             path: "tasks",

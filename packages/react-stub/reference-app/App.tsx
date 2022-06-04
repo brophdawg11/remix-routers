@@ -3,6 +3,7 @@ import { DataBrowserRouter, Route } from "react-router-dom";
 import Index from "~/routes/Index";
 import Parent, { loader as parentLoader } from "~/routes/nested/Parent";
 import Child, { loader as childLoader } from "~/routes/nested/Child";
+import Redirect, { loader as redirectLoader } from "./routes/Redirect";
 import Root from "~/routes/Root";
 import Tasks, {
   action as tasksAction,
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="parent" loader={parentLoader} element={<Parent />}>
           <Route path="child" loader={childLoader} element={<Child />} />
         </Route>
+        <Route path="redirect" loader={redirectLoader} element={<Redirect />} />
         <Route
           path="tasks"
           loader={tasksLoader}
