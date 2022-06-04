@@ -39,7 +39,7 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `caseSensitive`            | ✅           | ✅  |
 | `children`                 | ✅           | ✅  |
 | `element`                  | ✅           | ✅  |
-| `errorElement`             | ✅           | ⏳  |
+| `errorElement`             | ✅           | ✅  |
 | `id`                       | ✅           | ✅  |
 | `index`                    | ✅           | ✅  |
 | `loader`                   | ✅           | ✅  |
@@ -86,8 +86,8 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `useParams`                | ✅           |     |
 | `useResolvedPath`          | ✅           |     |
 | `useRevalidator`           | ✅           | ⏳  |
-| `useRouteError`            | ✅           | ⏳  |
-| `useRouteLoaderData`       | ✅           | ⏳  |
+| `useRouteError`            | ✅           | ✅  |
+| `useRouteLoaderData`       | ✅           | ✅  |
 | `useRoutes`                | ✅           | ❌  |
 | `useSearchParams`          | ✅           |     |
 | `useSubmit`                | ✅           | ⏳  |

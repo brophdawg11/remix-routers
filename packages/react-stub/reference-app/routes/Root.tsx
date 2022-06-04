@@ -15,6 +15,10 @@ export default function Root() {
     Parent: "/parent",
     Child: "/parent/child",
     Redirect: "/redirect?location=%2Fparent%2Fchild",
+    "Loader Error": "/error?type=loader",
+    "Render Error": "/error?type=render",
+    "Nested Loader Error": "/parent/error?type=loader",
+    "Nested Render Error": "/parent/error?type=render",
     Tasks: "/tasks",
     "Add Task": "/tasks/new",
   };
@@ -24,7 +28,9 @@ export default function Root() {
       <h1>Root Layout</h1>
       <nav>
         {Object.entries(links).map(([text, href]) => (
-          <Link to={href}>{text}</Link>
+          <Link key={href} to={href}>
+            {text}
+          </Link>
         ))}
       </nav>
       <div>

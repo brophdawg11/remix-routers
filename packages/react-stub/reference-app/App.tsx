@@ -1,9 +1,11 @@
 import { DataBrowserRouter, Route } from "react-router-dom";
 
+import Boundary from "~/components/Boundary";
 import Index from "~/routes/Index";
 import Parent, { loader as parentLoader } from "~/routes/nested/Parent";
 import Child, { loader as childLoader } from "~/routes/nested/Child";
 import Redirect, { loader as redirectLoader } from "./routes/Redirect";
+import ErrorComponent, { loader as errorLoader } from "./routes/Error";
 import Root from "~/routes/Root";
 import Tasks, {
   action as tasksAction,
@@ -17,10 +19,21 @@ export default function App() {
     <DataBrowserRouter fallbackElement={<p>Loading...</p>}>
       <Route path="/" element={<Root />}>
         <Route index element={<Index />} />
-        <Route path="parent" loader={parentLoader} element={<Parent />}>
+        <Route
+          path="parent"
+          loader={parentLoader}
+          element={<Parent />}
+          errorElement={<Boundary />}
+        >
           <Route path="child" loader={childLoader} element={<Child />} />
+          <Route
+            path="error"
+            loader={errorLoader}
+            element={<ErrorComponent />}
+          />
         </Route>
         <Route path="redirect" loader={redirectLoader} element={<Redirect />} />
+        <Route path="error" loader={errorLoader} element={<ErrorComponent />} />
         <Route
           path="tasks"
           loader={tasksLoader}
