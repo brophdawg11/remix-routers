@@ -16,6 +16,10 @@ const links = {
   Parent: "/parent",
   Child: "/parent/child",
   Redirect: "/redirect?location=%2Fparent%2Fchild",
+  "Loader Error": "/error?type=loader",
+  "Render Error": "/error?type=render",
+  "Nested Loader Error": "/parent/error?type=loader",
+  "Nested Render Error": "/parent/error?type=render",
   Tasks: "/tasks",
   "Add Task": "/tasks/new",
 };

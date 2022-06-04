@@ -17,7 +17,6 @@ _Note: If you are using TypeScript you will need to use `patch-package` and copy
 ## Notable API Differences
 
 - For now, you must provide your routes through the `DataBrowserRouter` `routes` prop, we don't support the declarative JSX-style `<Route>` children approach used by `react-router-dom`
-- Vue does not yet support `errorElement`, but that should be added soon
 
 ## Example Usage
 
@@ -62,18 +61,15 @@ Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for referen
 
 ```html
 <script setup>
-  import { Outlet, useLocation } from "remix-router-vue";
-
-  const location = useLocation();
+  import { Outlet } from "remix-router-vue";
 </script>
 
 <template>
+  <!-- Render global-layout stuff here, such as a header and nav bar -->
   <h1>Welcome to my Vue Application!</h1>
-  <div>
-    Location:
-    <pre>{{ location }}</pre>
-  </div>
-  <!-- Render matching child routes here -->
+  <nav><!-- nav links --></nav>
+
+  <!-- Render matching child routes via <Outlet /> -->
   <Outlet />
 </template>
 ```

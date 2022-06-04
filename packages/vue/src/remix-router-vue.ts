@@ -2,7 +2,9 @@ import {
   Component,
   computed,
   defineComponent,
+  onErrorCaptured,
   onUnmounted,
+  ref,
   Ref,
   ShallowRef,
   shallowRef,
@@ -21,6 +23,7 @@ import {
   Fetcher,
   resolveTo,
   FormEncType,
+  isRouteErrorResponse,
 } from "@remix-run/router";
 import { createBrowserRouter, invariant } from "@remix-run/router";
 import {
@@ -46,6 +49,11 @@ export interface RouteContext {
   id: string;
   index: boolean;
 }
+
+// Wrapper context holding the captured render error
+export interface RouteErrorContext {
+  error: unknown;
+}
 //#endregion
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +63,7 @@ export interface RouteContext {
 
 let RouterContextSymbol = Symbol();
 let RouteContextSymbol = Symbol();
+let RouteErrorSymbol = Symbol();
 
 function getRouterContext(): RouterContext {
   let ctx = inject<RouterContext>(RouterContextSymbol);
@@ -97,8 +106,11 @@ export function useNavigation(): Ref<Navigation> {
 }
 
 export function useLoaderData(): Ref<unknown> {
+  return useRouteLoaderData(getRouteContext().id);
+}
+
+export function useRouteLoaderData(routeId: string): Ref<unknown> {
   let ctx = getRouterContext();
-  let routeId = getRouteContext().id;
   return computed(() => ctx.stateRef.value.loaderData[routeId] as unknown);
 }
 
@@ -106,6 +118,19 @@ export function useActionData(): Ref<unknown> {
   let ctx = getRouterContext();
   let routeId = getRouteContext().id;
   return computed(() => ctx.stateRef.value.actionData?.[routeId] as unknown);
+}
+
+export function useRouteError(): Ref<unknown> {
+  let ctx = getRouterContext();
+  let routeId = getRouteContext().id;
+  let errorCtx = inject<RouteErrorContext>(RouteErrorSymbol);
+
+  // If this was a render error, we put it in a RouteError context inside
+  // of RenderErrorBoundary.  Otherwise look for errors from our data router
+  // state
+  return computed(
+    () => (errorCtx?.error || ctx.router.state.errors?.[routeId]) as unknown
+  );
 }
 
 export function useFormAction(action = "."): string {
@@ -228,7 +253,7 @@ export const DataBrowserRouter = defineComponent({
         return h(props.fallbackElement as Component) || h("span");
       }
 
-      return renderRouteWrapper(state.matches[0], state.location?.key);
+      return h(OutletImpl, { root: true });
     };
   },
 });
@@ -254,24 +279,124 @@ const RouteWrapper = defineComponent({
   },
 });
 
-export const Outlet = defineComponent({
-  name: "Outlet",
+const ErrorWrapper = defineComponent({
+  name: "ErrorWrapper",
+  props: {
+    error: {
+      required: true,
+    },
+  },
+  setup(props, { slots }) {
+    provide<RouteErrorContext>(RouteErrorSymbol, {
+      error: props.error,
+    });
+    return () => slots.default?.();
+  },
+});
+
+const DefaultErrorElement = defineComponent({
+  name: "DefaultErrorElement",
   setup() {
+    let error = useRouteError();
+    let message: string;
+    let stack: string | undefined;
+    if (isRouteErrorResponse(error.value)) {
+      message = `${error.value.status} ${error.value.statusText}`;
+    } else if (error.value instanceof Error) {
+      message = error.value.message;
+      stack = error.value.stack;
+    } else {
+      message = JSON.stringify(error.value);
+    }
+    let lightgrey = "rgba(200,200,200, 0.5)";
+    let preStyles = { padding: "0.5rem", backgroundColor: lightgrey };
+    let codeStyles = { padding: "2px 4px", backgroundColor: lightgrey };
+    return () => [
+      h("h2", "Unhandled Thrown Error!"),
+      h("p", { style: { fontStyle: "italic" } }, message),
+      ...(stack ? [h("pre", { style: preStyles }, stack)] : []),
+      h("p", "💿 Hey developer 👋"),
+      h("p", [
+        "You can provide a way better UX than this when your app throws errors by providing your own ",
+        h("code", { style: codeStyles }, "errorElement"),
+        "props on your routes.",
+      ]),
+    ];
+  },
+});
+
+const ErrorBoundary = defineComponent({
+  name: "ErrorBoundary",
+  // TODO: Can we do anything with typing here?  Error can be anything so it
+  // doesn't like `type`
+  props: ["component", "error"],
+  setup(props, { slots }) {
+    let errorRef = ref<unknown>(props.error);
+
+    onErrorCaptured((e) => {
+      errorRef.value = e;
+      return false; // don't bubble
+    });
+
+    return () => {
+      return errorRef.value
+        ? h(ErrorWrapper, { error: errorRef.value }, () =>
+            h(props.component as Component)
+          )
+        : slots.default?.();
+    };
+  },
+});
+
+const OutletImpl = defineComponent({
+  name: "OutletImpl",
+  props: {
+    root: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup(props) {
     let { stateRef, router } = getRouterContext();
-    let { id } = getRouteContext();
+    let routeContext = props.root ? null : getRouteContext();
     return () => {
       let { matches } = router.state;
-      let idx = matches.findIndex((m) => m.route.id === id);
-      if (idx < 0) {
-        throw new Error(`Unable to find <Outlet /> match for route id: ${id}`);
+      let idx = matches.findIndex((m) => m.route.id === routeContext?.id);
+      if (idx < 0 && !props.root) {
+        throw new Error(
+          `Unable to find <Outlet /> match for route id: ${
+            routeContext?.id || "_root_"
+          }`
+        );
       }
-      if (!matches[idx + 1]) {
+      let matchToRender = matches[idx + 1];
+
+      if (!matchToRender) {
         // We found an <Outlet /> but do not have deeper matching paths so we
         // end the render tree here
         return null;
       }
-      return renderRouteWrapper(matches[idx + 1], stateRef.value.location.key);
+
+      // Grab the error if we've reached the correct boundary
+      let error: unknown =
+        router.state.errors?.[matchToRender.route.id] != null
+          ? Object.values(router.state.errors)[0]
+          : null;
+
+      return renderRouteWrapper(
+        matchToRender,
+        stateRef.value.location,
+        props.root,
+        error
+      );
     };
+  },
+});
+
+export const Outlet = defineComponent({
+  name: "Outlet",
+  setup() {
+    return () => h(OutletImpl);
   },
 });
 
@@ -376,16 +501,34 @@ export const Form = defineComponent({
 ////////////////////////////////////////////////////////////////////////////////
 //#region Utils
 
-function renderRouteWrapper(match: DataRouteMatch, locationKey: string): VNode {
+function renderRouteWrapper(
+  match: DataRouteMatch,
+  location: Location,
+  root?: boolean,
+  error?: unknown
+): VNode {
   return h(
     RouteWrapper,
     {
       id: match.route.id,
       index: match.route.index === true,
-      key: `${match.route.id}:${locationKey}`,
+      key: `${match.route.id}:${location.key}`,
     },
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    () => h(match.route.element)
+    () => {
+      if (root || error || match.route.errorElement) {
+        return h(
+          ErrorBoundary,
+          {
+            component: (match.route.errorElement ||
+              DefaultErrorElement) as Component,
+            error,
+          },
+          () => h(match.route.element as Component)
+        );
+      }
+      // Otherwise just render the element, letting render errors bubble upwards
+      return h(match.route.element as Component);
+    }
   );
 }
 

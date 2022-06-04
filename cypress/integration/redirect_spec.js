@@ -4,7 +4,7 @@ function testJson(selector, cb) {
   cy.get(selector).should(($el) => cb(JSON.parse($el.text())));
 }
 
-describe("Remix Router Navigation", () => {
+describe("Redirects", () => {
   beforeEach(() => {
     cy.visit("http://localhost:3000/");
   });
