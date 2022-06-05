@@ -4,6 +4,7 @@ import {
   defineComponent,
   onErrorCaptured,
   onUnmounted,
+  PropType,
   ref,
   Ref,
   ShallowRef,
@@ -327,11 +328,17 @@ const DefaultErrorElement = defineComponent({
 
 const ErrorBoundary = defineComponent({
   name: "ErrorBoundary",
-  // TODO: Can we do anything with typing here?  Error can be anything so it
-  // doesn't like `type`
-  props: ["component", "error"],
+  props: {
+    component: {
+      type: Object as PropType<Component>,
+      required: true,
+    },
+    error: {
+      type: [Object, null] as PropType<Error | null>,
+    },
+  },
   setup(props, { slots }) {
-    let errorRef = ref<unknown>(props.error);
+    let errorRef = ref(props.error);
 
     onErrorCaptured((e) => {
       errorRef.value = e;
@@ -340,9 +347,7 @@ const ErrorBoundary = defineComponent({
 
     return () => {
       return errorRef.value
-        ? h(ErrorWrapper, { error: errorRef.value }, () =>
-            h(props.component as Component)
-          )
+        ? h(ErrorWrapper, { error: errorRef.value }, () => h(props.component))
         : slots.default?.();
     };
   },
@@ -387,7 +392,7 @@ const OutletImpl = defineComponent({
         matchToRender,
         stateRef.value.location,
         props.root,
-        error
+        error as Error | null
       );
     };
   },
@@ -505,7 +510,7 @@ function renderRouteWrapper(
   match: DataRouteMatch,
   location: Location,
   root?: boolean,
-  error?: unknown
+  error?: Error | null
 ): VNode {
   return h(
     RouteWrapper,
