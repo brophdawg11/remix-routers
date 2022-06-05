@@ -284,6 +284,7 @@ const ErrorWrapper = defineComponent({
   name: "ErrorWrapper",
   props: {
     error: {
+      type: Object as PropType<Error>,
       required: true,
     },
   },
@@ -334,7 +335,7 @@ const ErrorBoundary = defineComponent({
       required: true,
     },
     error: {
-      type: [Object, null] as PropType<Error | null>,
+      type: Object as PropType<Error | null>,
     },
   },
   setup(props, { slots }) {
@@ -392,7 +393,7 @@ const OutletImpl = defineComponent({
         matchToRender,
         stateRef.value.location,
         props.root,
-        error as Error | null
+        error as Error
       );
     };
   },
@@ -510,7 +511,7 @@ function renderRouteWrapper(
   match: DataRouteMatch,
   location: Location,
   root?: boolean,
-  error?: Error | null
+  error?: Error
 ): VNode {
   return h(
     RouteWrapper,
