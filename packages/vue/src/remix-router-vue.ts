@@ -232,17 +232,15 @@ export const DataBrowserRouter = defineComponent({
   name: "DataBrowserRouter",
   props: {
     routes: {
-      type: Array,
+      type: Array as PropType<RouteObject[]>,
       required: true,
     },
     fallbackElement: {
-      type: [Object, Function],
-      required: true,
+      type: Object as PropType<Component>,
     },
   },
   setup(props) {
-    let routes = props.routes as RouteObject[];
-    let router = createBrowserRouter({ routes }).initialize();
+    let router = createBrowserRouter({ routes: props.routes }).initialize();
     let stateRef = shallowRef<RouterState>(router.state);
     router.subscribe((state) => (stateRef.value = state));
 
@@ -251,7 +249,7 @@ export const DataBrowserRouter = defineComponent({
     return () => {
       let state = stateRef.value;
       if (!state.initialized) {
-        return h(props.fallbackElement as Component) || h("span");
+        return props.fallbackElement ? h(props.fallbackElement) : h("span");
       }
 
       return h(OutletImpl, { root: true });
@@ -284,7 +282,7 @@ const ErrorWrapper = defineComponent({
   name: "ErrorWrapper",
   props: {
     error: {
-      type: Object as PropType<Error>,
+      type: Object as PropType<unknown>,
       required: true,
     },
   },
@@ -335,7 +333,7 @@ const ErrorBoundary = defineComponent({
       required: true,
     },
     error: {
-      type: Object as PropType<Error | null>,
+      type: Object as PropType<unknown>,
     },
   },
   setup(props, { slots }) {
@@ -383,7 +381,8 @@ const OutletImpl = defineComponent({
         return null;
       }
 
-      // Grab the error if we've reached the correct boundary
+      // Grab the error if we've reached the correct boundary.  Type must remain
+      // unknown since user's can throw anything from a loader/action.
       let error: unknown =
         router.state.errors?.[matchToRender.route.id] != null
           ? Object.values(router.state.errors)[0]
@@ -393,7 +392,7 @@ const OutletImpl = defineComponent({
         matchToRender,
         stateRef.value.location,
         props.root,
-        error as Error
+        error
       );
     };
   },
@@ -511,7 +510,7 @@ function renderRouteWrapper(
   match: DataRouteMatch,
   location: Location,
   root?: boolean,
-  error?: Error
+  error?: unknown
 ): VNode {
   return h(
     RouteWrapper,
