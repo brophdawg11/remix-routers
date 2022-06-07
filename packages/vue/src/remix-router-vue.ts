@@ -4,6 +4,7 @@ import {
   defineComponent,
   onErrorCaptured,
   onUnmounted,
+  PropType,
   ref,
   Ref,
   ShallowRef,
@@ -231,17 +232,15 @@ export const DataBrowserRouter = defineComponent({
   name: "DataBrowserRouter",
   props: {
     routes: {
-      type: Array,
+      type: Array as PropType<RouteObject[]>,
       required: true,
     },
     fallbackElement: {
-      type: [Object, Function],
-      required: true,
+      type: Object as PropType<Component>,
     },
   },
   setup(props) {
-    let routes = props.routes as RouteObject[];
-    let router = createBrowserRouter({ routes }).initialize();
+    let router = createBrowserRouter({ routes: props.routes }).initialize();
     let stateRef = shallowRef<RouterState>(router.state);
     router.subscribe((state) => (stateRef.value = state));
 
@@ -250,7 +249,7 @@ export const DataBrowserRouter = defineComponent({
     return () => {
       let state = stateRef.value;
       if (!state.initialized) {
-        return h(props.fallbackElement as Component) || h("span");
+        return props.fallbackElement ? h(props.fallbackElement) : h("span");
       }
 
       return h(OutletImpl, { root: true });
@@ -283,6 +282,7 @@ const ErrorWrapper = defineComponent({
   name: "ErrorWrapper",
   props: {
     error: {
+      type: Object as PropType<unknown>,
       required: true,
     },
   },
@@ -327,11 +327,17 @@ const DefaultErrorElement = defineComponent({
 
 const ErrorBoundary = defineComponent({
   name: "ErrorBoundary",
-  // TODO: Can we do anything with typing here?  Error can be anything so it
-  // doesn't like `type`
-  props: ["component", "error"],
+  props: {
+    component: {
+      type: Object as PropType<Component>,
+      required: true,
+    },
+    error: {
+      type: Object as PropType<unknown>,
+    },
+  },
   setup(props, { slots }) {
-    let errorRef = ref<unknown>(props.error);
+    let errorRef = ref(props.error);
 
     onErrorCaptured((e) => {
       errorRef.value = e;
@@ -340,9 +346,7 @@ const ErrorBoundary = defineComponent({
 
     return () => {
       return errorRef.value
-        ? h(ErrorWrapper, { error: errorRef.value }, () =>
-            h(props.component as Component)
-          )
+        ? h(ErrorWrapper, { error: errorRef.value }, () => h(props.component))
         : slots.default?.();
     };
   },
@@ -377,7 +381,8 @@ const OutletImpl = defineComponent({
         return null;
       }
 
-      // Grab the error if we've reached the correct boundary
+      // Grab the error if we've reached the correct boundary.  Type must remain
+      // unknown since user's can throw anything from a loader/action.
       let error: unknown =
         router.state.errors?.[matchToRender.route.id] != null
           ? Object.values(router.state.errors)[0]
