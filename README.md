@@ -57,8 +57,8 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | **ROUTERS**                | -            | -   |
 | `BrowserRouter`            | ✅           | ❌  |
 | `DataBrowserRouter`        | ✅           | ✅  |
-| `DataHashRouter`           | ✅           | ⏳  |
-| `DataMemoryRouter`         | ✅           | ⏳  |
+| `DataHashRouter`           | ✅           | ✅  |
+| `DataMemoryRouter`         | ✅           | ✅  |
 | `HashRouter`               | ✅           | ❌  |
 | `HistoryRouter`            | ✅           | ❌  |
 | `MemoryRouter`             | ✅           | ❌  |

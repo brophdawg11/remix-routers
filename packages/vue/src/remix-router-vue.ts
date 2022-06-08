@@ -11,7 +11,7 @@ import {
   shallowRef,
   watch,
 } from "vue";
-import type {
+import {
   FormMethod,
   Location,
   Router,
@@ -21,6 +21,10 @@ import type {
   Navigation,
   Fetcher,
   FormEncType,
+  createHashRouter,
+  InitialEntry,
+  createMemoryRouter,
+  HydrationState,
 } from "@remix-run/router";
 import {
   Action as NavigationType,
@@ -232,6 +236,22 @@ export function useFetchers(): Fetcher[] {
 ////////////////////////////////////////////////////////////////////////////////
 //#region Components
 
+function setupRouter(router: Router, fallbackElement?: Component) {
+  let stateRef = shallowRef<RouterState>(router.state);
+  router.subscribe((state) => (stateRef.value = state));
+
+  provide<RouterContext>(RouterContextSymbol, { router, stateRef });
+
+  return () => {
+    let state = stateRef.value;
+    if (!state.initialized) {
+      return fallbackElement ? h(fallbackElement) : h("span");
+    }
+
+    return h(OutletImpl, { root: true });
+  };
+}
+
 export const DataBrowserRouter = defineComponent({
   name: "DataBrowserRouter",
   props: {
@@ -242,22 +262,66 @@ export const DataBrowserRouter = defineComponent({
     fallbackElement: {
       type: Object as PropType<Component>,
     },
+    hydrationData: {
+      type: Object as PropType<HydrationState>,
+    },
   },
   setup(props) {
-    let router = createBrowserRouter({ routes: props.routes }).initialize();
-    let stateRef = shallowRef<RouterState>(router.state);
-    router.subscribe((state) => (stateRef.value = state));
+    let router = createBrowserRouter({
+      routes: props.routes,
+      hydrationData: props.hydrationData,
+    }).initialize();
+    return setupRouter(router, props.fallbackElement);
+  },
+});
 
-    provide<RouterContext>(RouterContextSymbol, { router, stateRef });
+export const DataHashRouter = defineComponent({
+  name: "DataHashRouter",
+  props: {
+    routes: {
+      type: Array as PropType<RouteObject[]>,
+      required: true,
+    },
+    fallbackElement: {
+      type: Object as PropType<Component>,
+    },
+    hydrationData: {
+      type: Object as PropType<HydrationState>,
+    },
+  },
+  setup(props) {
+    let router = createHashRouter({
+      routes: props.routes,
+      hydrationData: props.hydrationData,
+    }).initialize();
+    return setupRouter(router, props.fallbackElement);
+  },
+});
 
-    return () => {
-      let state = stateRef.value;
-      if (!state.initialized) {
-        return props.fallbackElement ? h(props.fallbackElement) : h("span");
-      }
-
-      return h(OutletImpl, { root: true });
-    };
+export const DataMemoryRouter = defineComponent({
+  name: "DataMemoryRouter",
+  props: {
+    initialEntries: {
+      type: Array as PropType<InitialEntry[]>,
+    },
+    initialIndex: {
+      type: Number,
+    },
+    routes: {
+      type: Array as PropType<RouteObject[]>,
+      required: true,
+    },
+    fallbackElement: {
+      type: Object as PropType<Component>,
+    },
+  },
+  setup(props) {
+    let router = createMemoryRouter({
+      routes: props.routes,
+      initialEntries: props.initialEntries,
+      initialIndex: props.initialIndex,
+    }).initialize();
+    return setupRouter(router, props.fallbackElement);
   },
 });
 
