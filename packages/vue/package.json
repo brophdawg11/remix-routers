@@ -1,6 +1,6 @@
 {
   "name": "remix-router-vue",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "A Vue UI layer for nested + data-driven routing via @remix-run/router",
   "author": "matt@brophy.org",
   "license": "MIT",
