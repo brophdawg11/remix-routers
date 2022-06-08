@@ -1,19 +1,17 @@
+import type { Component, PropType, Ref, ShallowRef, VNode } from "vue";
 import {
-  Component,
   computed,
   defineComponent,
+  h,
+  inject,
   onErrorCaptured,
   onUnmounted,
-  PropType,
+  provide,
   ref,
-  Ref,
-  ShallowRef,
   shallowRef,
-  VNode,
   watch,
 } from "vue";
-import { h, inject, provide } from "vue";
-import {
+import type {
   FormMethod,
   Location,
   Router,
@@ -22,16 +20,17 @@ import {
   RouteObject,
   Navigation,
   Fetcher,
-  resolveTo,
   FormEncType,
-  isRouteErrorResponse,
 } from "@remix-run/router";
-import { createBrowserRouter, invariant } from "@remix-run/router";
 import {
-  getFormSubmissionInfo,
-  shouldProcessLinkClick,
-  SubmitOptions,
-} from "./dom";
+  Action as NavigationType,
+  createBrowserRouter,
+  invariant,
+  isRouteErrorResponse,
+  resolveTo,
+} from "@remix-run/router";
+import type { SubmitOptions } from "./dom";
+import { getFormSubmissionInfo, shouldProcessLinkClick } from "./dom";
 
 ////////////////////////////////////////////////////////////////////////////////
 //#region Types/Globals/Utils
@@ -81,6 +80,11 @@ function getRouteContext(): RouteContext {
 export function useNavigate(): Router["navigate"] {
   let ctx = getRouterContext();
   return ctx.router.navigate;
+}
+
+export function useNavigationType(): Ref<NavigationType> {
+  let ctx = getRouterContext();
+  return computed(() => ctx.stateRef.value.historyAction);
 }
 
 export function useLocation(): Ref<Location> {
