@@ -3,13 +3,12 @@ import {
   Outlet,
   useLocation,
   useMatches,
+  useNavigate,
   useNavigation,
+  useNavigationType,
 } from "react-router-dom";
 
 export default function Root() {
-  let location = JSON.stringify(useLocation());
-  let navigation = JSON.stringify(useNavigation());
-  let matches = JSON.stringify(useMatches());
   let links = {
     Index: "/",
     Parent: "/parent",
@@ -22,6 +21,13 @@ export default function Root() {
     Tasks: "/tasks",
     "Add Task": "/tasks/new",
   };
+  let hooks = {
+    navigationType: JSON.stringify(useNavigationType()),
+    location: JSON.stringify(useLocation()),
+    navigation: JSON.stringify(useNavigation()),
+    matches: JSON.stringify(useMatches()),
+  };
+  let navigate = useNavigate();
 
   return (
     <>
@@ -32,16 +38,16 @@ export default function Root() {
             {text}
           </Link>
         ))}
+        <button id="back" onClick={() => navigate(-1)}>
+          Go Back
+        </button>
       </nav>
-      <div>
-        Location: <pre id="location">{location}</pre>
-      </div>
-      <div>
-        Navigation: <pre id="navigation">{navigation}</pre>
-      </div>
-      <div>
-        Matches: <pre id="matches">{matches}</pre>
-      </div>
+      {Object.entries(hooks).map(([k, v]) => (
+        <p>
+          {k}():
+          <pre id={k}>{v}</pre>
+        </p>
+      ))}
       <Outlet />
     </>
   );

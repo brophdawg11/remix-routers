@@ -80,7 +80,7 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `useMatches`               | ✅           | ✅  |
 | `useNavigate`              | ✅           | ✅  |
 | `useNavigation`            | ✅           | ✅  |
-| `useNavigationType`        | ✅           | ⏳  |
+| `useNavigationType`        | ✅           | ✅  |
 | `useOutlet`                | ✅           |     |
 | `useOutletContext`         | ✅           |     |
 | `useParams`                | ✅           |     |
