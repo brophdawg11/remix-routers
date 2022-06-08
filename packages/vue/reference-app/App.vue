@@ -1,4 +1,4 @@
-<script lang="ts">
+<script setup lang="ts">
 import type { RouteObject } from "@remix-run/router";
 import { DataBrowserRouter } from "remix-router-vue";
 import { h } from "vue";
@@ -17,77 +17,66 @@ import Tasks, {
 import Task, { loader as taskLoader } from "~/routes/tasks/Task.vue";
 import NewTask, { action as newTaskAction } from "~/routes/tasks/NewTask.vue";
 
-export default {
-  name: "App",
-  components: {
-    DataBrowserRouter,
-  },
-  setup() {
-    let routes: RouteObject[] = [
+const routes: RouteObject[] = [
+  {
+    path: "/",
+    element: Root,
+    children: [
       {
-        path: "/",
-        element: Root,
+        index: true,
+        element: Index,
+      },
+      {
+        path: "parent",
+        loader: parentLoader,
+        element: Parent,
+        errorElement: Boundary,
         children: [
           {
-            index: true,
-            element: Index,
-          },
-          {
-            path: "parent",
-            loader: parentLoader,
-            element: Parent,
-            errorElement: Boundary,
-            children: [
-              {
-                path: "child",
-                loader: childLoader,
-                element: Child,
-              },
-              {
-                path: "error",
-                loader: errorLoader,
-                element: Error,
-              },
-            ],
-          },
-          {
-            path: "redirect",
-            loader: redirectLoader,
-            element: Redirect,
+            path: "child",
+            loader: childLoader,
+            element: Child,
           },
           {
             path: "error",
             loader: errorLoader,
             element: Error,
           },
+        ],
+      },
+      {
+        path: "redirect",
+        loader: redirectLoader,
+        element: Redirect,
+      },
+      {
+        path: "error",
+        loader: errorLoader,
+        element: Error,
+      },
+      {
+        path: "tasks",
+        loader: tasksLoader,
+        action: tasksAction,
+        element: Tasks,
+        children: [
           {
-            path: "tasks",
-            loader: tasksLoader,
-            action: tasksAction,
-            element: Tasks,
-            children: [
-              {
-                path: ":id",
-                loader: taskLoader,
-                element: Task,
-              },
-              {
-                path: "new",
-                action: newTaskAction,
-                element: NewTask,
-              },
-            ],
+            path: ":id",
+            loader: taskLoader,
+            element: Task,
+          },
+          {
+            path: "new",
+            action: newTaskAction,
+            element: NewTask,
           },
         ],
       },
-    ];
-
-    return {
-      routes,
-      fallbackElement: () => h("p", "Loading..."),
-    };
+    ],
   },
-};
+];
+
+const fallbackElement = () => h("p", "Loading...");
 </script>
 
 <template>
