@@ -117,6 +117,6 @@ This repository uses [yarn workspaces][workspaces], and each implementation shou
 - A `reference-app/` folder containing the reference application
 - A `vite.config.ts` configuration to build the library (via `vite build`) and also serve the reference app (via `vite dev`)
 
-[rr-beta-docs]: https://beta.reactrouter.com/en/v6.4.0-pre.2
+[rr-beta-docs]: https://beta.reactrouter.com/en/dev
 [workspaces]: https://classic.yarnpkg.com/lang/en/docs/workspaces
 [vue-readme]: ./packages/vue#readme
