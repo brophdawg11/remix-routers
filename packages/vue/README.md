@@ -100,5 +100,5 @@ Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for referen
 </template>
 ```
 
-[rr-beta-docs]: https://beta.reactrouter.com/en/v6.4.0-pre.2
+[rr-beta-docs]: https://beta.reactrouter.com/en/dev
 [reference-app]: ./reference-app/
