@@ -8,18 +8,29 @@
     "emitDeclarationOnly": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "preserve",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "module": "ESNext",
     "moduleResolution": "Node",
     "outDir": "dist",
     "paths": {
-      "~/*": ["./reference-app/*"],
-      "remix-router-vue": ["./src/index.ts"]
+      "~/*": [
+        "./reference-app/*"
+      ],
+      "remix-router-vue": [
+        "./src/index.ts"
+      ]
     },
     "resolveJsonModule": true,
     "rootDir": ".",
     "strict": true,
     "target": "ESNext"
   },
-  "include": ["./**/*.ts", "./**/*.vue"]
+  "include": [
+    "./**/*.ts",
+    "./**/*.vue"
+  ]
 }
