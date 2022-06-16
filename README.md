@@ -1,6 +1,13 @@
 # 💿 Remix Routers
 
-Remix Routers is a collection of libraries that port `react-router-dom` to different UI rendering libraries, all based on the underlying `@remix-run/router` package. This only exists for **Vue** at the moment but I hope to see that expand in the future (with community support 😉).
+Remix Routers is a collection of libraries that port [`react-router-dom`][react-router-dom] to different UI rendering libraries, all based on the underlying [`@remix-run/router`][remix-router] package. This only exists for **Vue** at the moment but I hope to see that expand in the future (with community support 😉).
+
+If you're not familiar with the concepts of the Remix Router, I would highly recommend reading/watching the following to provide some background:
+
+- 📖 [Remixing React Router][remixing-react-router]
+- 📖 [React Router - Data Quick Start][data-quick-start]
+- 📹 [When to Fetch: Remixing React Router][when-to-fetch]
+- 📹 _Hopefully a video link will be available soon for Ryan's RenderATL talk on the mutation aspect of Remix Router_
 
 **⚠️ This repo is very much in an alpha state and production usage is _highly discouraged_**
 
@@ -117,6 +124,11 @@ This repository uses [yarn workspaces][workspaces], and each implementation shou
 - A `reference-app/` folder containing the reference application
 - A `vite.config.ts` configuration to build the library (via `vite build`) and also serve the reference app (via `vite dev`)
 
+[react-router-dom]: https://www.npmjs.com/package/react-router-dom
+[remix-router]: https://www.npmjs.com/package/@remix-run/router
+[remixing-react-router]: https://remix.run/blog/remixing-react-router
+[data-quick-start]: https://beta.reactrouter.com/en/dev/getting-started/data
+[when-to-fetch]: https://www.youtube.com/watch?v=95B8mnhzoCM
 [rr-beta-docs]: https://beta.reactrouter.com/en/dev
 [workspaces]: https://classic.yarnpkg.com/lang/en/docs/workspaces
 [vue-readme]: ./packages/vue#readme
