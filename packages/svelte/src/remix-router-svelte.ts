@@ -1,4 +1,5 @@
 import {
+  Action as NavigationType,
   resolveTo,
   type Fetcher,
   type FormEncType,
@@ -6,6 +7,8 @@ import {
   type Navigation,
   type Router,
   type Location,
+  type DataRouteMatch,
+  type RouteData,
 } from "@remix-run/router";
 import { onDestroy, SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
@@ -59,6 +62,37 @@ export function useNavigation(): Navigation {
     data = state.navigation;
   });
   return data;
+}
+
+export function useNavigate(): Router["navigate"] {
+  let ctx = getRouterContext();
+  return ctx.router.navigate;
+}
+
+export function useNavigationType(): NavigationType {
+  let ctx = getRouterContext();
+  let data: NavigationType;
+  ctx.state.subscribe((val) => {
+    data = val.historyAction;
+  });
+  return data;
+}
+
+export function useMatches() {
+  let ctx = getRouterContext();
+  let matches: DataRouteMatch[];
+  let loaderData: RouteData;
+  ctx.state.subscribe((val) => {
+    matches = val.matches;
+    loaderData = val.loaderData;
+  });
+  return matches.map((match) => ({
+    id: match.route.id,
+    pathname: match.pathname,
+    params: match.params,
+    data: loaderData[match.route.id] as unknown,
+    handle: match.route.handle as unknown,
+  }));
 }
 
 export function useFormAction(action = "."): string {
