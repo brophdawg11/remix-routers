@@ -15,7 +15,7 @@
 
 <script lang="ts">
   const navigation = useNavigation();
-  $: isAdding = navigation.state !== "idle";
+  $: isAdding = $navigation.state !== "idle";
 </script>
 
 <template>

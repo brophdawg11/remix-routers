@@ -17,5 +17,5 @@
 </script>
 
 <template>
-  <h2>Render Error: {data.foo.bar}</h2>
+  <h2>Render Error: {$data.foo.bar}</h2>
 </template>

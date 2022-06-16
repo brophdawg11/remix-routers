@@ -13,11 +13,12 @@
 
 <script lang="ts">
   import { Outlet, useLoaderData } from "remix-router-svelte";
-  let { data } = useLoaderData() as LoaderData;
+  let data = useLoaderData();
 </script>
 
 <h2>Parent Layout</h2>
 <p id="parent">
-  Parent data: {data}
+  <!-- currently broken!! -->
+  Parent data: {$data.data}
 </p>
 <Outlet />

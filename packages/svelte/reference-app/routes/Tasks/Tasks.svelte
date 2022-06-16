@@ -22,13 +22,13 @@
 </script>
 
 <script lang="ts">
-  const { tasks } = useLoaderData();
+  const tasks = useLoaderData();
 </script>
 
 <template>
   <h2>Tasks</h2>
   <ul>
-    {#each tasks as task (task.id)}
+    {#each $tasks.tasks as task (task.id)}
       <li>
         <TaskItem {task} />
       </li>

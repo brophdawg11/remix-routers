@@ -6,7 +6,6 @@
   export const loader: LoaderFunction = async ({ request }) => {
     await sleep();
     let location = new URL(request.url).searchParams.get("location") || "/";
-    console.log("in redirect loader", location);
     return redirect(location);
   };
 </script>

@@ -14,10 +14,10 @@
 </script>
 
 <script lang="ts">
-  const { task } = useLoaderData();
+  const data = useLoaderData();
 </script>
 
 <h3>Task</h3>
 <p>
-  {task.task}
+  {$data.task.task}
 </p>

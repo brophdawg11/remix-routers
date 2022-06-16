@@ -14,19 +14,23 @@
     Parent: "/parent",
     Child: "/parent/child",
     Redirect: "/redirect?location=%2Fparent%2Fchild",
-    "Loader Error": "/error?type=loader",
-    "Render Error": "/error?type=render",
-    "Nested Loader Error": "/parent/error?type=loader",
-    "Nested Render Error": "/parent/error?type=render",
+    // "Loader Error": "/error?type=loader",
+    // "Render Error": "/error?type=render",
+    // "Nested Loader Error": "/parent/error?type=loader",
+    // "Nested Render Error": "/parent/error?type=render",
     Tasks: "/tasks",
     "Add Task": "/tasks/new",
   };
 
-  const hooks = {
-    navigationType: JSON.stringify(useNavigationType()),
-    location: JSON.stringify(useLocation()),
-    navigation: JSON.stringify(useNavigation()),
-    matches: JSON.stringify(useMatches()),
+  let navigation = useNavigation();
+  let matches = useMatches();
+  let navigationType = useNavigationType();
+  let location = useLocation();
+  $: hooks = {
+    navigationType: JSON.stringify($navigationType),
+    location: JSON.stringify($location),
+    navigation: JSON.stringify($navigation),
+    matches: JSON.stringify($matches),
   };
 
   let navigate = useNavigate();

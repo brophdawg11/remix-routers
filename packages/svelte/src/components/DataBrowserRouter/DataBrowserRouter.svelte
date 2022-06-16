@@ -4,7 +4,7 @@
     type HydrationState,
     type RouteObject,
   } from "@remix-run/router";
-  import { RouterContextSymbol } from "remix-router-svelte";
+  import { RouterContextSymbol } from "../../contexts/";
   import { onDestroy, setContext } from "svelte";
   import { writable } from "svelte/store";
   import Outlet from "../Outlet/Outlet.svelte";
