@@ -19,10 +19,7 @@
   }).initialize();
 
   let stateRef = writable(router.state);
-  let unsub = router.subscribe((value) => {
-    console.log("router updating", value);
-    stateRef.set(value);
-  });
+  let unsub = router.subscribe(stateRef.set);
 
   setContext(RouterContextSymbol, { router, state: stateRef });
   onDestroy(() => {
@@ -32,7 +29,7 @@
 
 {#if !$stateRef.initialized}
   {#if typeof fallbackElement === "string"}
-    <svelte:element this={fallbackElement} />
+    {@html fallbackElement}
   {:else if typeof fallbackElement === "function"}
     <svelte:component this={fallbackElement} />
   {:else}

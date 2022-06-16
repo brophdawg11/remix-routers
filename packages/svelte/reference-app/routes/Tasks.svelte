@@ -1,0 +1,38 @@
+<script context="module" lang="ts">
+  import type { ActionFunction, LoaderFunction } from "@remix-run/router";
+  import { Outlet, useLoaderData } from "remix-router-svelte";
+
+  import { deleteTask, getTasks } from "~/tasks";
+  import { sleep } from "~/utils";
+  import TaskItem from "~/components/TaskItem.svelte";
+
+  export const loader: LoaderFunction = async () => {
+    await sleep();
+    return {
+      tasks: getTasks(),
+    };
+  };
+
+  export const action: ActionFunction = async ({ request }) => {
+    await sleep();
+    let formData = await request.formData();
+    deleteTask(formData.get("taskId") as string);
+    return {};
+  };
+</script>
+
+<script lang="ts">
+  const { tasks } = useLoaderData();
+</script>
+
+<template>
+  <h2>Tasks</h2>
+  <ul>
+    {#each tasks as task (task.id)}
+      <li>
+        <TaskItem {task} />
+      </li>
+    {/each}
+  </ul>
+  <Outlet />
+</template>

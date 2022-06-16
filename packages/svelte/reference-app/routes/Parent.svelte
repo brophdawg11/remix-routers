@@ -1,10 +1,23 @@
-<script lang="ts">
-  import { Outlet, useLoaderData } from "remix-router-svelte";
-  let data = useLoaderData();
+<script lang="ts" context="module">
+  import { json, type LoaderFunction } from "@remix-run/router";
+  import { sleep } from "~/utils";
+  interface LoaderData {
+    data: string;
+  }
+
+  export const loader: LoaderFunction = async () => {
+    await sleep();
+    return json<LoaderData>({ data: "parent loader data" });
+  };
 </script>
 
-<h1>Parent route!</h1>
-<pre>
-  loader data: {JSON.stringify(data, null, 2)}
-</pre>
+<script lang="ts">
+  import { Outlet, useLoaderData } from "remix-router-svelte";
+  let { data } = useLoaderData() as LoaderData;
+</script>
+
+<h2>Parent Layout</h2>
+<p id="parent">
+  Parent data: {data}
+</p>
 <Outlet />

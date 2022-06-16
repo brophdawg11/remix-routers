@@ -2,9 +2,16 @@
   import { DataBrowserRouter, json } from "remix-router-svelte";
   import Root from "./routes/Root.svelte";
   import Index from "./routes/Index.svelte";
-  import Parent from "./routes/Parent.svelte";
-  import Child from "./routes/Child.svelte";
-  import Loading from "./components/Loading.svelte";
+  import Parent, { loader as parentLoader } from "./routes/Parent.svelte";
+  import Child, { loader as childLoader } from "./routes/Child.svelte";
+  import Error, { loader as errorLoader } from "./routes/Error.svelte";
+  import Redirect, { loader as redirectLoader } from "./routes/Redirect.svelte";
+  import Tasks, {
+    loader as tasksLoader,
+    action as tasksAction,
+  } from "./routes/Tasks.svelte";
+  import Task, { loader as taskLoader } from "./routes/Task.svelte";
+  import NewTask, { action as newTaskAction } from "./routes/NewTask.svelte";
   import type { RouteObject } from "@remix-run/router";
 
   const routes: RouteObject[] = [
@@ -18,16 +25,47 @@
         },
         {
           path: "parent",
+          loader: parentLoader,
           element: Parent,
-          loader: async () => {
-            return json({
-              hello: "world",
-            });
-          },
+          // errorElement: Boundary,
           children: [
             {
               path: "child",
+              loader: childLoader,
               element: Child,
+            },
+            {
+              path: "error",
+              loader: errorLoader,
+              element: Error,
+            },
+          ],
+        },
+        {
+          path: "redirect",
+          loader: redirectLoader,
+          element: Redirect,
+        },
+        {
+          path: "error",
+          loader: errorLoader,
+          element: Error,
+        },
+        {
+          path: "tasks",
+          loader: tasksLoader,
+          action: tasksAction,
+          element: Tasks,
+          children: [
+            {
+              path: ":id",
+              loader: taskLoader,
+              element: Task,
+            },
+            {
+              path: "new",
+              action: newTaskAction,
+              element: NewTask,
             },
           ],
         },
@@ -36,4 +74,4 @@
   ];
 </script>
 
-<DataBrowserRouter {routes} fallbackElement={Loading} />
+<DataBrowserRouter {routes} fallbackElement="<p>loading...</p>" />

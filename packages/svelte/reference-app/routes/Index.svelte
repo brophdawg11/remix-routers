@@ -1,1 +1,1 @@
-<h1>Index page!</h1>
+<h2>Index Page</h2>

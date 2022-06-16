@@ -19,7 +19,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brophdawg11/remix-routers.git",
-    "directory": "packages/vue"
+    "directory": "packages/svelte"
   },
   "bugs": {
     "url": "https://github.com/brophdawg11/remix-routers/issues"
