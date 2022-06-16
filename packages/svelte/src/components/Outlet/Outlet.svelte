@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { getContext } from "svelte";
-  import { RouteContextSymbol } from "../RouteWrapper/RouteWrapper.svelte";
-  import { routerStore } from "../../stores/router";
+  import { getRouterContext, getRouteContext } from "remix-router-svelte";
   import RouteWrapper from "../RouteWrapper/RouteWrapper.svelte";
 
   export let root: boolean = false;
 
-  let { matches } = $routerStore.router.state;
-  let routeContext = root ? null : getContext(RouteContextSymbol);
+  let { router, state } = getRouterContext();
+  let routeContext = root ? null : getRouteContext();
 
-  let idx = matches.findIndex((m) => m.route.id === routeContext?.id);
+  let idx = router.state.matches.findIndex(
+    (m) => m.route.id === routeContext?.id
+  );
   if (idx < 0 && !root) {
     throw new Error(
       `Unable to find <Outlet /> match for route id: ${
@@ -17,10 +17,10 @@
       }`
     );
   }
-  let match = matches[idx + 1];
+  let match = router.state.matches[idx + 1];
   let error =
-    $routerStore.state.errors?.[match.route.id] != null
-      ? Object.values($routerStore.state.errors)[0]
+    router.state.errors?.[match.route.id] != null
+      ? Object.values($state.errors)[0]
       : null;
 </script>
 
@@ -31,7 +31,7 @@
   <RouteWrapper
     id={match.route.id}
     index={match.route.index === true}
-    key="{match.route.id}:{$routerStore.state.location.key}"
+    key="{match.route.id}:{$state.location.key}"
   >
     <Component />
   </RouteWrapper>

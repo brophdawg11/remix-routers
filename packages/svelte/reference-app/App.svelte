@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { RouteObject } from "@remix-run/router";
-
-  import { DataBrowserRouter } from "../src/index";
+  import { DataBrowserRouter, json } from "remix-router-svelte";
   import Root from "./routes/Root.svelte";
   import Index from "./routes/Index.svelte";
   import Parent from "./routes/Parent.svelte";
   import Child from "./routes/Child.svelte";
+  import Loading from "./components/Loading.svelte";
+  import type { RouteObject } from "@remix-run/router";
 
   const routes: RouteObject[] = [
     {
@@ -19,6 +19,11 @@
         {
           path: "parent",
           element: Parent,
+          loader: async () => {
+            return json({
+              hello: "world",
+            });
+          },
           children: [
             {
               path: "child",
@@ -31,4 +36,4 @@
   ];
 </script>
 
-<DataBrowserRouter {routes} hydrationData={{}} />
+<DataBrowserRouter {routes} fallbackElement={Loading} />

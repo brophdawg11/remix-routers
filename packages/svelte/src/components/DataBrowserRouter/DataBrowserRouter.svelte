@@ -4,41 +4,40 @@
     type HydrationState,
     type RouteObject,
   } from "@remix-run/router";
-  import { routerStore } from "../../stores/router";
+  import { RouterContextSymbol } from "remix-router-svelte";
+  import { onDestroy, setContext } from "svelte";
+  import { writable } from "svelte/store";
   import Outlet from "../Outlet/Outlet.svelte";
 
   export let routes: RouteObject[];
-  export let hydrationData: HydrationState;
+  export let hydrationData: HydrationState = null;
+  export let fallbackElement = null;
 
   let router = createBrowserRouter({
     routes,
     hydrationData,
   }).initialize();
 
-  $routerStore = { router, state: router.state };
+  let stateRef = writable(router.state);
+  let unsub = router.subscribe((value) => {
+    console.log("router updating", value);
+    stateRef.set(value);
+  });
+
+  setContext(RouterContextSymbol, { router, state: stateRef });
+  onDestroy(() => {
+    unsub();
+  });
 </script>
 
-<Outlet root={true} />
-
-<!-- export const DataBrowserRouter = defineComponent({
-  name: "DataBrowserRouter",
-  props: {
-    routes: {
-      type: Array as PropType<RouteObject[]>,
-      required: true,
-    },
-    fallbackElement: {
-      type: Object as PropType<Component>,
-    },
-    hydrationData: {
-      type: Object as PropType<HydrationState>,
-    },
-  },
-  setup(props) {
-    let router = createBrowserRouter({
-      routes: props.routes,
-      hydrationData: props.hydrationData,
-    }).initialize();
-    return setupRouter(router, props.fallbackElement);
-  },
-}); -->
+{#if !$stateRef.initialized}
+  {#if typeof fallbackElement === "string"}
+    <svelte:element this={fallbackElement} />
+  {:else if typeof fallbackElement === "function"}
+    <svelte:component this={fallbackElement} />
+  {:else}
+    <span />
+  {/if}
+{:else}
+  <Outlet root={true} />
+{/if}
