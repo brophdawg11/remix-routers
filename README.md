@@ -6,7 +6,7 @@ If you're not familiar with the concepts of the Remix Router, I would highly rec
 
 - 📖 [Remixing React Router][remixing-react-router]
 - 📖 [React Router - Data Quick Start][data-quick-start]
-- 📹 [When to Fetch: Remixing React Router][when-to-fetch]
+- 📹 [When to Fetch: Remixing React Router][when-to-fetch] (Reactathon 2022)
 - 📹 _Hopefully a video link will be available soon for Ryan's RenderATL talk on the mutation aspect of Remix Router_
 
 **⚠️ This repo is very much in an alpha state and production usage is _highly discouraged_**
