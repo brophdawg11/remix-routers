@@ -35,10 +35,11 @@ export function useLoaderData() {
   return useRouteLoaderData(ctx.id);
 }
 
-// TODO fix reactivity. loaderData is set to undefined before component unmounts causing runtime error
-export function useRouteLoaderData(routeId: string): Readable<unknown> {
+export function useRouteLoaderData(routeId: string) {
   let ctx = getRouterContext();
-  return derived(ctx.state, ({ loaderData }) => loaderData[routeId] as unknown);
+  // return derived(ctx.state, ({ loaderData }) => loaderData[routeId] as unknown);
+  // it may cause bugs to return non-reactive state here, not sure. this works for now.
+  return getStoreSnapshot(ctx.state).loaderData[routeId] as unknown;
 }
 
 export function useLocation(): Readable<Location> {

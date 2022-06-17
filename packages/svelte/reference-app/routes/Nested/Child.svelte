@@ -21,4 +21,4 @@
 <h3>Child Route</h3>
 
 <!-- currently broken! -->
-<p id="child">Child data: {$data.data}</p>
+<p id="child">Child data: {data.data}</p>
