@@ -6,7 +6,7 @@ import {
   useMatches,
   useNavigate,
   useNavigation,
-useNavigationType,
+  useNavigationType,
 } from "remix-router-vue";
 import { computed } from "vue";
 
@@ -38,8 +38,8 @@ const navigate = useNavigate();
     <button id="back" @click="() => navigate(-1)">Go Back</button>
   </nav>
   <p v-for="(v, k) in hooks" :key="k">
-    {{k}}():
-    <pre :id="k">{{ v }}</pre>
+    {{ k }}():
+    <code :id="k">{{ v }}</code>
   </p>
   <Outlet />
 </template>
