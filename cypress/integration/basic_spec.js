@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+const { conditionalDescribe } = require("../utils/utils");
+
 function testJson(selector, cb) {
   cy.get(selector).should(($el) => cb(JSON.parse($el.text())));
 }
@@ -26,130 +28,137 @@ function assertHooks(hooks) {
   });
 }
 
-describe("Basic Navigation", () => {
-  beforeEach(() => {
-    cy.visit("http://localhost:3000/");
-  });
-
-  it("displays the index page and router info", () => {
-    cy.get("h1").should("have.text", "Root Layout");
-    cy.get("h2").should("have.text", "Index Page");
-
-    assertHooks({
-      navigationType: "POP",
-      location: { pathname: "/" },
-      navigation: { state: "idle" },
-      matches: [
-        { id: "0", pathname: "/", params: {} },
-        { id: "0-0", pathname: "/", params: {} },
-      ],
+conditionalDescribe(
+  { react: true, vue: true, svelte: true },
+  "Basic Navigation",
+  () => {
+    beforeEach(() => {
+      cy.visit("http://localhost:3000/");
     });
-  });
 
-  it("navigates to /parent and /parent/child", () => {
-    // Navigate to parent
-    cy.get("a[href='/parent']").click();
+    it("displays the index page and router info", () => {
+      cy.get("h1").should("have.text", "Root Layout");
+      cy.get("h2").should("have.text", "Index Page");
 
-    // Location stays on source page during navigation
-    cy.get("h2").should("have.text", "Index Page");
+      assertHooks({
+        navigationType: "POP",
+        location: { pathname: "/" },
+        navigation: { state: "idle" },
+        matches: [
+          { id: "0", pathname: "/", params: {} },
+          { id: "0-0", pathname: "/", params: {} },
+        ],
+      });
+    });
 
-    assertHooks({
-      navigationType: "POP",
-      navigation: {
-        state: "loading",
+    it("navigates to /parent and /parent/child", () => {
+      // Navigate to parent
+      cy.get("a[href='/parent']").click();
+
+      // Location stays on source page during navigation
+      cy.get("h2").should("have.text", "Index Page");
+
+      assertHooks({
+        navigationType: "POP",
+        navigation: {
+          state: "loading",
+          location: { pathname: "/parent" },
+        },
+        location: { pathname: "/" },
+      });
+
+      // Location updates once navigation completes
+      cy.get("h2").should("have.text", "Parent Layout");
+      cy.get("p#parent").should("have.text", "Parent data: parent loader data");
+
+      assertHooks({
+        navigationType: "PUSH",
+        navigation: {
+          state: "idle",
+          location: undefined,
+        },
         location: { pathname: "/parent" },
-      },
-      location: { pathname: "/" },
-    });
+        matches: [
+          { id: "0", pathname: "/", params: {} },
+          {
+            id: "0-1",
+            pathname: "/parent",
+            params: {},
+            data: { data: "parent loader data" },
+          },
+        ],
+      });
 
-    // Location updates once navigation completes
-    cy.get("h2").should("have.text", "Parent Layout");
-    cy.get("p#parent").should("have.text", "Parent data: parent loader data");
+      // Navigate to /parent/child
+      cy.get("a[href='/parent/child']").click();
 
-    assertHooks({
-      navigationType: "PUSH",
-      navigation: {
-        state: "idle",
-        location: undefined,
-      },
-      location: { pathname: "/parent" },
-      matches: [
-        { id: "0", pathname: "/", params: {} },
-        {
-          id: "0-1",
-          pathname: "/parent",
-          params: {},
-          data: { data: "parent loader data" },
+      // Location stays on source page during navigation
+      cy.get("h2").should("have.text", "Parent Layout");
+
+      assertHooks({
+        navigationType: "PUSH",
+        navigation: {
+          state: "loading",
+          location: { pathname: "/parent/child" },
         },
-      ],
-    });
+        location: { pathname: "/parent" },
+      });
 
-    // Navigate to /parent/child
-    cy.get("a[href='/parent/child']").click();
+      // Location updates once navigation completes
+      cy.get("h2").should("have.text", "Parent Layout");
+      cy.get("h3").should("have.text", "Child Route");
+      cy.get("p#parent").should("have.text", "Parent data: parent loader data");
+      cy.get("p#child").should("have.text", "Child data: child loader data");
 
-    // Location stays on source page during navigation
-    cy.get("h2").should("have.text", "Parent Layout");
-
-    assertHooks({
-      navigationType: "PUSH",
-      navigation: { state: "loading", location: { pathname: "/parent/child" } },
-      location: { pathname: "/parent" },
-    });
-
-    // Location updates once navigation completes
-    cy.get("h2").should("have.text", "Parent Layout");
-    cy.get("h3").should("have.text", "Child Route");
-    cy.get("p#parent").should("have.text", "Parent data: parent loader data");
-    cy.get("p#child").should("have.text", "Child data: child loader data");
-
-    assertHooks({
-      navigationType: "PUSH",
-      navigation: {
-        state: "idle",
-        location: undefined,
-      },
-      location: { pathname: "/parent/child" },
-      matches: [
-        { id: "0", pathname: "/", params: {} },
-        {
-          id: "0-1",
-          pathname: "/parent",
-          params: {},
-          data: { data: "parent loader data" },
+      assertHooks({
+        navigationType: "PUSH",
+        navigation: {
+          state: "idle",
+          location: undefined,
         },
-        {
-          id: "0-1-0",
-          pathname: "/parent/child",
-          params: {},
-          data: { data: "child loader data" },
+        location: { pathname: "/parent/child" },
+        matches: [
+          { id: "0", pathname: "/", params: {} },
+          {
+            id: "0-1",
+            pathname: "/parent",
+            params: {},
+            data: { data: "parent loader data" },
+          },
+          {
+            id: "0-1-0",
+            pathname: "/parent/child",
+            params: {},
+            data: { data: "child loader data" },
+          },
+        ],
+      });
+
+      // Go back to /parent
+      cy.get("button#back").click();
+
+      // Location updates once navigation completes
+      cy.get("h2").should("have.text", "Parent Layout");
+      cy.get("p#parent").should("have.text", "Parent data: parent loader data");
+      cy.get("p#child").should("not.exist");
+
+      assertHooks({
+        navigationType: "POP",
+        navigation: {
+          state: "idle",
+          location: undefined,
         },
-      ],
+        location: { pathname: "/parent" },
+        matches: [
+          { id: "0", pathname: "/", params: {} },
+          {
+            id: "0-1",
+            pathname: "/parent",
+            params: {},
+            data: { data: "parent loader data" },
+          },
+        ],
+      });
     });
-
-    // Go back to /parent
-    cy.get("button#back").click();
-
-    // Location updates once navigation completes
-    cy.get("h2").should("have.text", "Parent Layout");
-    cy.get("p#parent").should("have.text", "Parent data: parent loader data");
-    cy.get("p#child").should("not.exist");
-
-    assertHooks({
-      navigationType: "POP",
-      navigation: {
-        state: "idle",
-        location: undefined,
-      },
-      location: { pathname: "/parent" },
-      matches: [
-        { id: "0", pathname: "/", params: {} },
-        {
-          id: "0-1",
-          pathname: "/parent",
-          params: {},
-          data: { data: "parent loader data" },
-        },
-      ],
-    });
-  });
-});
+  }
+);
