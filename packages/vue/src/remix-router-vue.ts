@@ -488,7 +488,7 @@ const DefaultErrorElement = defineComponent({
     let codeStyles = { padding: "2px 4px", backgroundColor: lightgrey };
     return () => [
       h("h2", "Unhandled Thrown Error!"),
-      h("p", { style: { fontStyle: "italic" } }, message),
+      h("h3", { style: { fontStyle: "italic" } }, message),
       ...(stack ? [h("pre", { style: preStyles }, stack)] : []),
       h("p", "💿 Hey developer 👋"),
       h("p", [
