@@ -2,10 +2,11 @@
 
 Vue UI implementation of the `react-router-dom` API (driven by `@remix-run/router`)
 
-> **Warning**
-> This repo is very much in an alpha state and production usage is highly discouraged
-
 ## Installation
+
+> **Warning**
+>
+> This repo is very much in an alpha state and production usage is highly discouraged
 
 ```bash
 npm install remix-router-vue

@@ -9,14 +9,15 @@ If you're not familiar with the concepts of the Remix Router, I would highly rec
 - 📹 [When to Fetch: Remixing React Router][when-to-fetch] (Reactathon 2022)
 - 📹 _Hopefully a video link will be available soon for Ryan's RenderATL talk on the mutation aspect of Remix Router_
 
-> **Warning**
-> This repo is very much in an alpha state and production usage is highly discouraged
-
 ## Installation
+
+> **Warning**
+>
+> This repo is very much in an alpha state and production usage is highly discouraged
 
 Please refer to the documentation for the UI library of your choice:
 
-- [Vue][vue-readme]
+- [remix-router-vue][vue-readme]
 
 ## Design Goals
 
