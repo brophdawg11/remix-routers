@@ -11,7 +11,7 @@ import {
   shallowRef,
   watch,
 } from "vue";
-import {
+import type {
   FormMethod,
   Location,
   Router,
@@ -21,14 +21,16 @@ import {
   Navigation,
   Fetcher,
   FormEncType,
-  createHashRouter,
   InitialEntry,
-  createMemoryRouter,
   HydrationState,
+  To,
+  Path,
 } from "@remix-run/router";
 import {
   Action as NavigationType,
   createBrowserRouter,
+  createHashRouter,
+  createMemoryRouter,
   invariant,
   isRouteErrorResponse,
   resolveTo,
@@ -51,6 +53,7 @@ export interface RouterContext {
 // Wrapper context holding the route location in the current hierarchy
 export interface RouteContext {
   id: string;
+  matches: DataRouteMatch[];
   index: boolean;
 }
 
@@ -79,11 +82,6 @@ function getRouteContext(): RouteContext {
   let ctx = inject<RouteContext>(RouteContextSymbol);
   invariant(ctx != null, "No RouteContext available");
   return ctx;
-}
-
-export function useNavigate(): Router["navigate"] {
-  let ctx = getRouterContext();
-  return ctx.router.navigate;
 }
 
 export function useNavigationType(): Ref<NavigationType> {
@@ -142,14 +140,107 @@ export function useRouteError(): Ref<unknown> {
   );
 }
 
-export function useFormAction(action = "."): string {
+export function useResolvedPath(to: To): Ref<Path> {
+  let { matches } = getRouteContext();
+  let location = useLocation();
+
+  return computed(() =>
+    resolveTo(
+      to,
+      getPathContributingMatches(matches).map((match) => match.pathnameBase),
+      location.value.pathname
+    )
+  );
+}
+
+export function useHref(to: To): Ref<string> {
   let { router } = getRouterContext();
+  let path = useResolvedPath(to);
+
+  return computed(() =>
+    router.createHref(createURL(router, createPath(path.value)))
+  );
+}
+
+export interface NavigateOptions {
+  replace?: boolean;
+  state?: unknown;
+}
+
+/**
+ * The interface for the navigate() function returned from useNavigate().
+ */
+export interface NavigateFunction {
+  (to: To, options?: NavigateOptions): void;
+  (delta: number): void;
+}
+
+export function useNavigate(): NavigateFunction {
+  let { router } = getRouterContext();
+  let { matches } = getRouteContext();
+  let location = useLocation();
+
+  let navigate: NavigateFunction = (
+    to: To | number,
+    options: NavigateOptions = {}
+  ) => {
+    if (typeof to === "number") {
+      router.navigate(to);
+      return;
+    }
+
+    let path = resolveTo(
+      to,
+      getPathContributingMatches(matches).map((match) => match.pathnameBase),
+      location.value.pathname
+    );
+
+    router.navigate(path, {
+      replace: options.replace,
+      state: options.state,
+    });
+  };
+
+  return navigate;
+}
+
+type SubmitTarget =
+  | HTMLFormElement
+  | HTMLButtonElement
+  | HTMLInputElement
+  | FormData
+  | URLSearchParams
+  | { [name: string]: string }
+  | null;
+
+export interface SubmitFunction {
+  (
+    /**
+     * Specifies the `<form>` to be submitted to the server, a specific
+     * `<button>` or `<input type="submit">` to use to submit the form, or some
+     * arbitrary data to submit.
+     *
+     * Note: When using a `<button>` its `name` and `value` will also be
+     * included in the form data that is submitted.
+     */
+    target: SubmitTarget,
+
+    /**
+     * Options that override the `<form>`'s own attributes. Required when
+     * submitting arbitrary data without a backing `<form>`.
+     */
+    options?: SubmitOptions
+  ): void;
+}
+
+export function useFormAction(action = "."): string {
+  let { matches } = getRouteContext();
   let route = getRouteContext();
   let location = useLocation();
 
   let path = resolveTo(
     action,
-    router.state.matches.map((match) => match.pathnameBase),
+    getPathContributingMatches(matches).map((match) => match.pathnameBase),
     location.value.pathname
   );
 
@@ -161,11 +252,21 @@ export function useFormAction(action = "."): string {
   return path.pathname + search;
 }
 
+export function useSubmit(): SubmitFunction {
+  let { router } = getRouterContext();
+  let defaultAction = useFormAction();
+
+  let submit: SubmitFunction = (target, options = {}) => {
+    submitImpl(router, defaultAction, target, options);
+  };
+
+  return submit;
+}
+
 let fetcherId = 0;
 
 type FetcherWithComponents<TData> = Fetcher<TData> & {
   Form: Component;
-  // TODO: abstract via useSubmitImpl
   submit(
     target:
       | HTMLFormElement
@@ -184,6 +285,7 @@ export function useFetcher<TData = unknown>(): Ref<
   FetcherWithComponents<TData>
 > {
   let { router, stateRef } = getRouterContext();
+  let { id } = getRouteContext();
   let defaultAction = useFormAction();
   let fetcherKey = String(++fetcherId);
   let fetcherRef = shallowRef<Fetcher<TData>>(
@@ -212,17 +314,17 @@ export function useFetcher<TData = unknown>(): Ref<
     setup:
       (props, { slots }) =>
       () =>
-        h(FormImpl, { ...props, fetcherKey }, slots.default),
+        h(FormImpl, { ...props, fetcherKey, routeId: id }, slots.default),
   });
 
   return computed(() => ({
     ...fetcherRef.value,
     Form,
     submit(target, options = {}) {
-      return submitForm(router, defaultAction, target, options, fetcherKey);
+      return submitImpl(router, defaultAction, target, options, fetcherKey, id);
     },
     load(href) {
-      return router.fetch(fetcherKey, href);
+      return router.fetch(fetcherKey, id, href);
     },
   }));
 }
@@ -338,8 +440,13 @@ const RouteWrapper = defineComponent({
     },
   },
   setup(props, { slots }) {
+    let { stateRef } = getRouterContext();
     provide<RouteContext>(RouteContextSymbol, {
       id: props.id,
+      matches: stateRef.value.matches.slice(
+        0,
+        stateRef.value.matches.findIndex((m) => m.route.id === props.id) + 1
+      ),
       index: props.index === true,
     });
     return () => slots.default?.();
@@ -520,6 +627,10 @@ const FormImpl = defineComponent({
       type: String,
       default: null,
     },
+    routeId: {
+      type: String,
+      default: null,
+    },
   },
   setup(props, { attrs, slots }) {
     let { router } = getRouterContext();
@@ -535,7 +646,7 @@ const FormImpl = defineComponent({
               return;
             }
             event.preventDefault();
-            submitForm(
+            submitImpl(
               router,
               defaultAction,
               (event.submitter as HTMLFormSubmitter) || event.currentTarget,
@@ -543,7 +654,8 @@ const FormImpl = defineComponent({
                 method: attrs.method as FormMethod,
                 replace: props.replace,
               },
-              props.fetcherKey
+              props.fetcherKey,
+              props.routeId
             );
           },
         },
@@ -605,19 +717,13 @@ function renderRouteWrapper(
   );
 }
 
-function submitForm(
+function submitImpl(
   router: Router,
   defaultAction: string,
-  target:
-    | HTMLFormElement
-    | HTMLButtonElement
-    | HTMLInputElement
-    | FormData
-    | URLSearchParams
-    | { [name: string]: string }
-    | null,
+  target: SubmitTarget,
   options: SubmitOptions = {},
-  fetcherKey?: string
+  fetcherKey?: string,
+  routeId?: string
 ): void {
   if (typeof document === "undefined") {
     throw new Error("Unable to submit during server render");
@@ -636,9 +742,37 @@ function submitForm(
     formMethod: method as FormMethod,
     formEncType: encType as FormEncType,
   };
-  if (fetcherKey) {
-    router.fetch(fetcherKey, href, opts);
+  if (fetcherKey && routeId) {
+    router.fetch(fetcherKey, routeId, href, opts);
   } else {
     router.navigate(href, opts);
   }
+}
+
+function getPathContributingMatches(matches: DataRouteMatch[]) {
+  // Ignore index + pathless matches
+  return matches.filter(
+    (match, index) =>
+      index === 0 ||
+      (!match.route.index &&
+        match.pathnameBase !== matches[index - 1].pathnameBase)
+  );
+}
+
+function createPath({ pathname = "/", search = "", hash = "" }: Partial<Path>) {
+  if (search && search !== "?")
+    pathname += search.charAt(0) === "?" ? search : "?" + search;
+  if (hash && hash !== "#")
+    pathname += hash.charAt(0) === "#" ? hash : "#" + hash;
+  return pathname;
+}
+
+function createURL(router: Router, location: Location | string): URL {
+  let base =
+    typeof window !== "undefined" && typeof window.location !== "undefined"
+      ? window.location.origin
+      : "unknown://unknown";
+  let href =
+    typeof location === "string" ? location : router.createHref(location);
+  return new URL(href, base);
 }

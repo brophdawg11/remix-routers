@@ -43,9 +43,9 @@ export default function Root() {
         </button>
       </nav>
       {Object.entries(hooks).map(([k, v]) => (
-        <p>
+        <p key={k}>
           {k}():
-          <pre id={k}>{v}</pre>
+          <code id={k}>{v}</code>
         </p>
       ))}
       <Outlet />

@@ -79,7 +79,7 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `useFetcher`               | ✅           | ✅  |
 | `useFetchers`              | ✅           | ✅  |
 | `useFormAction`            | ✅           | ✅  |
-| `useHref`                  | ✅           |     |
+| `useHref`                  | ✅           | ✅  |
 | `useInRouterContext`       | ✅           |     |
 | `useLinkClickHandler`      | ✅           |     |
 | `useLinkPressHandler`      | ✅           |     |
@@ -93,13 +93,13 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `useOutlet`                | ✅           |     |
 | `useOutletContext`         | ✅           |     |
 | `useParams`                | ✅           |     |
-| `useResolvedPath`          | ✅           |     |
+| `useResolvedPath`          | ✅           | ✅  |
 | `useRevalidator`           | ✅           | ⏳  |
 | `useRouteError`            | ✅           | ✅  |
 | `useRouteLoaderData`       | ✅           | ✅  |
 | `useRoutes`                | ✅           | ❌  |
 | `useSearchParams`          | ✅           |     |
-| `useSubmit`                | ✅           | ⏳  |
+| `useSubmit`                | ✅           | ✅  |
 | **FETCH UTILITIES**        | -            | -   |
 | `isRouteErrorResponse`     | ✅           | ✅  |
 | `json`                     | ✅           | ✅  |
