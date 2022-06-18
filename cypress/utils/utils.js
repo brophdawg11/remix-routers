@@ -2,7 +2,7 @@ function conditionalDescribe(opts, description, cb) {
   let library = Cypress.env("UI_LIBRARY");
   if (!library) {
     throw new Error(
-      "Cypress tests must be run with the CYPRESS_UI_LIBRARY environment variable set"
+      "Cypress tests must be run with the env.UI_LIBRARY configuration value set"
     );
   }
   if (opts[library] === false) {
