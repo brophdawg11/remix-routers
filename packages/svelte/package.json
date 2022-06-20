@@ -1,16 +1,17 @@
 {
-  "name": "remix-router-vue",
+  "name": "remix-router-svelte",
   "version": "0.3.0",
-  "description": "A Vue UI layer for nested + data-driven routing via @remix-run/router",
-  "author": "matt@brophy.org",
+  "description": "A Svelte UI layer for nested + data-driven routing via @remix-run/router",
+  "author": "aust.crim@gmail.com",
   "license": "MIT",
-  "main": "dist/remix-router-vue.umd.js",
-  "module": "dist/remix-router-vue.es.js",
+  "main": "dist/remix-router-svelte.umd.js",
+  "module": "dist/remix-router-svelte.es.js",
   "types": "dist/src/index.d.ts",
+  "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/remix-router-vue.es.js",
-      "require": "./dist/remix-router-vue.umd.js"
+      "import": "./dist/remix-router-svelte.es.js",
+      "require": "./dist/remix-router-svelte.umd.js"
     }
   },
   "sideEffects": false,
@@ -18,7 +19,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brophdawg11/remix-routers.git",
-    "directory": "packages/vue"
+    "directory": "packages/svelte"
   },
   "bugs": {
     "url": "https://github.com/brophdawg11/remix-routers/issues"
@@ -27,7 +28,7 @@
     "remix",
     "remix-run",
     "router",
-    "vue"
+    "svelte"
   ],
   "files": [
     "dist/**"
@@ -44,12 +45,11 @@
   },
   "dependencies": {
     "@remix-run/router": "0.1.0",
-    "vue": "3.2.36"
-  },
-  "peerDependencies": {
-    "vue": ">=3.2.0"
+    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.49",
+    "svelte": "^3.48.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "2.3.3"
+    "@tsconfig/svelte": "^3.0.0",
+    "svelte-preprocess": "^4.10.7"
   }
 }

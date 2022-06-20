@@ -1,0 +1,11 @@
+pre {
+  display: inline;
+}
+
+nav {
+  display: flex;
+}
+
+nav > * {
+  margin-right: 1rem;
+}

@@ -24,6 +24,12 @@
         "@typescript-eslint/unbound-method": "off",
         "prefer-const": "off"
       }
+    },
+    {
+      "files": ["cypress/**/*.js"],
+      "env": {
+        "node": true
+      }
     }
   ]
 }
