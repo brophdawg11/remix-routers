@@ -1,20 +1,20 @@
-# remix-router-vue
+# remix-router-svelte
 
-Vue UI implementation of the `react-router-dom` API (driven by `@remix-run/router`)
+Svelte UI implementation of the `react-router-dom` API (driven by `@remix-run/router`)
 
 **⚠️ This repo is very much in an alpha state and production usage is _highly discouraged_**
 
 ## Installation
 
 ```bash
-npm install remix-router-vue
+npm install remix-router-svelte
 
 # or
 
-yarn add remix-router-vue
+yarn add remix-router-svelte
 ```
 
-_Note: If you are using TypeScript you will need to use `patch-package` and copy the `@remix-run+router+0.1.0.patch` patch from this repo to internally change the `RouteObject.element` type from `React.ReactNode` to `any` for use with Vue components._
+_Note: If you are using TypeScript you will need to use `patch-package` and copy the `@remix-run+router+0.1.0.patch` patch from this repo to internally change the `RouteObject.element` type from `React.ReactNode` to `any` for use with Svelte components._
 
 ## Notable API Differences
 
@@ -22,17 +22,15 @@ _Note: If you are using TypeScript you will need to use `patch-package` and copy
 
 ## Example Usage
 
-Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for reference on the APIs in question, but the following is a simple example of how to leverage `remix-router-vue` in a Vue application. You may also refer to the [reference application][reference-app] for a more extensive usage example.
+Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for reference on the APIs in question, but the following is a simple example of how to leverage `remix-router-svelte` in a Svelte application. You may also refer to the [reference application][reference-app] for a more extensive usage example.
 
-**App.vue**
+**App.svelte**
 
 ```html
-<script setup>
-  import { DataBrowserRouter } from "remix-router-vue";
-  import { h } from "vue";
-
-  import Layout from "./Layout.vue";
-  import Index, { loader as indexLoader } from "./Index.vue";
+<script>
+  import { DataBrowserRouter } from "remix-router-svelte";
+  import Layout from "./Layout.svelte";
+  import Index, { loader as indexLoader } from "./Index.svelte";
 
   // Define your routes in a nested array, providing loaders and actions where
   // appropriate
@@ -51,36 +49,32 @@ Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for referen
   ];
 
   // Provide a fallbackElement to be displayed during the initial data load
-  const fallbackElement = () => h("p", "Loading..."),
+  const fallbackElement = "<p>loading...</p>";
 </script>
 
-<template>
-  <DataBrowserRouter :routes="routes" :fallbackElement="fallbackElement" />
-</template>
+<DataBrowserRouter {routes} {fallbackElement} />
 ```
 
-**Layout.vue**
-
-```html
-<script setup>
-  import { Outlet } from "remix-router-vue";
-</script>
-
-<template>
-  <!-- Render global-layout stuff here, such as a header and nav bar -->
-  <h1>Welcome to my Vue Application!</h1>
-  <nav><!-- nav links --></nav>
-
-  <!-- Render matching child routes via <Outlet /> -->
-  <Outlet />
-</template>
-```
-
-**Index.vue**
+**Layout.svelte**
 
 ```html
 <script>
-  import { useLoaderData } from 'remix-router-vue';
+  import { Outlet } from "remix-router-svelte";
+</script>
+
+<!-- Render global-layout stuff here, such as a header and nav bar -->
+<h1>Welcome to my Svelte Application!</h1>
+<nav><!-- nav links --></nav>
+
+<!-- Render matching child routes via <Outlet /> -->
+<Outlet />
+```
+
+**Index.svelte**
+
+```html
+<script context="module">
+  import { useLoaderData } from 'remix-router-svelte';
 
   export async function loader() {
     // Load your data here and return whatever you need access to in the UI
@@ -88,15 +82,15 @@ Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for referen
   };
 </script>
 
-<script setup>
-  // Use the useLoaderData composition API method to access the data returned
+<script>
+  // Use the useLoaderData method to access a store of the data returned
   // from your loader
   const data = useLoaderData();
 </script>
 
 <template>
   <p>Check out my data!</p>
-  <pre>{{ data }}</pre>
+  <pre>{$data}</pre>
 </template>
 ```
 

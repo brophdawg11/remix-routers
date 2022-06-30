@@ -18,6 +18,6 @@
 
 <h2>Parent Layout</h2>
 <p id="parent">
-  Parent data: {data.data}
+  Parent data: {$data.data}
 </p>
 <Outlet />

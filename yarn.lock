@@ -386,6 +386,11 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-0.1.0.tgz#9dee1610f5ba730e4c67e5de517912f71c627031"
   integrity sha512-mK2wZWAFsijTGIk7ZhKvEAzU7qIS6F6RhPy5AiEosaEs3mB3J2NvUWRoN3W74V+5Jju/AisT5NaM2pIbnfGXWg==
 
+"@remix-run/router@0.2.0-pre.2":
+  version "0.2.0-pre.2"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-0.2.0-pre.2.tgz#66ac8e95fcbf8a2cc48cd25823f3df29040ca83c"
+  integrity sha512-DRgTrJZ7R1nGI0EUNsEYYcXU+AASz6CE7rnksTYnIdVEBztygwbOlKRNnPyufQIcQs2kV/0cKf1FpfZfPMhMjQ==
+
 "@rollup/pluginutils@^4.2.1":
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-4.2.1.tgz#e6c6c3aba0744edce3fb2074922d3776c0af2a6d"

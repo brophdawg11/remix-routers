@@ -16,7 +16,6 @@
   style="display: inline"
   action="/tasks"
   method="post"
-  fetcherKey={$fetcher.key}
 >
   <button type="submit" name="taskId" value={task.id} disabled={isDeleting}>
     {isDeleting ? "Deleting..." : "❌"}

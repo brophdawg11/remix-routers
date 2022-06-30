@@ -8,14 +8,13 @@ import {
   type Router,
   type Location,
 } from "@remix-run/router";
-import { onDestroy, SvelteComponent } from "svelte";
-import { derived, writable, type Readable, type Writable } from "svelte/store";
+import { onDestroy } from "svelte";
+import { derived, get, writable, type Readable } from "svelte/store";
 import { getRouteContext, getRouterContext } from "./contexts";
 import { getFormSubmissionInfo, type SubmitOptions } from "./dom";
 
 type FetcherWithComponents<TData> = Fetcher<TData> & {
-  Form: SvelteComponent;
-  key: string;
+  Form: any;
   // TODO: abstract via useSubmitImpl
   submit(target: SubmitTarget, options?: SubmitOptions): void;
   load: (href: string) => void;
@@ -37,9 +36,13 @@ export function useLoaderData() {
 
 export function useRouteLoaderData(routeId: string) {
   let ctx = getRouterContext();
-  // return derived(ctx.state, ({ loaderData }) => loaderData[routeId] as unknown);
-  // it may cause bugs to return non-reactive state here, not sure. this works for now.
-  return getStoreSnapshot(ctx.state).loaderData[routeId] as unknown;
+  return derived(ctx.state, ({ loaderData }, set) => {
+    // this guard protects against returning undefined due to differences in the Svelte and Vue reactivity models.
+    // I wantf to understand this more
+    if (loaderData[routeId]) {
+      set(loaderData[routeId]);
+    }
+  });
 }
 
 export function useLocation(): Readable<Location> {
@@ -80,7 +83,7 @@ export function useFormAction(action = "."): string {
   let { router } = getRouterContext();
   let route = getRouteContext();
   let location = useLocation();
-  let { pathname } = getStoreSnapshot(location);
+  let { pathname } = get(location);
 
   let path = resolveTo(
     action,
@@ -101,6 +104,7 @@ export function useFetcher<TData = unknown>(): Readable<
   FetcherWithComponents<TData>
 > {
   let { router, state } = getRouterContext();
+  let routeId = getRouteContext().id;
   let defaultAction = useFormAction();
   let fetcherKey = String(++fetcherId);
   let fetcherStore = writable<Fetcher<TData>>(
@@ -110,6 +114,13 @@ export function useFetcher<TData = unknown>(): Readable<
     fetcherStore.set(router.getFetcher<TData>(fetcherKey));
   });
 
+  class FetcherForm extends Form {
+    constructor(config: { props: Record<string, unknown> }) {
+      config.props = { ...config.props, fetcherKey };
+      super(config);
+    }
+  }
+
   onDestroy(() => {
     router.deleteFetcher(fetcherKey);
     unsub();
@@ -118,14 +129,19 @@ export function useFetcher<TData = unknown>(): Readable<
   return derived(fetcherStore, (fetcher) => {
     return {
       ...fetcher,
-      // how to get fetcherKey passed in?
-      Form,
-      key: fetcherKey,
+      Form: FetcherForm,
       submit(target: SubmitTarget, options = {}) {
-        return submitForm(router, defaultAction, target, options, fetcherKey);
+        return submitForm(
+          router,
+          defaultAction,
+          target,
+          options,
+          routeId,
+          fetcherKey
+        );
       },
       load(href: string) {
-        return router.fetch(fetcherKey, href);
+        return router.fetch(fetcherKey, routeId, href);
       },
     };
   });
@@ -147,6 +163,7 @@ export function submitForm(
   defaultAction: string,
   target: SubmitTarget,
   options: SubmitOptions = {},
+  routeId: string,
   fetcherKey?: string
 ): void {
   if (typeof document === "undefined") {
@@ -167,15 +184,8 @@ export function submitForm(
     formEncType: encType as FormEncType,
   };
   if (fetcherKey) {
-    router.fetch(fetcherKey, href, opts);
+    router.fetch(fetcherKey, routeId, href, opts);
   } else {
     router.navigate(href, opts);
   }
-}
-
-function getStoreSnapshot<T>(store: Readable<T> | Writable<T>): T {
-  let snap;
-  let unsub = store.subscribe((val) => (snap = val));
-  unsub();
-  return snap;
 }
