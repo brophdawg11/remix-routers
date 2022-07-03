@@ -34,6 +34,7 @@ export default defineConfig(({ command, mode }) => {
     },
     server: {
       hmr: mode === "development",
+      open: command === "serve" || mode === "development",
     },
     clearScreen: command === "serve" && mode === "development",
   };

@@ -36,9 +36,9 @@
     "build": "vite build && tsc -b",
     "clean": "git clean -fX .",
     "dev": "vite dev",
-    "integration:open": "cypress open --config-file ./../../cypress.json",
+    "integration:open": "cypress open --config-file ../../cypress.json",
     "integration:start": "vite dev --mode=production --port 3000",
-    "integration:test": "cypress run --config-file ./../../cypress.json",
+    "integration:test": "cypress run --config-file ../../cypress.json",
     "integration": "start-server-and-test integration:start http-get://localhost:3000/ integration:test",
     "prepublishOnly": "rm -rf dist && npm run build"
   },
