@@ -19,7 +19,6 @@ export default function Root() {
     "Nested Loader Error": "/parent/error?type=loader",
     "Nested Render Error": "/parent/error?type=render",
     Tasks: "/tasks",
-    "Add Task": "/tasks/new",
   };
   let hooks = {
     navigationType: JSON.stringify(useNavigationType()),

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { ActionFunction, LoaderFunction } from "@remix-run/router";
-import { Outlet, useLoaderData } from "remix-router-vue";
+import { Link, Outlet, useLoaderData } from "remix-router-vue";
 
 import { deleteTask, getTasks } from "~/tasks";
 import { sleep } from "~/utils";
@@ -32,5 +32,6 @@ const data = useLoaderData();
       <TaskItem :task="task" />
     </li>
   </ul>
+  <Link to="/tasks/new">Add New Task</Link>
   <Outlet />
 </template>
