@@ -31,8 +31,8 @@
         method: $$restProps.method as FormMethod,
         replace,
       },
-      routeId,
-      fetcherKey
+      fetcherKey,
+      routeId
     );
   }
 </script>

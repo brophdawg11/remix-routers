@@ -5,7 +5,7 @@
     type RouteObject,
   } from "@remix-run/router";
   import { RouterContextSymbol } from "../../contexts/";
-  import { setContext } from "svelte";
+  import { onDestroy, setContext } from "svelte";
   import { writable } from "svelte/store";
   import Outlet from "../Outlet/Outlet.svelte";
 
@@ -22,6 +22,9 @@
   router.subscribe(stateRef.set);
 
   setContext(RouterContextSymbol, { router, state: stateRef });
+  onDestroy(() => {
+    router.dispose();
+  });
 </script>
 
 {#if !$stateRef.initialized}

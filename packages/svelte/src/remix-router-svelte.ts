@@ -136,8 +136,8 @@ export function useFetcher<TData = unknown>(): Readable<
           defaultAction,
           target,
           options,
-          routeId,
-          fetcherKey
+          fetcherKey,
+          routeId
         );
       },
       load(href: string) {
@@ -163,8 +163,8 @@ export function submitForm(
   defaultAction: string,
   target: SubmitTarget,
   options: SubmitOptions = {},
-  routeId: string,
-  fetcherKey?: string
+  fetcherKey?: string,
+  routeId?: string
 ): void {
   if (typeof document === "undefined") {
     throw new Error("Unable to submit during server render");
