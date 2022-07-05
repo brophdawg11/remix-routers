@@ -5,6 +5,7 @@
     useFormAction,
     submitForm,
     getRouterContext,
+    getRouteContext,
   } from "remix-router-svelte";
 
   export let replace: boolean = false;
@@ -13,6 +14,7 @@
   type HTMLFormSubmitter = HTMLButtonElement | HTMLInputElement;
 
   let { router } = getRouterContext();
+  let routeId = getRouteContext().id;
   let defaultAction = useFormAction($$restProps.action as string);
 
   function submit(event: SubmitEvent) {
@@ -29,7 +31,8 @@
         method: $$restProps.method as FormMethod,
         replace,
       },
-      fetcherKey
+      fetcherKey,
+      routeId
     );
   }
 </script>

@@ -19,11 +19,11 @@
   }).initialize();
 
   let stateRef = writable(router.state);
-  let unsub = router.subscribe(stateRef.set);
+  router.subscribe(stateRef.set);
 
   setContext(RouterContextSymbol, { router, state: stateRef });
   onDestroy(() => {
-    unsub();
+    router.dispose();
   });
 </script>
 

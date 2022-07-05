@@ -20,6 +20,7 @@ export default defineConfig(({ command, mode }) => {
         output: {
           globals: {
             "@remix-run/router": "Router",
+            svelte: "Svelte",
           },
         },
       },
