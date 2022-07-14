@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
   import type { ActionFunction, LoaderFunction } from "@remix-run/router";
-  import { Outlet, useLoaderData } from "remix-router-svelte";
+  import { Link, Outlet, useLoaderData } from "remix-router-svelte";
 
   import { deleteTask, getTasks } from "~/tasks";
   import { sleep } from "~/utils";
@@ -34,5 +34,6 @@
       </li>
     {/each}
   </ul>
+  <Link to="/tasks/new">Add New Task</Link>
   <Outlet />
 </template>

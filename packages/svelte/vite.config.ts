@@ -36,5 +36,6 @@ export default defineConfig(({ command, mode }) => {
       hmr: mode === "development",
     },
     clearScreen: command === "serve" && mode === "development",
+    open: command === "serve" && mode === "development",
   };
 });
