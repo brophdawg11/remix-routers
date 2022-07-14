@@ -147,10 +147,10 @@ export function useFetcher<TData = unknown>(): Readable<
   });
 }
 
-export { DataBrowserRouter } from "./components/DataBrowserRouter";
-export { Outlet } from "./components/Outlet";
-export { Link } from "./components/Link";
-import { Form } from "./components/Form";
+export { default as DataBrowserRouter } from "./components/DataBrowserRouter.svelte";
+export { default as Outlet } from "./components/Outlet.svelte";
+export { default as Link } from "./components/Link.svelte";
+import { default as Form } from "./components/Form.svelte";
 export { Form };
 export { shouldProcessLinkClick } from "./dom";
 export { getRouteContext, getRouterContext } from "./contexts";

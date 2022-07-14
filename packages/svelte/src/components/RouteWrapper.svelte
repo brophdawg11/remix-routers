@@ -1,6 +1,6 @@
 <script lang="ts">
   import { setContext } from "svelte";
-  import { RouteContextSymbol } from "../../contexts";
+  import { RouteContextSymbol } from "../contexts";
   export let id: string;
   export let index: boolean;
   export let key: string;

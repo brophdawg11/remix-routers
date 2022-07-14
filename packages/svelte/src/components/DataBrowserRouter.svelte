@@ -4,10 +4,10 @@
     type HydrationState,
     type RouteObject,
   } from "@remix-run/router";
-  import { RouterContextSymbol } from "../../contexts/";
+  import { RouterContextSymbol } from "../contexts";
   import { onDestroy, setContext } from "svelte";
   import { writable } from "svelte/store";
-  import Outlet from "../Outlet/Outlet.svelte";
+  import Outlet from "./Outlet.svelte";
 
   export let routes: RouteObject[];
   export let hydrationData: HydrationState = null;

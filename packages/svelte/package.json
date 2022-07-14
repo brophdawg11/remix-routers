@@ -4,16 +4,10 @@
   "description": "A Svelte UI layer for nested + data-driven routing via @remix-run/router",
   "author": "aust.crim@gmail.com",
   "license": "MIT",
-  "main": "dist/remix-router-svelte.umd.js",
-  "module": "dist/remix-router-svelte.es.js",
-  "types": "dist/src/index.d.ts",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
   "type": "module",
-  "exports": {
-    ".": {
-      "import": "./dist/remix-router-svelte.es.js",
-      "require": "./dist/remix-router-svelte.umd.js"
-    }
-  },
   "sideEffects": false,
   "homepage": "https://github.com/brophdawg11/remix-routers#readme",
   "repository": {
@@ -34,7 +28,7 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "vite build && tsc -b",
+    "build": "svelte-kit package",
     "clean": "git clean -fX .",
     "dev": "vite dev",
     "integration:open": "cypress open --config-file ./../../cypress.config.ts",
@@ -45,11 +39,13 @@
   },
   "dependencies": {
     "@remix-run/router": "0.2.0-pre.2",
-    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.49",
     "svelte": "^3.48.0"
   },
   "devDependencies": {
+    "@sveltejs/kit": "^1.0.0-next.372",
+    "@sveltejs/vite-plugin-svelte": "^1.0.1",
     "@tsconfig/svelte": "^3.0.0",
-    "svelte-preprocess": "^4.10.7"
+    "svelte-preprocess": "^4.10.7",
+    "svelte2tsx": "^0.5.11"
   }
 }

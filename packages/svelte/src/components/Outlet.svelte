@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getRouterContext, getRouteContext } from "remix-router-svelte";
-  import RouteWrapper from "../RouteWrapper/RouteWrapper.svelte";
+  import RouteWrapper from "./RouteWrapper.svelte";
 
   export let root: boolean = false;
 
