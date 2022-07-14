@@ -1,6 +1,6 @@
 {
   "name": "remix-router-vue",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A Vue UI layer for nested + data-driven routing via @remix-run/router",
   "author": "matt@brophy.org",
   "license": "MIT",
@@ -36,14 +36,14 @@
     "build": "vite build && tsc -b",
     "clean": "git clean -fX .",
     "dev": "vite dev",
-    "integration:open": "cypress open --config-file ./../../cypress.config.ts",
+    "integration:open": "cypress open --config-file ../../cypress.json",
     "integration:start": "vite dev --mode=production --port 3000",
-    "integration:test": "cypress run --config-file ./../../cypress.config.ts",
+    "integration:test": "cypress run --config-file ../../cypress.json",
     "integration": "start-server-and-test integration:start http-get://localhost:3000/ integration:test",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "rm -rf dist && npm run build"
   },
   "dependencies": {
-    "@remix-run/router": "0.1.0",
+    "@remix-run/router": "0.2.0-pre.2",
     "vue": "3.2.36"
   },
   "peerDependencies": {

@@ -1,9 +1,5 @@
-import {
-  ActionFunction,
-  LoaderFunction,
-  Outlet,
-  useLoaderData,
-} from "react-router-dom";
+import type { ActionFunction, LoaderFunction } from "react-router-dom";
+import { Link, Outlet, useLoaderData } from "react-router-dom";
 
 import { deleteTask, getTasks, Task } from "~/tasks";
 import { sleep } from "~/utils";
@@ -36,6 +32,7 @@ export default function Tasks() {
           </li>
         ))}
       </ul>
+      <Link to="/tasks/new">Add New Task</Link>
       <Outlet />
     </>
   );

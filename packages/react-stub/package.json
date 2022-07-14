@@ -9,16 +9,16 @@
     "build": "vite build && tsc -b",
     "clean": "git clean -fX .",
     "dev": "vite dev",
-    "integration:open": "cypress open --config-file ./../../cypress.config.ts",
+    "integration:open": "cypress open --config-file ../../cypress.json",
     "integration:start": "vite build && vite preview --port 3000",
-    "integration:test": "cypress run --config-file ./../../cypress.config.ts",
+    "integration:test": "cypress run --config-file ../../cypress.json",
     "integration": "start-server-and-test integration:start http-get://localhost:3000/ integration:test",
     "prepublishOnly": "echo \"Refusing to publish react-router-dom-stub\" && exit 1"
   },
   "dependencies": {
     "react": "18.1.0",
     "react-dom": "18.1.0",
-    "react-router-dom": "6.4.0-pre.2"
+    "react-router-dom": "6.4.0-pre.7"
   },
   "devDependencies": {
     "@types/babel__core": "^7.1.19",

@@ -9,13 +9,15 @@ If you're not familiar with the concepts of the Remix Router, I would highly rec
 - 📹 [When to Fetch: Remixing React Router][when-to-fetch] (Reactathon 2022)
 - 📹 _Hopefully a video link will be available soon for Ryan's RenderATL talk on the mutation aspect of Remix Router_
 
-**⚠️ This repo is very much in an alpha state and production usage is _highly discouraged_**
-
 ## Installation
+
+> **Warning**
+>
+> This repo is very much in an alpha state and production usage is highly discouraged
 
 Please refer to the documentation for the UI library of your choice:
 
-- [Vue][vue-readme]
+- [remix-router-vue][vue-readme]
 
 ## Design Goals
 
@@ -77,7 +79,7 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `useFetcher`               | ✅           | ✅  |
 | `useFetchers`              | ✅           | ✅  |
 | `useFormAction`            | ✅           | ✅  |
-| `useHref`                  | ✅           |     |
+| `useHref`                  | ✅           | ✅  |
 | `useInRouterContext`       | ✅           |     |
 | `useLinkClickHandler`      | ✅           |     |
 | `useLinkPressHandler`      | ✅           |     |
@@ -91,13 +93,13 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `useOutlet`                | ✅           |     |
 | `useOutletContext`         | ✅           |     |
 | `useParams`                | ✅           |     |
-| `useResolvedPath`          | ✅           |     |
+| `useResolvedPath`          | ✅           | ✅  |
 | `useRevalidator`           | ✅           | ⏳  |
 | `useRouteError`            | ✅           | ✅  |
 | `useRouteLoaderData`       | ✅           | ✅  |
 | `useRoutes`                | ✅           | ❌  |
 | `useSearchParams`          | ✅           |     |
-| `useSubmit`                | ✅           | ⏳  |
+| `useSubmit`                | ✅           | ✅  |
 | **FETCH UTILITIES**        | -            | -   |
 | `isRouteErrorResponse`     | ✅           | ✅  |
 | `json`                     | ✅           | ✅  |

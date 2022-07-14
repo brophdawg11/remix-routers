@@ -19,7 +19,6 @@ export default function Root() {
     "Nested Loader Error": "/parent/error?type=loader",
     "Nested Render Error": "/parent/error?type=render",
     Tasks: "/tasks",
-    "Add Task": "/tasks/new",
   };
   let hooks = {
     navigationType: JSON.stringify(useNavigationType()),
@@ -43,9 +42,9 @@ export default function Root() {
         </button>
       </nav>
       {Object.entries(hooks).map(([k, v]) => (
-        <p>
+        <p key={k}>
           {k}():
-          <pre id={k}>{v}</pre>
+          <code id={k}>{v}</code>
         </p>
       ))}
       <Outlet />
