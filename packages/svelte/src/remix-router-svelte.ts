@@ -38,7 +38,7 @@ export function useRouteLoaderData(routeId: string) {
   let ctx = getRouterContext();
   return derived(ctx.state, ({ loaderData }, set) => {
     // this guard protects against returning undefined due to differences in the Svelte and Vue reactivity models.
-    // I wantf to understand this more
+    // I want to understand this more
     if (loaderData[routeId]) {
       set(loaderData[routeId]);
     }
