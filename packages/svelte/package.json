@@ -25,7 +25,7 @@
     "svelte"
   ],
   "files": [
-    "dist/**"
+    "*/**"
   ],
   "scripts": {
     "build": "svelte-kit package",
@@ -38,7 +38,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@remix-run/router": "0.2.0-pre.2",
+    "@remix-run/router": "^0.2.0-pre.6",
     "svelte": "^3.48.0"
   },
   "devDependencies": {

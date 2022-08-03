@@ -7,7 +7,7 @@ If you're not familiar with the concepts of the Remix Router, I would highly rec
 - 📖 [Remixing React Router][remixing-react-router]
 - 📖 [React Router - Data Quick Start][data-quick-start]
 - 📹 [When to Fetch: Remixing React Router][when-to-fetch] (Reactathon 2022)
-- 📹 _Hopefully a video link will be available soon for Ryan's RenderATL talk on the mutation aspect of Remix Router_
+- 📹 [Why the Form: Data Mutations on the Web][why-the-form] (RenderATL 2022)
 
 ## Installation
 
@@ -18,6 +18,7 @@ If you're not familiar with the concepts of the Remix Router, I would highly rec
 Please refer to the documentation for the UI library of your choice:
 
 - [remix-router-vue][vue-readme]
+- [remix-router-svelte][svelte-readme]
 
 ## Design Goals
 
@@ -41,31 +42,31 @@ In the interest of time (for now) please refer to the [beta docs for `react-rout
 
 _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status unknown)
 
-| API                        | React Router | Vue |
-| -------------------------- | ------------ | --- |
-| **ROUTE**                  | -            | -   |
-| `action`                   | ✅           | ✅  |
-| `caseSensitive`            | ✅           | ✅  |
-| `children`                 | ✅           | ✅  |
-| `element`                  | ✅           | ✅  |
-| `errorElement`             | ✅           | ✅  |
-| `id`                       | ✅           | ✅  |
-| `index`                    | ✅           | ✅  |
-| `loader`                   | ✅           | ✅  |
-| `path`                     | ✅           | ✅  |
-| `shouldRevalidate`         | ✅           | ✅  |
+| API                        | React Router | Vue | Svelte |
+| -------------------------- | ------------ | --- | ------ |
+| **ROUTE**                  | -            | -   | -      |
+| `action`                   | ✅           | ✅  | ✅     |
+| `caseSensitive`            | ✅           | ✅  | ✅     |
+| `children`                 | ✅           | ✅  | ✅     |
+| `element`                  | ✅           | ✅  | ✅     |
+| `errorElement`             | ✅           | ✅  | ✅     |
+| `id`                       | ✅           | ✅  | ✅     |
+| `index`                    | ✅           | ✅  | ✅     |
+| `loader`                   | ✅           | ✅  | ✅     |
+| `path`                     | ✅           | ✅  | ✅     |
+| `shouldRevalidate`         | ✅           | ✅  | ✅     |
 | **COMPONENTS**             | -            | -   |
-| `Form`                     | ✅           | ✅  |
-| `Link`                     | ✅           | ✅  |
+| `Form`                     | ✅           | ✅  | ✅     |
+| `Link`                     | ✅           | ✅  | ✅     |
 | `NavLink`                  | ✅           | ⏳  |
 | `Navigate`                 | ✅           |     |
-| `Outlet`                   | ✅           | ✅  |
-| `Route`                    | ✅           | ❌  |
-| `Routes`                   | ✅           | ❌  |
+| `Outlet`                   | ✅           | ✅  | ✅     |
+| `Route`                    | ✅           | ❌  | ❌     |
+| `Routes`                   | ✅           | ❌  | ❌     |
 | `ScrollRestoration`        | ✅           | ⏳  |
 | **ROUTERS**                | -            | -   |
-| `BrowserRouter`            | ✅           | ❌  |
-| `DataBrowserRouter`        | ✅           | ✅  |
+| `BrowserRouter`            | ✅           | ❌  | ❌     |
+| `DataBrowserRouter`        | ✅           | ✅  | ✅     |
 | `DataHashRouter`           | ✅           | ✅  |
 | `DataMemoryRouter`         | ✅           | ✅  |
 | `HashRouter`               | ✅           | ❌  |
@@ -75,28 +76,28 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `Router`                   | ✅           | ❌  |
 | `StaticRouter`             | ✅           | ❌  |
 | **HOOKS**                  | -            | -   |
-| `useActionData`            | ✅           | ✅  |
-| `useFetcher`               | ✅           | ✅  |
-| `useFetchers`              | ✅           | ✅  |
-| `useFormAction`            | ✅           | ✅  |
+| `useActionData`            | ✅           | ✅  | ⏳     |
+| `useFetcher`               | ✅           | ✅  | ✅     |
+| `useFetchers`              | ✅           | ✅  | ⏳     |
+| `useFormAction`            | ✅           | ✅  | ✅     |
 | `useHref`                  | ✅           | ✅  |
 | `useInRouterContext`       | ✅           |     |
 | `useLinkClickHandler`      | ✅           |     |
 | `useLinkPressHandler`      | ✅           |     |
-| `useLoaderData`            | ✅           | ✅  |
-| `useLocation`              | ✅           | ✅  |
+| `useLoaderData`            | ✅           | ✅  | ✅     |
+| `useLocation`              | ✅           | ✅  | ✅     |
 | `useMatch`                 | ✅           |     |
-| `useMatches`               | ✅           | ✅  |
-| `useNavigate`              | ✅           | ✅  |
-| `useNavigation`            | ✅           | ✅  |
-| `useNavigationType`        | ✅           | ✅  |
-| `useOutlet`                | ✅           |     |
+| `useMatches`               | ✅           | ✅  | ✅     |
+| `useNavigate`              | ✅           | ✅  | ✅     |
+| `useNavigation`            | ✅           | ✅  | ✅     |
+| `useNavigationType`        | ✅           | ✅  | ✅     |
+| `useOutlet`                | ✅           |     | ✅     |
 | `useOutletContext`         | ✅           |     |
 | `useParams`                | ✅           |     |
 | `useResolvedPath`          | ✅           | ✅  |
 | `useRevalidator`           | ✅           | ⏳  |
 | `useRouteError`            | ✅           | ✅  |
-| `useRouteLoaderData`       | ✅           | ✅  |
+| `useRouteLoaderData`       | ✅           | ✅  | ✅     |
 | `useRoutes`                | ✅           | ❌  |
 | `useSearchParams`          | ✅           |     |
 | `useSubmit`                | ✅           | ✅  |
@@ -131,6 +132,8 @@ This repository uses [yarn workspaces][workspaces], and each implementation shou
 [remixing-react-router]: https://remix.run/blog/remixing-react-router
 [data-quick-start]: https://beta.reactrouter.com/en/dev/getting-started/data
 [when-to-fetch]: https://www.youtube.com/watch?v=95B8mnhzoCM
+[why-the-form]: https://www.youtube.com/watch?v=CbW6gGfXUE8
 [rr-beta-docs]: https://beta.reactrouter.com/en/dev
 [workspaces]: https://classic.yarnpkg.com/lang/en/docs/workspaces
 [vue-readme]: ./packages/vue#readme
+[svelte-readme]: ./packages/svelte#readme
