@@ -38,7 +38,7 @@ export function useRouteLoaderData(routeId: string) {
   let ctx = getRouterContext();
   return derived(ctx.state, ({ loaderData }, set) => {
     // this guard protects against returning undefined due to differences in the Svelte and Vue reactivity models.
-    // I wantf to understand this more
+    // I want to understand this more
     if (loaderData[routeId]) {
       set(loaderData[routeId]);
     }
@@ -147,10 +147,10 @@ export function useFetcher<TData = unknown>(): Readable<
   });
 }
 
-export { DataBrowserRouter } from "./components/DataBrowserRouter";
-export { Outlet } from "./components/Outlet";
-export { Link } from "./components/Link";
-import { Form } from "./components/Form";
+export { default as DataBrowserRouter } from "./components/DataBrowserRouter.svelte";
+export { default as Outlet } from "./components/Outlet.svelte";
+export { default as Link } from "./components/Link.svelte";
+import { default as Form } from "./components/Form.svelte";
 export { Form };
 export { shouldProcessLinkClick } from "./dom";
 export { getRouteContext, getRouterContext } from "./contexts";
