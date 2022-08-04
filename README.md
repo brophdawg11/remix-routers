@@ -91,7 +91,7 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `useNavigate`              | ✅           | ✅  | ✅     |
 | `useNavigation`            | ✅           | ✅  | ✅     |
 | `useNavigationType`        | ✅           | ✅  | ✅     |
-| `useOutlet`                | ✅           |     | ✅     |
+| `useOutlet`                | ✅           |     |        |
 | `useOutletContext`         | ✅           |     |
 | `useParams`                | ✅           |     |
 | `useResolvedPath`          | ✅           | ✅  |

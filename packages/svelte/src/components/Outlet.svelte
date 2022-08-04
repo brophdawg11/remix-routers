@@ -24,9 +24,7 @@
       : null;
 </script>
 
-{#if !match}
-  <div />
-{:else}
+{#if match}
   {@const Component = match.route.element}
   <RouteWrapper
     id={match.route.id}
