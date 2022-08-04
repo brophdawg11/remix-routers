@@ -1,7 +1,6 @@
 <script context="module" lang="ts">
   import { type ActionFunction, redirect } from "@remix-run/router";
   import { Form, useNavigation } from "remix-router-svelte";
-
   import { addTask } from "~/tasks";
   import { sleep } from "~/utils";
 

@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
   import { json, type LoaderFunction } from "@remix-run/router";
   import { sleep } from "~/utils";
+
   interface LoaderData {
     data: string;
   }
@@ -13,7 +14,9 @@
 
 <script lang="ts">
   import { Outlet, useLoaderData } from "remix-router-svelte";
-  let data = useLoaderData();
+  import type { Readable } from "svelte/store";
+
+  let data = useLoaderData() as Readable<LoaderData>;
 </script>
 
 <h2>Parent Layout</h2>

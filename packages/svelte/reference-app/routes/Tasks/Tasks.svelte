@@ -1,10 +1,10 @@
 <script context="module" lang="ts">
   import type { ActionFunction, LoaderFunction } from "@remix-run/router";
   import { Link, Outlet, useLoaderData } from "remix-router-svelte";
-
-  import { deleteTask, getTasks } from "~/tasks";
+  import { deleteTask, getTasks, type Task } from "~/tasks";
   import { sleep } from "~/utils";
   import TaskItem from "~/components/TaskItem.svelte";
+  import type { Readable } from "svelte/store";
 
   export const loader: LoaderFunction = async () => {
     await sleep();
@@ -22,7 +22,7 @@
 </script>
 
 <script lang="ts">
-  const tasks = useLoaderData();
+  const tasks = useLoaderData() as Readable<{ tasks: Task[] }>;
 </script>
 
 <template>
