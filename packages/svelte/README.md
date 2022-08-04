@@ -50,6 +50,7 @@ Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for referen
 
   // Provide a fallbackElement to be displayed during the initial data load
   const fallbackElement = "<p>loading...</p>";
+  // or const fallbackElement = MySvelteComponent
 </script>
 
 <DataBrowserRouter {routes} {fallbackElement} />

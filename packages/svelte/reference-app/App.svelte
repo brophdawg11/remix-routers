@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DataBrowserRouter, json } from "remix-router-svelte";
+  import { DataBrowserRouter } from "remix-router-svelte";
   import Root from "./routes/Root.svelte";
   import Index from "./routes/Index.svelte";
   import Parent, {
