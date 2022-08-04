@@ -13,7 +13,7 @@ conditionalDescribe(
       cy.get("a[href='/error?type=loader']").click();
 
       cy.get("h2").should("have.text", "Unhandled Thrown Error!");
-      cy.get("p").should("contain.text", "Loader error!");
+      cy.get("h3").should("contain.text", "Loader error!");
       cy.get("pre").should("contain.text", "Error: Loader error!");
       cy.get("p").should("contain.text", "💿 Hey developer 👋");
 
@@ -33,7 +33,7 @@ conditionalDescribe(
       cy.get("a[href='/error?type=render']").click();
 
       cy.get("h2").should("have.text", "Unhandled Thrown Error!");
-      cy.get("p").should(
+      cy.get("h3").should(
         "contain.text",
         "Cannot read properties of undefined (reading 'bar')"
       );
