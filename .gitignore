@@ -1,7 +1,9 @@
 node_modules/
 dist/
+.svelte-kit/
 
 .DS_Store
 npm-debug.log*
 *.local
 *.code-workspace
+*.tsbuildinfo

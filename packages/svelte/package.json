@@ -1,0 +1,54 @@
+{
+  "name": "remix-router-svelte",
+  "version": "0.1.0",
+  "description": "A Svelte UI layer for nested + data-driven routing via @remix-run/router",
+  "author": "aust.crim@gmail.com",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "type": "module",
+  "sideEffects": false,
+  "homepage": "https://github.com/brophdawg11/remix-routers#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brophdawg11/remix-routers.git",
+    "directory": "packages/svelte"
+  },
+  "bugs": {
+    "url": "https://github.com/brophdawg11/remix-routers/issues"
+  },
+  "keywords": [
+    "remix",
+    "remix-run",
+    "router",
+    "svelte"
+  ],
+  "files": [
+    "*/**"
+  ],
+  "scripts": {
+    "build": "svelte-kit package",
+    "clean": "git clean -fX .",
+    "dev": "vite dev",
+    "integration:open": "cypress open --config-file ./../../cypress.config.ts",
+    "integration:start": "vite dev --mode=production --port 3000",
+    "integration:test": "cypress run --config-file ./../../cypress.config.ts",
+    "integration": "start-server-and-test integration:start http-get://localhost:3000/ integration:test",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@remix-run/router": "^0.2.0-pre.6",
+    "svelte": "^3.48.0"
+  },
+  "peerDependencies": {
+    "svelte": ">=3.47.0"
+  },
+  "devDependencies": {
+    "@sveltejs/kit": "^1.0.0-next.372",
+    "@sveltejs/vite-plugin-svelte": "^1.0.1",
+    "@tsconfig/svelte": "^3.0.0",
+    "svelte-preprocess": "^4.10.7",
+    "svelte2tsx": "^0.5.11"
+  }
+}
