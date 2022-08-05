@@ -1,6 +1,6 @@
 {
   "name": "remix-router-svelte",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Svelte UI layer for nested + data-driven routing via @remix-run/router",
   "author": "aust.crim@gmail.com",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "svelte"
   ],
   "files": [
-    "*/**"
+    "*"
   ],
   "scripts": {
     "build": "svelte-kit package",
