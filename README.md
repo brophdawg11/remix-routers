@@ -1,6 +1,6 @@
 # 💿 Remix Routers
 
-Remix Routers is a collection of libraries that port [`react-router-dom`][react-router-dom] to different UI rendering libraries, all based on the underlying [`@remix-run/router`][remix-router] package. This only exists for **Vue** at the moment but I hope to see that expand in the future (with community support 😉).
+Remix Routers is a collection of libraries that port [`react-router-dom`][react-router-dom] to different UI rendering libraries, all based on the underlying [`@remix-run/router`][remix-router] package. This only exists for **Vue** and **Svelte** at the moment but I hope to see that expand in the future (with community support 😉).
 
 If you're not familiar with the concepts of the Remix Router, I would highly recommend reading/watching the following to provide some background:
 
