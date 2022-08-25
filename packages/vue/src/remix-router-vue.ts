@@ -394,7 +394,7 @@ export const DataBrowserRouter = defineComponent({
   },
   setup(props) {
     let router = createBrowserRouter({
-      routes: props.routes,
+      routes: enhanceManualRouteObjects(props.routes),
       hydrationData: props.hydrationData,
     }).initialize();
     return setupRouter(router, props.fallbackElement);
@@ -417,7 +417,7 @@ export const DataHashRouter = defineComponent({
   },
   setup(props) {
     let router = createHashRouter({
-      routes: props.routes,
+      routes: enhanceManualRouteObjects(props.routes),
       hydrationData: props.hydrationData,
     }).initialize();
     return setupRouter(router, props.fallbackElement);
@@ -443,7 +443,7 @@ export const DataMemoryRouter = defineComponent({
   },
   setup(props) {
     let router = createMemoryRouter({
-      routes: props.routes,
+      routes: enhanceManualRouteObjects(props.routes),
       initialEntries: props.initialEntries,
       initialIndex: props.initialIndex,
     }).initialize();
@@ -786,6 +786,19 @@ export const Await = defineComponent({
 
 ////////////////////////////////////////////////////////////////////////////////
 //#region Utils
+
+function enhanceManualRouteObjects(routes: RouteObject[]): RouteObject[] {
+  return routes.map((route) => {
+    let routeClone = { ...route };
+    if (routeClone.hasErrorBoundary == null) {
+      routeClone.hasErrorBoundary = routeClone.errorElement != null;
+    }
+    if (routeClone.children) {
+      routeClone.children = enhanceManualRouteObjects(routeClone.children);
+    }
+    return routeClone;
+  });
+}
 
 function renderRouteWrapper(
   match: DataRouteMatch,

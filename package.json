@@ -20,7 +20,6 @@
     "lint": "eslint --ext .js,.ts .",
     "integration": "yarn workspaces run integration",
     "prettier": "prettier --write .",
-    "postinstall": "patch-package",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -34,7 +33,6 @@
     "eslint-plugin-cypress": "2.12.1",
     "husky": "8.0.1",
     "lint-staged": "12.4.2",
-    "patch-package": "6.4.7",
     "prettier": "2.6.2",
     "start-server-and-test": "1.14.0",
     "typescript": "4.6.4",
