@@ -808,11 +808,11 @@ function renderRouteWrapper(
             component: match.route.errorElement || DefaultErrorElement,
             error,
           },
-          () => h(match.route.element || Outlet)
+          () => h(match.route.element as Component)
         );
       }
       // Otherwise just render the element, letting render errors bubble upwards
-      return h(match.route.element || Outlet);
+      return h(match.route.element as Component);
     }
   );
 }
