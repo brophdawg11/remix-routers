@@ -1,4 +1,4 @@
-import type { Component, PropType, Ref, ShallowRef, VNode } from "vue";
+import { Component, popScopeId, PropType, Ref, ShallowRef, VNode } from "vue";
 import {
   computed,
   defineComponent,
@@ -15,9 +15,8 @@ import type {
   FormMethod,
   Location,
   Router,
-  DataRouteMatch,
   RouterState,
-  RouteObject,
+  AgnosticRouteObject,
   Navigation,
   Fetcher,
   FormEncType,
@@ -25,6 +24,8 @@ import type {
   HydrationState,
   To,
   Path,
+  AgnosticRouteMatch,
+  TrackedPromise,
 } from "@remix-run/router";
 import {
   Action as NavigationType,
@@ -37,12 +38,35 @@ import {
 } from "@remix-run/router";
 import type { SubmitOptions } from "./dom";
 import { getFormSubmissionInfo, shouldProcessLinkClick } from "./dom";
+import { trackSlotScopes } from "@vue/compiler-core";
 
 ////////////////////////////////////////////////////////////////////////////////
 //#region Types/Globals/Utils
 
 // Re-exports from remix router
-export { json, redirect, isRouteErrorResponse } from "@remix-run/router";
+export { defer, json, redirect, isRouteErrorResponse } from "@remix-run/router";
+
+// Create vue-specific types from the agnostic types in @remix-run/router to
+// export from remix-router-vue
+export interface RouteObject extends AgnosticRouteObject {
+  children?: RouteObject[];
+  element?: Component | null;
+  errorElement?: Component | null;
+}
+
+export interface DataRouteObject extends RouteObject {
+  children?: DataRouteObject[];
+  id: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface RouteMatch<
+  ParamKey extends string = string,
+  RouteObjectType extends RouteObject = RouteObject
+> extends AgnosticRouteMatch<ParamKey, RouteObjectType> {}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface DataRouteMatch extends RouteMatch<string, DataRouteObject> {}
 
 // Global context holding the singleton router and the current state
 export interface RouterContext {
@@ -71,6 +95,7 @@ export interface RouteErrorContext {
 let RouterContextSymbol = Symbol();
 let RouteContextSymbol = Symbol();
 let RouteErrorSymbol = Symbol();
+let AwaitContextSymbol = Symbol();
 
 function getRouterContext(): RouterContext {
   let ctx = inject<RouterContext>(RouterContextSymbol);
@@ -362,7 +387,7 @@ export const DataBrowserRouter = defineComponent({
       required: true,
     },
     fallbackElement: {
-      type: Object as PropType<Component>,
+      type: Function as PropType<() => Component>,
     },
     hydrationData: {
       type: Object as PropType<HydrationState>,
@@ -676,10 +701,93 @@ export const Form = defineComponent({
       default: undefined,
     },
   },
-  setup:
-    (props, { slots }) =>
-    () =>
-      h(FormImpl, { ...props }, slots.default),
+  setup(props, { slots }) {
+    return () => h(FormImpl, { ...props }, slots.default);
+  },
+});
+
+enum AwaitRenderStatus {
+  pending,
+  success,
+  error,
+}
+
+export const Await = defineComponent({
+  name: "Await",
+  props: {
+    resolve: {
+      type: Promise as PropType<TrackedPromise>,
+      required: true,
+    },
+    errorElement: {
+      type: Object as PropType<Component>,
+    },
+  },
+  async setup(props, { slots }) {
+    let errorRef = ref();
+
+    onErrorCaptured((e) => {
+      errorRef.value = e;
+      return false; // don't bubble
+    });
+
+    let promise: TrackedPromise;
+
+    if (!(props.resolve instanceof Promise)) {
+      // Didn't get a promise - provide as a resolved promise
+      promise = Promise.resolve();
+      Object.defineProperty(promise, "_tracked", { get: () => true });
+      Object.defineProperty(promise, "_data", {
+        get: () => props.resolve as unknown,
+      });
+    } else if (errorRef.value) {
+      // Caught a render error, provide it as a rejected promise
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      promise = Promise.reject().catch(() => {}); // Avoid unhandled rejection warnings
+      Object.defineProperty(promise, "_tracked", { get: () => true });
+      Object.defineProperty(promise, "_error", {
+        get: () => errorRef.value as unknown,
+      });
+    } else if (props.resolve._tracked) {
+      // Already tracked promise - check contents
+      promise = props.resolve;
+    } else {
+      // Raw (untracked) promise - track it
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      Object.defineProperty(props.resolve, "_tracked", { get: () => true });
+      promise = props.resolve.then(
+        (data: any) =>
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+          Object.defineProperty(props.resolve, "_data", { get: () => data }),
+        (error: any) =>
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+          Object.defineProperty(props.resolve, "_error", { get: () => error })
+      );
+    }
+
+    provide(AwaitContextSymbol, promise);
+
+    try {
+      await promise;
+    } catch (e) {
+      Object.defineProperty(promise, "_error", { get: () => e });
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (promise._error) {
+      if (slots.rejected) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        return () => slots.rejected?.(promise._error);
+      } else {
+        // No rejected slot, throw to the nearest route-level error boundary
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        throw promise._error;
+      }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    return () => slots.default?.(promise._data);
+  },
 });
 //#endregion
 
@@ -776,3 +884,4 @@ function createURL(router: Router, location: Location | string): URL {
     typeof location === "string" ? location : router.createHref(location);
   return new URL(href, base);
 }
+//#endregion
