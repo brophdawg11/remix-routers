@@ -1,4 +1,4 @@
-import { Component, popScopeId, PropType, Ref, ShallowRef, VNode } from "vue";
+import { Component, PropType, Ref, ShallowRef, VNode } from "vue";
 import {
   computed,
   defineComponent,
@@ -38,7 +38,6 @@ import {
 } from "@remix-run/router";
 import type { SubmitOptions } from "./dom";
 import { getFormSubmissionInfo, shouldProcessLinkClick } from "./dom";
-import { trackSlotScopes } from "@vue/compiler-core";
 
 ////////////////////////////////////////////////////////////////////////////////
 //#region Types/Globals/Utils
@@ -706,12 +705,7 @@ export const Form = defineComponent({
   },
 });
 
-enum AwaitRenderStatus {
-  pending,
-  success,
-  error,
-}
-
+/* eslint-disable @typescript-eslint/no-floating-promises */
 export const Await = defineComponent({
   name: "Await",
   props: {
@@ -741,9 +735,10 @@ export const Await = defineComponent({
         get: () => props.resolve as unknown,
       });
     } else if (errorRef.value) {
-      // Caught a render error, provide it as a rejected promise
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      promise = Promise.reject().catch(() => {}); // Avoid unhandled rejection warnings
+      // Caught a render error, provide it as a "rejected" promise
+      promise = Promise.reject().catch(() => {
+        // Avoid unhandled rejection warnings
+      });
       Object.defineProperty(promise, "_tracked", { get: () => true });
       Object.defineProperty(promise, "_error", {
         get: () => errorRef.value as unknown,
@@ -753,15 +748,16 @@ export const Await = defineComponent({
       promise = props.resolve;
     } else {
       // Raw (untracked) promise - track it
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       Object.defineProperty(props.resolve, "_tracked", { get: () => true });
       promise = props.resolve.then(
-        (data: any) =>
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          Object.defineProperty(props.resolve, "_data", { get: () => data }),
-        (error: any) =>
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          Object.defineProperty(props.resolve, "_error", { get: () => error })
+        (data) =>
+          Object.defineProperty(props.resolve, "_data", {
+            get: () => data as unknown,
+          }),
+        (error) =>
+          Object.defineProperty(props.resolve, "_error", {
+            get: () => error as unknown,
+          })
       );
     }
 
@@ -773,22 +769,19 @@ export const Await = defineComponent({
       Object.defineProperty(promise, "_error", { get: () => e });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (promise._error) {
-      if (slots.rejected) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        return () => slots.rejected?.(promise._error);
+      if (slots.error) {
+        return () => slots.error?.(promise._error);
       } else {
-        // No rejected slot, throw to the nearest route-level error boundary
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        // No error slot, throw to the nearest route-level error boundary
         throw promise._error;
       }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     return () => slots.default?.(promise._data);
   },
 });
+/* eslint-enable @typescript-eslint/no-floating-promises */
 //#endregion
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -812,15 +805,14 @@ function renderRouteWrapper(
         return h(
           ErrorBoundary,
           {
-            component: (match.route.errorElement ||
-              DefaultErrorElement) as Component,
+            component: match.route.errorElement || DefaultErrorElement,
             error,
           },
-          () => h(match.route.element as Component)
+          () => h(match.route.element || Outlet)
         );
       }
       // Otherwise just render the element, letting render errors bubble upwards
-      return h(match.route.element as Component);
+      return h(match.route.element || Outlet);
     }
   );
 }

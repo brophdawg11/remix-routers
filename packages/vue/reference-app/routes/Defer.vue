@@ -38,7 +38,7 @@ const data = useLoaderData();
       <template #default="value">
         <p>Value: {{ value }}</p>
       </template>
-      <template #rejected="error">
+      <template #error="error">
         <p>Error: {{ error }}</p>
       </template>
     </Await>
