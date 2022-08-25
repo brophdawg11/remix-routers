@@ -1,14 +1,9 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
+import * as React from "react";
+import * as ReactDOM from "react-dom/client";
 import App from "~/App";
 
-const el = document.getElementById("app");
-
-if (!el) {
-  throw new Error("No #app element found");
-}
-
-createRoot(el).render(
+// @ts-expect-error
+ReactDOM.createRoot(document.getElementById("app")).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>

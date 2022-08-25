@@ -13,6 +13,7 @@ import Tasks, {
 } from "~/routes/tasks/Tasks";
 import Task, { loader as taskLoader } from "~/routes/tasks/Task";
 import NewTask, { action as newTaskAction } from "~/routes/tasks/NewTask";
+import Defer, { loader as deferLoader } from "~/routes/Defer";
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
           <Route path=":id" loader={taskLoader} element={<Task />} />
           <Route path="new" action={newTaskAction} element={<NewTask />} />
         </Route>
+        <Route path="defer" loader={deferLoader} element={<Defer />} />
       </Route>
     </DataBrowserRouter>
   );

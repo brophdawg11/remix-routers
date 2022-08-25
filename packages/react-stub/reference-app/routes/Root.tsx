@@ -18,6 +18,7 @@ export default function Root() {
     "Render Error": "/error?type=render",
     "Nested Loader Error": "/parent/error?type=loader",
     "Nested Render Error": "/parent/error?type=render",
+    Defer: "/defer",
     Tasks: "/tasks",
   };
   let hooks = {
