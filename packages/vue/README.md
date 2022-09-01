@@ -21,6 +21,9 @@ _Note: If you are using TypeScript you will need to use `patch-package` and copy
 ## Notable API Differences
 
 - For now, you must provide your routes through the `DataBrowserRouter` `routes` prop, we don't support the declarative JSX-style `<Route>` children approach used by `react-router-dom`
+- `<Await>` has a few small difference sbased on the Vue `<Suspense>` component
+  - Instead of taking an `errorElement` prop, `<Await>` leverages an `#error` scoped slot to render errors. For an example, please refer to the `/defer` route in the Vue reference application.
+  - `<Await>` will not capture and hand render-errors to the `#error` slot because render errors in Vue propagate to the _parent_ components of `<Suspense>`, and `<Await>` is a child component. See [Suspense Error Handling][suspense-error-handling] for more details
 
 ## Example Usage
 
@@ -104,3 +107,4 @@ Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for referen
 
 [rr-beta-docs]: https://beta.reactrouter.com/en/dev
 [reference-app]: ./reference-app/
+[suspense-error-handling]: https://vuejs.org/guide/built-ins/suspense.html#error-handling

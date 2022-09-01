@@ -1,4 +1,4 @@
-import type { Component, PropType, Ref, ShallowRef, VNode } from "vue";
+import { Component, PropType, Ref, ShallowRef, VNode } from "vue";
 import {
   computed,
   defineComponent,
@@ -15,9 +15,8 @@ import type {
   FormMethod,
   Location,
   Router,
-  DataRouteMatch,
   RouterState,
-  RouteObject,
+  AgnosticRouteObject,
   Navigation,
   Fetcher,
   FormEncType,
@@ -25,6 +24,7 @@ import type {
   HydrationState,
   To,
   Path,
+  AgnosticRouteMatch,
 } from "@remix-run/router";
 import {
   Action as NavigationType,
@@ -42,7 +42,29 @@ import { getFormSubmissionInfo, shouldProcessLinkClick } from "./dom";
 //#region Types/Globals/Utils
 
 // Re-exports from remix router
-export { json, redirect, isRouteErrorResponse } from "@remix-run/router";
+export { defer, json, redirect, isRouteErrorResponse } from "@remix-run/router";
+
+// Create vue-specific types from the agnostic types in @remix-run/router to
+// export from remix-router-vue
+export interface RouteObject extends AgnosticRouteObject {
+  children?: RouteObject[];
+  element?: Component | null;
+  errorElement?: Component | null;
+}
+
+export interface DataRouteObject extends RouteObject {
+  children?: DataRouteObject[];
+  id: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface RouteMatch<
+  ParamKey extends string = string,
+  RouteObjectType extends RouteObject = RouteObject
+> extends AgnosticRouteMatch<ParamKey, RouteObjectType> {}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface DataRouteMatch extends RouteMatch<string, DataRouteObject> {}
 
 // Global context holding the singleton router and the current state
 export interface RouterContext {
@@ -362,7 +384,7 @@ export const DataBrowserRouter = defineComponent({
       required: true,
     },
     fallbackElement: {
-      type: Object as PropType<Component>,
+      type: Function as PropType<() => Component>,
     },
     hydrationData: {
       type: Object as PropType<HydrationState>,
@@ -370,7 +392,7 @@ export const DataBrowserRouter = defineComponent({
   },
   setup(props) {
     let router = createBrowserRouter({
-      routes: props.routes,
+      routes: enhanceManualRouteObjects(props.routes),
       hydrationData: props.hydrationData,
     }).initialize();
     return setupRouter(router, props.fallbackElement);
@@ -393,7 +415,7 @@ export const DataHashRouter = defineComponent({
   },
   setup(props) {
     let router = createHashRouter({
-      routes: props.routes,
+      routes: enhanceManualRouteObjects(props.routes),
       hydrationData: props.hydrationData,
     }).initialize();
     return setupRouter(router, props.fallbackElement);
@@ -419,7 +441,7 @@ export const DataMemoryRouter = defineComponent({
   },
   setup(props) {
     let router = createMemoryRouter({
-      routes: props.routes,
+      routes: enhanceManualRouteObjects(props.routes),
       initialEntries: props.initialEntries,
       initialIndex: props.initialIndex,
     }).initialize();
@@ -676,15 +698,53 @@ export const Form = defineComponent({
       default: undefined,
     },
   },
-  setup:
-    (props, { slots }) =>
-    () =>
-      h(FormImpl, { ...props }, slots.default),
+  setup(props, { slots }) {
+    return () => h(FormImpl, { ...props }, slots.default);
+  },
+});
+
+export const Await = defineComponent({
+  name: "Await",
+  props: {
+    resolve: {
+      type: Promise as PropType<Promise<unknown>>,
+      required: true,
+    },
+  },
+  async setup(props, { slots }) {
+    try {
+      let promise: Promise<unknown> =
+        props.resolve instanceof Promise
+          ? props.resolve
+          : Promise.resolve(props.resolve);
+      let value = await promise;
+      return () => slots.default?.(value);
+    } catch (e) {
+      if (slots.error) {
+        return () => slots.error?.(e);
+      } else {
+        throw e;
+      }
+    }
+  },
 });
 //#endregion
 
 ////////////////////////////////////////////////////////////////////////////////
 //#region Utils
+
+function enhanceManualRouteObjects(routes: RouteObject[]): RouteObject[] {
+  return routes.map((route) => {
+    let routeClone = { ...route };
+    if (routeClone.hasErrorBoundary == null) {
+      routeClone.hasErrorBoundary = routeClone.errorElement != null;
+    }
+    if (routeClone.children) {
+      routeClone.children = enhanceManualRouteObjects(routeClone.children);
+    }
+    return routeClone;
+  });
+}
 
 function renderRouteWrapper(
   match: DataRouteMatch,
@@ -704,8 +764,7 @@ function renderRouteWrapper(
         return h(
           ErrorBoundary,
           {
-            component: (match.route.errorElement ||
-              DefaultErrorElement) as Component,
+            component: match.route.errorElement || DefaultErrorElement,
             error,
           },
           () => h(match.route.element as Component)
@@ -776,3 +835,4 @@ function createURL(router: Router, location: Location | string): URL {
     typeof location === "string" ? location : router.createHref(location);
   return new URL(href, base);
 }
+//#endregion

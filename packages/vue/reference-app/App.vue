@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { RouteObject } from "@remix-run/router";
-import { DataBrowserRouter } from "remix-router-vue";
+import { DataBrowserRouter, RouteObject } from "remix-router-vue";
 import { h } from "vue";
 
 import Boundary from "~/components/Boundary.vue";
@@ -16,6 +15,7 @@ import Tasks, {
 } from "~/routes/tasks/Tasks.vue";
 import Task, { loader as taskLoader } from "~/routes/tasks/Task.vue";
 import NewTask, { action as newTaskAction } from "~/routes/tasks/NewTask.vue";
+import Defer, { loader as deferLoader } from "~/routes/Defer.vue";
 
 const routes: RouteObject[] = [
   {
@@ -71,6 +71,11 @@ const routes: RouteObject[] = [
             element: NewTask,
           },
         ],
+      },
+      {
+        path: "defer",
+        loader: deferLoader,
+        element: Defer,
       },
     ],
   },

@@ -1,6 +1,6 @@
 # 💿 Remix Routers
 
-Remix Routers is a collection of libraries that port [`react-router-dom`][react-router-dom] to different UI rendering libraries, all based on the underlying [`@remix-run/router`][remix-router] package. This only exists for **Vue** and **Svelte** at the moment but we hope to see that expand in the future (with community support 😉).
+Remix Routers is a collection of libraries that port [`react-router-dom`][react-router-dom] (version 6.4 - currently in prerelease) to different UI rendering libraries, all based on the underlying [`@remix-run/router`][remix-router] package. This only exists for **Vue** and **Svelte** at the moment but we hope to see that expand in the future (with community support 😉).
 
 If you're not familiar with the concepts of the Remix Router, we would highly recommend reading/watching the following to provide some background:
 
@@ -57,7 +57,7 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `path`                     | ✅           | ✅  | ✅     |
 | `shouldRevalidate`         | ✅           | ✅  | ✅     |
 | **COMPONENTS**             | -            | -   |
-| `Await`                    | ✅           | ⏳  |        |
+| `Await`                    | ✅           | ✅  |        |
 | `Form`                     | ✅           | ✅  | ✅     |
 | `Link`                     | ✅           | ✅  | ✅     |
 | `NavLink`                  | ✅           | ⏳  |
@@ -111,7 +111,7 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | **UTILITIES**              | -            | -   |        |
 | `createRoutesFromChildren` | ✅           | ❌  |        |
 | `createSearchParams`       | ✅           |     |        |
-| `defer`                    | ✅           | ⏳  |        |
+| `defer`                    | ✅           | ✅  |        |
 | `generatePath`             | ✅           |     |        |
 | `isRouteErrorResponse`     | ✅           | ✅  |        |
 | `matchPath`                | ✅           |     |        |
