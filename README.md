@@ -57,7 +57,7 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `path`                     | ✅           | ✅  | ✅     |
 | `shouldRevalidate`         | ✅           | ✅  | ✅     |
 | **COMPONENTS**             | -            | -   |
-| `Await`                    | ✅           | ⏳  |        |
+| `Await`                    | ✅           | ✅  |        |
 | `Form`                     | ✅           | ✅  | ✅     |
 | `Link`                     | ✅           | ✅  | ✅     |
 | `NavLink`                  | ✅           | ⏳  |
@@ -111,7 +111,7 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | **UTILITIES**              | -            | -   |        |
 | `createRoutesFromChildren` | ✅           | ❌  |        |
 | `createSearchParams`       | ✅           |     |        |
-| `defer`                    | ✅           | ⏳  |        |
+| `defer`                    | ✅           | ✅  |        |
 | `generatePath`             | ✅           |     |        |
 | `isRouteErrorResponse`     | ✅           | ✅  |        |
 | `matchPath`                | ✅           |     |        |
