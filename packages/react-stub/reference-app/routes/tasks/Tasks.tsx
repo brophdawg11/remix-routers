@@ -20,7 +20,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function Tasks() {
-  const data = useLoaderData();
+  const data = useLoaderData() as ReturnType<typeof loader>;
 
   return (
     <>

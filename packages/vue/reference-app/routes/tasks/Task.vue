@@ -14,7 +14,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 </script>
 
 <script setup lang="ts">
-const data = useLoaderData();
+const data = useLoaderData() as ReturnType<typeof loader>;
 </script>
 
 <template>

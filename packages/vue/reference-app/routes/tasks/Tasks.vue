@@ -22,7 +22,7 @@ export const action: ActionFunction = async ({ request }) => {
 </script>
 
 <script setup lang="ts">
-const data = useLoaderData();
+const data = useLoaderData() as ReturnType<typeof loader>;
 </script>
 
 <template>

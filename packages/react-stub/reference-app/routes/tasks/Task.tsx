@@ -11,7 +11,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 };
 
 export default function Task() {
-  const data = useLoaderData();
+  const data = useLoaderData() as ReturnType<typeof loader>;
 
   return (
     <>

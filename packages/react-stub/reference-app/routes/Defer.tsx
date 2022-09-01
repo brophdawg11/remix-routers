@@ -23,7 +23,7 @@ export async function loader() {
 
 function ErrorElement() {
   let error = useAsyncError();
-  return <p id="lazy-error">Error: {error}</p>;
+  return <p id="lazy-error">{`Error: ${error}`}</p>;
 }
 
 export default function Defer() {

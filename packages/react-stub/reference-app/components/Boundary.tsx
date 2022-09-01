@@ -1,7 +1,7 @@
 import { Link, useRouteError } from "react-router-dom";
 
 export default function Boundary() {
-  let error = useRouteError();
+  let error = useRouteError() as Error;
 
   return (
     <>

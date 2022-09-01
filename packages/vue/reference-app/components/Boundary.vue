@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Link, useRouteError } from "remix-router-vue";
+import { Ref } from "vue";
 
-let error = useRouteError();
+let error = useRouteError() as Ref<Error>;
 </script>
 
 <template>

@@ -11,6 +11,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function ErrorComponent() {
-  let data = useLoaderData();
+  let data = useLoaderData() as ReturnType<typeof loader>;
   return <h2>Render Error: {data.foo.bar}</h2>;
 }
