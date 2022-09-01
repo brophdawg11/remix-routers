@@ -25,7 +25,6 @@ import type {
   To,
   Path,
   AgnosticRouteMatch,
-  TrackedPromise,
 } from "@remix-run/router";
 import {
   Action as NavigationType,
@@ -94,7 +93,6 @@ export interface RouteErrorContext {
 let RouterContextSymbol = Symbol();
 let RouteContextSymbol = Symbol();
 let RouteErrorSymbol = Symbol();
-let AwaitContextSymbol = Symbol();
 
 function getRouterContext(): RouterContext {
   let ctx = inject<RouterContext>(RouterContextSymbol);
@@ -705,83 +703,31 @@ export const Form = defineComponent({
   },
 });
 
-/* eslint-disable @typescript-eslint/no-floating-promises */
 export const Await = defineComponent({
   name: "Await",
   props: {
     resolve: {
-      type: Promise as PropType<TrackedPromise>,
+      type: Promise as PropType<Promise<unknown>>,
       required: true,
-    },
-    errorElement: {
-      type: Object as PropType<Component>,
     },
   },
   async setup(props, { slots }) {
-    let errorRef = ref();
-
-    onErrorCaptured((e) => {
-      errorRef.value = e;
-      return false; // don't bubble
-    });
-
-    let promise: TrackedPromise;
-
-    if (!(props.resolve instanceof Promise)) {
-      // Didn't get a promise - provide as a resolved promise
-      promise = Promise.resolve();
-      Object.defineProperty(promise, "_tracked", { get: () => true });
-      Object.defineProperty(promise, "_data", {
-        get: () => props.resolve as unknown,
-      });
-    } else if (errorRef.value) {
-      // Caught a render error, provide it as a "rejected" promise
-      promise = Promise.reject().catch(() => {
-        // Avoid unhandled rejection warnings
-      });
-      Object.defineProperty(promise, "_tracked", { get: () => true });
-      Object.defineProperty(promise, "_error", {
-        get: () => errorRef.value as unknown,
-      });
-    } else if (props.resolve._tracked) {
-      // Already tracked promise - check contents
-      promise = props.resolve;
-    } else {
-      // Raw (untracked) promise - track it
-      Object.defineProperty(props.resolve, "_tracked", { get: () => true });
-      promise = props.resolve.then(
-        (data) =>
-          Object.defineProperty(props.resolve, "_data", {
-            get: () => data as unknown,
-          }),
-        (error) =>
-          Object.defineProperty(props.resolve, "_error", {
-            get: () => error as unknown,
-          })
-      );
-    }
-
-    provide(AwaitContextSymbol, promise);
-
     try {
-      await promise;
+      let promise: Promise<unknown> =
+        props.resolve instanceof Promise
+          ? props.resolve
+          : Promise.resolve(props.resolve);
+      let value = await promise;
+      return () => slots.default?.(value);
     } catch (e) {
-      Object.defineProperty(promise, "_error", { get: () => e });
-    }
-
-    if (promise._error) {
       if (slots.error) {
-        return () => slots.error?.(promise._error);
+        return () => slots.error?.(e);
       } else {
-        // No error slot, throw to the nearest route-level error boundary
-        throw promise._error;
+        throw e;
       }
     }
-
-    return () => slots.default?.(promise._data);
   },
 });
-/* eslint-enable @typescript-eslint/no-floating-promises */
 //#endregion
 
 ////////////////////////////////////////////////////////////////////////////////

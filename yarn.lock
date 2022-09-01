@@ -381,7 +381,7 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@remix-run/router@0.2.0-pre.8", "@remix-run/router@^0.2.0-pre.8":
+"@remix-run/router@0.2.0-pre.8":
   version "0.2.0-pre.8"
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-0.2.0-pre.8.tgz#8159628e99ccbbb25f7cb164481f635e1370ab8b"
   integrity sha512-A+1xdIUrvlxSBilO6eDD9N2PIiPy/jRdj47td+sr7uTyD5v6MKsMZd/L70VzTig9oXi0p5Ae4iehE0pJZ/sq2g==
@@ -390,6 +390,11 @@
   version "0.2.0-pre.6"
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-0.2.0-pre.6.tgz#6a878c3f76e95b6d0860ca4bc0705d11c357f2cd"
   integrity sha512-AhmScBjypbo/ZpFB/4L4TcPNvcRyGZNQVPWcCo68EaDbt1pNQFMFvyWxBebfvTgBek9LNLQNZQKvmKpCIh9MpQ==
+
+"@remix-run/router@^0.2.0-pre.9":
+  version "0.2.0-pre.9"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-0.2.0-pre.9.tgz#c2bb902e71c93cba404c835deab210500ec61022"
+  integrity sha512-jL0Rng43UnNePJw7Mqc605/bXn4+IpZsKRipqmKgZw40euyCA+sqUAjOYnEUUMg/Ihp0fL4YFjTAXtfzy4YQ0Q==
 
 "@rollup/pluginutils@^4.2.1":
   version "4.2.1"
