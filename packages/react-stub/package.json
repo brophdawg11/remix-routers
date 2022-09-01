@@ -6,7 +6,7 @@
   "author": "matt@brophy.org",
   "license": "MIT",
   "scripts": {
-    "build": "vite build && tsc -b",
+    "build": "vite build",
     "clean": "git clean -fX .",
     "dev": "vite dev",
     "integration:open": "cypress open --config-file ../../cypress.config.ts",
