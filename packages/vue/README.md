@@ -16,8 +16,6 @@ npm install remix-router-vue
 yarn add remix-router-vue
 ```
 
-_Note: If you are using TypeScript you will need to use `patch-package` and copy the `@remix-run+router+0.1.0.patch` patch from this repo to internally change the `RouteObject.element` type from `React.ReactNode` to `any` for use with Vue components._
-
 ## Notable API Differences
 
 - For now, you must provide your routes through the `DataBrowserRouter` `routes` prop, we don't support the declarative JSX-style `<Route>` children approach used by `react-router-dom`
