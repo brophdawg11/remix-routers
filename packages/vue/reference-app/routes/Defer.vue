@@ -19,27 +19,27 @@ const data = useLoaderData();
 </script>
 
 <template>
-  <p>Critical Data: {{ data.critical }}</p>
+  <p id="critical-data">Critical Data: {{ data.critical }}</p>
 
   <Suspense>
     <template #fallback>
-      <p>Loading data...</p>
+      <p id="lazy-value-fallback">Loading data...</p>
     </template>
     <Await :resolve="data.lazy" v-slot="value">
-      <p>Value: {{ value }}</p>
+      <p id="lazy-value">Value: {{ value }}</p>
     </Await>
   </Suspense>
 
   <Suspense>
     <template #fallback>
-      <p>Loading error...</p>
+      <p id="lazy-error-fallback">Loading error...</p>
     </template>
     <Await :resolve="data.lazyError">
       <template #default="value">
         <p>Value: {{ value }}</p>
       </template>
       <template #error="error">
-        <p>Error: {{ error }}</p>
+        <p id="lazy-error">Error: {{ error }}</p>
       </template>
     </Await>
   </Suspense>

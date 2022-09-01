@@ -23,7 +23,7 @@ export async function loader() {
 
 function ErrorElement() {
   let error = useAsyncError();
-  return <p>{`Error! ${error}`}</p>;
+  return <p id="lazy-error">Error: {error}</p>;
 }
 
 export default function Defer() {
@@ -31,15 +31,19 @@ export default function Defer() {
 
   return (
     <>
-      <p>Critical Data: {data.critical}</p>
+      <p id="critical-data">Critical Data: {data.critical}</p>
 
-      <React.Suspense fallback={<p>Loading lazy data...</p>}>
+      <React.Suspense
+        fallback={<p id="lazy-value-fallback">Loading data...</p>}
+      >
         <Await resolve={data.lazy}>
-          {(value) => <p>Lazy Data: {value}</p>}
+          {(value) => <p id="lazy-value">Value: {value}</p>}
         </Await>
       </React.Suspense>
 
-      <React.Suspense fallback={<p>Loading lazy error...</p>}>
+      <React.Suspense
+        fallback={<p id="lazy-error-fallback">Loading error...</p>}
+      >
         <Await resolve={data.lazyError} errorElement={<ErrorElement />}>
           {() => <p>Nope!</p>}
         </Await>
