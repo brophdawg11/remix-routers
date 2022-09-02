@@ -33,17 +33,13 @@ export default function Defer() {
     <>
       <p id="critical-data">Critical Data: {data.critical}</p>
 
-      <React.Suspense
-        fallback={<p id="lazy-value-fallback">Loading data...</p>}
-      >
+      <React.Suspense fallback={<p id="lazy-value">Loading data...</p>}>
         <Await resolve={data.lazy}>
           {(value) => <p id="lazy-value">Value: {value}</p>}
         </Await>
       </React.Suspense>
 
-      <React.Suspense
-        fallback={<p id="lazy-error-fallback">Loading error...</p>}
-      >
+      <React.Suspense fallback={<p id="lazy-error">Loading error...</p>}>
         <Await resolve={data.lazyError} errorElement={<ErrorElement />}>
           {() => <p>Nope!</p>}
         </Await>

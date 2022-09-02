@@ -1,4 +1,26 @@
-import { Component, PropType, Ref, ShallowRef, VNode } from "vue";
+import {
+  AbortedDeferredError,
+  Action as NavigationType,
+  createBrowserRouter,
+  createHashRouter,
+  createMemoryRouter,
+  invariant,
+  isRouteErrorResponse,
+  resolveTo,
+  type AgnosticRouteMatch,
+  type AgnosticRouteObject,
+  type Fetcher,
+  type FormEncType,
+  type FormMethod,
+  type HydrationState,
+  type InitialEntry,
+  type Location,
+  type Navigation,
+  type Path,
+  type Router,
+  type RouterState,
+  type To,
+} from "@remix-run/router";
 import {
   computed,
   defineComponent,
@@ -10,31 +32,12 @@ import {
   ref,
   shallowRef,
   watch,
+  type Component,
+  type PropType,
+  type Ref,
+  type ShallowRef,
+  type VNode,
 } from "vue";
-import type {
-  FormMethod,
-  Location,
-  Router,
-  RouterState,
-  AgnosticRouteObject,
-  Navigation,
-  Fetcher,
-  FormEncType,
-  InitialEntry,
-  HydrationState,
-  To,
-  Path,
-  AgnosticRouteMatch,
-} from "@remix-run/router";
-import {
-  Action as NavigationType,
-  createBrowserRouter,
-  createHashRouter,
-  createMemoryRouter,
-  invariant,
-  isRouteErrorResponse,
-  resolveTo,
-} from "@remix-run/router";
 import type { SubmitOptions } from "./dom";
 import { getFormSubmissionInfo, shouldProcessLinkClick } from "./dom";
 
@@ -42,7 +45,7 @@ import { getFormSubmissionInfo, shouldProcessLinkClick } from "./dom";
 //#region Types/Globals/Utils
 
 // Re-exports from remix router
-export { defer, json, redirect, isRouteErrorResponse } from "@remix-run/router";
+export { defer, isRouteErrorResponse, json, redirect } from "@remix-run/router";
 
 // Create vue-specific types from the agnostic types in @remix-run/router to
 // export from remix-router-vue
@@ -720,6 +723,14 @@ export const Await = defineComponent({
       let value = await promise;
       return () => slots.default?.(value);
     } catch (e) {
+      if (e instanceof AbortedDeferredError) {
+        // This deferred was aborted, await indefinitely to show the fallback
+        // until either (1) we render the next route and this component is
+        // unmounted, or (2) we get replaced with a new Promise for this route
+        await new Promise(() => {
+          // no-op
+        });
+      }
       if (slots.error) {
         return () => slots.error?.(e);
       } else {

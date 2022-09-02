@@ -23,7 +23,7 @@ const data = useLoaderData();
 
   <Suspense>
     <template #fallback>
-      <p id="lazy-value-fallback">Loading data...</p>
+      <p id="lazy-value">Loading data...</p>
     </template>
     <Await :resolve="data.lazy" v-slot="value">
       <p id="lazy-value">Value: {{ value }}</p>
@@ -32,7 +32,7 @@ const data = useLoaderData();
 
   <Suspense>
     <template #fallback>
-      <p id="lazy-error-fallback">Loading error...</p>
+      <p id="lazy-error">Loading error...</p>
     </template>
     <Await :resolve="data.lazyError">
       <template #default="value">
