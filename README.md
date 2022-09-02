@@ -121,10 +121,10 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 
 ## Contributing
 
-We welcome contributions from the community! Feel free to open issues and/or PRs and if you have any questions speciufic to a framework, please reach out to the following "leads":
+We welcome contributions from the community! Feel free to open issues and/or PRs and if you have any questions specific to a framework, please reach out to the following "leads":
 
-- Vue - @brophdawg11
-- Svelte - @austincrim
+- Vue - [@brophdawg11][brophdawg11]
+- Svelte - [@austincrim][austincrim]
 
 ### Repository Setup
 
@@ -145,3 +145,5 @@ This repository uses [yarn workspaces][workspaces], and each implementation shou
 [workspaces]: https://classic.yarnpkg.com/lang/en/docs/workspaces
 [vue-readme]: ./packages/vue#readme
 [svelte-readme]: ./packages/svelte#readme
+[brophdawg11]: https://github.com/brophdawg11/
+[austincrim]: https://github.com/austincrim/
