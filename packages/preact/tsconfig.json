@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "declaration": true,
+    "declarationDir": "dist",
+    "emitDeclarationOnly": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "outDir": "dist",
+    "paths": {
+      "~/*": ["./reference-app/*"],
+      "remix-router-preact": ["./src/index.ts"]
+    },
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "strict": true,
+    "target": "ESNext"
+  },
+  "exclude": ["vite.config.ts"],
+  "include": ["./**/*.ts", "./**/*.tsx"]
+}
