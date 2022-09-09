@@ -1,4 +1,4 @@
-import { DataBrowserRouter, Route } from "remix-router-preact";
+import { RouterProvider, createBrowserRouter } from "remix-router-preact";
 
 import Boundary from "~/components/Boundary";
 import Index from "~/routes/Index";
@@ -15,37 +15,72 @@ import Task, { loader as taskLoader } from "~/routes/tasks/Task";
 import NewTask, { action as newTaskAction } from "~/routes/tasks/NewTask";
 import Defer, { loader as deferLoader } from "~/routes/Defer";
 
+let routes = [
+  {
+    path: "/",
+    element: <Root />,
+    children: [
+      {
+        index: true,
+        element: <Index />,
+      },
+      {
+        path: "parent",
+        loader: parentLoader,
+        element: <Parent />,
+        errorElement: <Boundary />,
+        children: [
+          {
+            path: "child",
+            loader: childLoader,
+            element: <Child />,
+          },
+          {
+            path: "error",
+            loader: errorLoader,
+            element: <ErrorComponent />,
+          },
+        ],
+      },
+      {
+        path: "redirect",
+        loader: redirectLoader,
+        element: <Redirect />,
+      },
+      {
+        path: "error",
+        loader: errorLoader,
+        element: <ErrorComponent />,
+      },
+      {
+        path: "tasks",
+        loader: tasksLoader,
+        action: tasksAction,
+        element: <Tasks />,
+        children: [
+          {
+            path: ":id",
+            loader: taskLoader,
+            element: <Task />,
+          },
+          {
+            path: "new",
+            action: newTaskAction,
+            element: <NewTask />,
+          },
+        ],
+      },
+      {
+        path: "defer",
+        loader: deferLoader,
+        element: <Defer />,
+      },
+    ],
+  },
+];
+
+let router = createBrowserRouter(routes);
+
 export default function App() {
-  return (
-    <DataBrowserRouter fallbackElement={<p>Loading...</p>}>
-      <Route path="/" element={<Root />}>
-        <Route index element={<Index />} />
-        <Route
-          path="parent"
-          loader={parentLoader}
-          element={<Parent />}
-          errorElement={<Boundary />}
-        >
-          <Route path="child" loader={childLoader} element={<Child />} />
-          <Route
-            path="error"
-            loader={errorLoader}
-            element={<ErrorComponent />}
-          />
-        </Route>
-        <Route path="redirect" loader={redirectLoader} element={<Redirect />} />
-        <Route path="error" loader={errorLoader} element={<ErrorComponent />} />
-        <Route
-          path="tasks"
-          loader={tasksLoader}
-          action={tasksAction}
-          element={<Tasks />}
-        >
-          <Route path=":id" loader={taskLoader} element={<Task />} />
-          <Route path="new" action={newTaskAction} element={<NewTask />} />
-        </Route>
-        <Route path="defer" loader={deferLoader} element={<Defer />} />
-      </Route>
-    </DataBrowserRouter>
-  );
+  return <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />;
 }

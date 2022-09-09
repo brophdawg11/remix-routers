@@ -27,7 +27,9 @@ import type {
   HydrationState,
 } from "@remix-run/router";
 import {
+  AbortedDeferredError,
   Action as NavigationType,
+  createRouter,
   invariant,
   isRouteErrorResponse,
   joinPaths,
@@ -36,13 +38,10 @@ import {
   parsePath,
   resolveTo,
   warning,
-  createMemoryHistory,
-  createMemoryRouter,
   stripBasename,
+  createMemoryHistory,
   createBrowserHistory,
   createHashHistory,
-  createBrowserRouter,
-  createHashRouter,
   createPath,
 } from "@remix-run/router";
 
@@ -86,6 +85,58 @@ export interface RouteMatch<
 > extends AgnosticRouteMatch<ParamKey, RouteObjectType> {}
 
 export interface DataRouteMatch extends RouteMatch<string, DataRouteObject> {}
+
+export function createMemoryRouter(
+  routes: RouteObject[],
+  opts?: {
+    basename?: string;
+    hydrationData?: HydrationState;
+    initialEntries?: string[];
+    initialIndex?: number;
+  }
+): RemixRouter {
+  return createRouter({
+    basename: opts?.basename,
+    history: createMemoryHistory({
+      initialEntries: opts?.initialEntries,
+      initialIndex: opts?.initialIndex,
+    }),
+    hydrationData: opts?.hydrationData,
+    routes: enhanceManualRouteObjects(routes),
+  }).initialize();
+}
+
+export function createBrowserRouter(
+  routes: RouteObject[],
+  opts?: {
+    basename?: string;
+    hydrationData?: HydrationState;
+    window?: Window;
+  }
+): RemixRouter {
+  return createRouter({
+    basename: opts?.basename,
+    history: createBrowserHistory({ window }),
+    hydrationData: opts?.hydrationData,
+    routes: enhanceManualRouteObjects(routes),
+  }).initialize();
+}
+
+export function createHashRouter(
+  routes: RouteObject[],
+  opts?: {
+    basename?: string;
+    hydrationData?: HydrationState;
+    window?: Window;
+  }
+): RemixRouter {
+  return createRouter({
+    basename: opts?.basename,
+    history: createHashHistory({ window }),
+    hydrationData: opts?.hydrationData,
+    routes: enhanceManualRouteObjects(routes),
+  }).initialize();
+}
 
 // Contexts for data routers
 export const DataStaticRouterContext =
@@ -852,36 +903,18 @@ export function useAsyncError(): unknown {
   return value?._error;
 }
 
-// Module-scoped singleton to hold the router.  Extracted from the React lifecycle
-// to avoid issues w.r.t. dual initialization fetches in concurrent rendering.
-// Data router apps are expected to have a static route tree and are not intended
-// to be unmounted/remounted at runtime.
-let routerSingleton: RemixRouter;
-
-/**
- * Unit-testing-only function to reset the router between tests
- * @private
- */
-export function _resetModuleScope() {
-  // @ts-expect-error
-  routerSingleton = null;
-}
-
-interface DataRouterProviderProps {
-  basename?: string;
-  children?: Preact.ComponentChildren;
+export interface RouterProviderProps {
+  fallbackElement?: Preact.ComponentChild;
   router: RemixRouter;
 }
 
 /**
- * A higher-order component that, given a Remix Router instance. setups the
- * Context's required for data routing
+ * Given a Remix Router instance, render the appropriate UI
  */
-export function DataRouterProvider({
-  basename,
-  children,
+export function RouterProvider({
+  fallbackElement,
   router,
-}: DataRouterProviderProps) {
+}: RouterProviderProps) {
   // Sync router state to our component state to force re-renders
   let state: RouterState = useSyncExternalStoreShim(
     router.subscribe,
@@ -910,84 +943,29 @@ export function DataRouterProvider({
     };
   }, [router]);
 
+  let basename = router.basename || "/";
+
   return (
     <DataRouterContext.Provider
       value={{
         router,
         navigator,
         static: false,
-        basename: basename || "/",
+        // Do we need this?
+        basename,
       }}
     >
-      <DataRouterStateContext.Provider value={state} children={children} />
+      <DataRouterStateContext.Provider value={state}>
+        <Router
+          basename={router.basename}
+          location={router.state.location}
+          navigationType={router.state.historyAction}
+          navigator={navigator}
+        >
+          {router.state.initialized ? <Routes /> : fallbackElement}
+        </Router>
+      </DataRouterStateContext.Provider>
     </DataRouterContext.Provider>
-  );
-}
-
-interface DataRouterProps {
-  fallbackElement?: Preact.ComponentChild;
-}
-
-/**
- * A data-aware wrapper for `<Router>` that leverages the Context's provided by
- * `<DataRouterProvider>`
- */
-export function DataRouter({ fallbackElement }: DataRouterProps) {
-  let dataRouterContext = PreactHooks.useContext(DataRouterContext);
-  invariant(
-    dataRouterContext,
-    "<DataRouter> may only be rendered within a DataRouterContext"
-  );
-  let { router, navigator, basename } = dataRouterContext;
-
-  return (
-    <Router
-      basename={basename}
-      location={router.state.location}
-      navigationType={router.state.historyAction}
-      navigator={navigator}
-    >
-      {router.state.initialized ? <Routes /> : fallbackElement}
-    </Router>
-  );
-}
-
-export interface DataMemoryRouterProps {
-  basename?: string;
-  children?: Preact.ComponentChildren;
-  initialEntries?: InitialEntry[];
-  initialIndex?: number;
-  hydrationData?: HydrationState;
-  fallbackElement?: Preact.ComponentChild;
-  routes?: RouteObject[];
-}
-
-export function DataMemoryRouter({
-  basename,
-  children,
-  initialEntries,
-  initialIndex,
-  hydrationData,
-  fallbackElement,
-  routes,
-}: DataMemoryRouterProps) {
-  if (!routerSingleton) {
-    routerSingleton = createMemoryRouter({
-      basename,
-      hydrationData,
-      initialEntries,
-      initialIndex,
-      routes: routes
-        ? enhanceManualRouteObjects(routes)
-        : createRoutesFromChildren(children),
-    }).initialize();
-  }
-  let router = routerSingleton;
-
-  return (
-    <DataRouterProvider router={router} basename={basename}>
-      <DataRouter fallbackElement={fallbackElement} />
-    </DataRouterProvider>
   );
 }
 
@@ -1302,6 +1280,8 @@ enum AwaitRenderStatus {
   error,
 }
 
+const neverSettledPromise = new Promise(() => {});
+
 class AwaitErrorBoundary extends Preact.Component<
   AwaitErrorBoundaryProps,
   AwaitErrorBoundaryState
@@ -1361,6 +1341,14 @@ class AwaitErrorBoundary extends Preact.Component<
         (error: any) =>
           Object.defineProperty(resolve, "_error", { get: () => error })
       );
+    }
+
+    if (
+      status === AwaitRenderStatus.error &&
+      promise._error instanceof AbortedDeferredError
+    ) {
+      // Freeze the UI by throwing a never resolved promise
+      throw neverSettledPromise;
     }
 
     if (status === AwaitRenderStatus.error && !errorElement) {
@@ -1503,78 +1491,6 @@ declare global {
 ////////////////////////////////////////////////////////////////////////////////
 //#region Components
 ////////////////////////////////////////////////////////////////////////////////
-
-export interface DataBrowserRouterProps {
-  basename?: string;
-  children?: Preact.ComponentChildren;
-  hydrationData?: HydrationState;
-  fallbackElement?: Preact.ComponentChild;
-  routes?: RouteObject[];
-  window?: Window;
-}
-
-export function DataBrowserRouter({
-  basename,
-  children,
-  fallbackElement,
-  hydrationData,
-  routes,
-  window: windowProp,
-}: DataBrowserRouterProps) {
-  if (!routerSingleton) {
-    routerSingleton = createBrowserRouter({
-      basename,
-      hydrationData: hydrationData || window.__staticRouterHydrationData,
-      window: windowProp,
-      routes: routes
-        ? enhanceManualRouteObjects(routes)
-        : createRoutesFromChildren(children),
-    }).initialize();
-  }
-  let router = routerSingleton;
-
-  return (
-    <DataRouterProvider router={router} basename={basename}>
-      <DataRouter fallbackElement={fallbackElement} />
-    </DataRouterProvider>
-  );
-}
-
-export interface DataHashRouterProps {
-  basename?: string;
-  children?: Preact.ComponentChildren;
-  hydrationData?: HydrationState;
-  fallbackElement?: Preact.ComponentChild;
-  routes?: RouteObject[];
-  window?: Window;
-}
-
-export function DataHashRouter({
-  basename,
-  children,
-  hydrationData,
-  fallbackElement,
-  routes,
-  window: windowProp,
-}: DataBrowserRouterProps) {
-  if (!routerSingleton) {
-    routerSingleton = createHashRouter({
-      basename,
-      hydrationData: hydrationData || window.__staticRouterHydrationData,
-      window: windowProp,
-      routes: routes
-        ? enhanceManualRouteObjects(routes)
-        : createRoutesFromChildren(children),
-    }).initialize();
-  }
-  let router = routerSingleton;
-
-  return (
-    <DataRouterProvider router={router} basename={basename}>
-      <DataRouter fallbackElement={fallbackElement} />
-    </DataRouterProvider>
-  );
-}
 
 export interface BrowserRouterProps {
   basename?: string;
