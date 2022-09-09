@@ -38,7 +38,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@remix-run/router": "^0.2.0-pre.6",
+    "@remix-run/router": "0.2.0-pre.10",
     "svelte": "^3.48.0"
   },
   "peerDependencies": {

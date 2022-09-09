@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DataBrowserRouter } from "remix-router-svelte";
+  import { createBrowserRouter, RouterProvider } from "remix-router-svelte";
   import Root from "./routes/Root.svelte";
   import Index from "./routes/Index.svelte";
   import Parent, {
@@ -76,6 +76,8 @@
       ],
     },
   ];
+
+  const router = createBrowserRouter(routes);
 </script>
 
-<DataBrowserRouter {routes} fallbackElement="<p>loading...</p>" />
+<RouterProvider {router} fallbackElement="<p>loading...</p>" />

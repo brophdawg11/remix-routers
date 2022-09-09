@@ -7,11 +7,103 @@ import {
   type Navigation,
   type Router,
   type Location,
+  type HydrationState,
+  createRouter,
+  createMemoryHistory,
+  type AgnosticRouteObject,
+  type AgnosticRouteMatch,
+  createBrowserHistory,
+  createHashHistory,
 } from "@remix-run/router";
-import { onDestroy } from "svelte";
+import { onDestroy, type SvelteComponent } from "svelte";
 import { derived, get, writable, type Readable } from "svelte/store";
 import { getRouteContext, getRouterContext } from "./contexts";
 import { getFormSubmissionInfo, type SubmitOptions } from "./dom";
+
+// Create svelte-specific types from the agnostic types in @remix-run/router to
+// export from remix-router-svelte
+export interface RouteObject extends AgnosticRouteObject {
+  children?: RouteObject[];
+  element?: SvelteComponent | null;
+  errorElement?: SvelteComponent | null;
+}
+
+export interface DataRouteObject extends RouteObject {
+  children?: DataRouteObject[];
+  id: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface RouteMatch<
+  ParamKey extends string = string,
+  RouteObjectType extends RouteObject = RouteObject
+> extends AgnosticRouteMatch<ParamKey, RouteObjectType> {}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface DataRouteMatch extends RouteMatch<string, DataRouteObject> {}
+
+interface CreateRouterOpts {
+  basename?: string;
+  hydrationData?: HydrationState;
+}
+
+interface CreateMemoryRouterOpts extends CreateRouterOpts {
+  initialEntries?: string[];
+  initialIndex?: number;
+}
+
+interface CreateBrowserRouterOpts extends CreateRouterOpts {
+  window?: Window;
+}
+
+interface CreateHashRouterOpts extends CreateRouterOpts {
+  window?: Window;
+}
+
+export function createMemoryRouter(
+  routes: RouteObject[],
+  {
+    basename,
+    hydrationData,
+    initialEntries,
+    initialIndex,
+  }: CreateMemoryRouterOpts = {}
+) {
+  return createRouter({
+    basename,
+    history: createMemoryHistory({
+      initialEntries,
+      initialIndex,
+    }),
+    hydrationData,
+    routes: enhanceManualRouteObjects(routes),
+  }).initialize();
+}
+
+export function createBrowserRouter(
+  routes: RouteObject[],
+  { basename, hydrationData, window }: CreateBrowserRouterOpts = {}
+) {
+  return createRouter({
+    basename,
+    history: createBrowserHistory({ window }),
+    hydrationData,
+    routes: enhanceManualRouteObjects(routes),
+  }).initialize();
+}
+
+export function createHashRouter(
+  routes: RouteObject[],
+  { basename, hydrationData, window }: CreateHashRouterOpts = {}
+) {
+  return createRouter({
+    basename,
+    history: createHashHistory({ window }),
+    hydrationData,
+    routes: enhanceManualRouteObjects(routes),
+  }).initialize();
+}
+//#endregion
 
 type FetcherWithComponents<TData> = Fetcher<TData> & {
   Form: any;
@@ -147,7 +239,7 @@ export function useFetcher<TData = unknown>(): Readable<
   });
 }
 
-export { default as DataBrowserRouter } from "./components/DataBrowserRouter.svelte";
+export { default as RouterProvider } from "./components/RouterProvider.svelte";
 export { default as Outlet } from "./components/Outlet.svelte";
 export { default as Link } from "./components/Link.svelte";
 import { default as Form } from "./components/Form.svelte";
@@ -188,4 +280,17 @@ export function submitForm(
   } else {
     router.navigate(href, opts);
   }
+}
+
+function enhanceManualRouteObjects(routes: RouteObject[]): RouteObject[] {
+  return routes.map((route) => {
+    let routeClone = { ...route };
+    if (routeClone.hasErrorBoundary == null) {
+      routeClone.hasErrorBoundary = routeClone.errorElement != null;
+    }
+    if (routeClone.children) {
+      routeClone.children = enhanceManualRouteObjects(routeClone.children);
+    }
+    return routeClone;
+  });
 }
