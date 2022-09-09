@@ -24,13 +24,13 @@ _Note: If you are using TypeScript you will need to use `patch-package` and copy
 
 ## Example Usage
 
-Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for reference on the APIs in question, but the following is a simple example of how to leverage `remix-router-svelte` in a Svelte application. You may also refer to the [reference application][reference-app] for a more extensive usage example.
+Please refer to the [beta docs for `react-router@6.4`][rr-docs] for reference on the APIs in question, but the following is a simple example of how to leverage `remix-router-svelte` in a Svelte application. You may also refer to the [reference application][reference-app] for a more extensive usage example.
 
 **App.svelte**
 
 ```html
 <script>
-  import { DataBrowserRouter } from "remix-router-svelte";
+  import { createBrowserRouter, RouterProvider } from "remix-router-svelte";
   import Layout from "./Layout.svelte";
   import Index, { loader as indexLoader } from "./Index.svelte";
 
@@ -50,12 +50,15 @@ Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for referen
     },
   ];
 
+  // Create a router from your routes
+  const router = createBrowserRouter(routes);
+
   // Provide a fallbackElement to be displayed during the initial data load
   const fallbackElement = "<p>loading...</p>";
   // or const fallbackElement = MySvelteComponent
 </script>
 
-<DataBrowserRouter {routes} {fallbackElement} />
+<RouterProvider {router} {fallbackElement} />
 ```
 
 **Layout.svelte**
@@ -97,5 +100,5 @@ Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for referen
 </template>
 ```
 
-[rr-beta-docs]: https://beta.reactrouter.com/en/dev
+[rr-docs]: https://reactrouter.com/en/dev
 [reference-app]: ./reference-app/
