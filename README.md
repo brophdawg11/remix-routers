@@ -1,6 +1,6 @@
 # 💿 Remix Routers
 
-Remix Routers is a collection of libraries that port [`react-router-dom`][react-router-dom] (version 6.4 - currently in prerelease) to different UI rendering libraries, all based on the underlying [`@remix-run/router`][remix-router] package. This only exists for **Vue** and **Svelte** at the moment but we hope to see that expand in the future (with community support 😉).
+Remix Routers is a collection of libraries that port [`react-router-dom`][react-router-dom] (version 6.4 - currently in prerelease) to different UI rendering libraries, all based on the underlying [`@remix-run/router`][remix-router] package. This exists for **Preact**, **Vue**, and **Svelte** at the moment but we hope to see that expand in the future (with community support 😉).
 
 If you're not familiar with the concepts of the Remix Router, we would highly recommend reading/watching the following to provide some background:
 
@@ -18,6 +18,7 @@ If you're not familiar with the concepts of the Remix Router, we would highly re
 
 Please refer to the documentation for the UI library of your choice:
 
+- [remix-router-preact][preact-readme]
 - [remix-router-vue][vue-readme]
 - [remix-router-svelte][svelte-readme]
 
@@ -25,7 +26,7 @@ Please refer to the documentation for the UI library of your choice:
 
 For simplicity and to keep things consistent between `react-router-dom` and these implementations, these implementations follow a few guidelines:
 
-1. Implementations only provide data routers (no `BrowserRouter`, `HashRouter`, etc.)
+1. Implementations only provide data routers via `RouterProvider` (no `BrowserRouter`, `HashRouter`, etc.)
 2. Implementations will not provide any new APIs that are not in `react-router-dom`
 3. Implementations will likely not provide all public APIs of `react-router-dom`
    - Some APIs may not be as relevant in a data-router-only landscape
@@ -43,86 +44,87 @@ In the interest of time (for now), please refer to the [docs for `react-router@6
 
 _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status unknown)
 
-| API                        | React Router | Vue | Svelte |
-| -------------------------- | ------------ | --- | ------ |
-| **ROUTE**                  | -            | -   | -      |
-| `action`                   | ✅           | ✅  | ✅     |
-| `caseSensitive`            | ✅           | ✅  | ✅     |
-| `children`                 | ✅           | ✅  | ✅     |
-| `element`                  | ✅           | ✅  | ✅     |
-| `errorElement`             | ✅           | ✅  |        |
-| `id`                       | ✅           | ✅  | ✅     |
-| `index`                    | ✅           | ✅  | ✅     |
-| `loader`                   | ✅           | ✅  | ✅     |
-| `path`                     | ✅           | ✅  | ✅     |
-| `shouldRevalidate`         | ✅           | ✅  | ✅     |
-| **COMPONENTS**             | -            | -   |
-| `Await`                    | ✅           | ✅  |        |
-| `Form`                     | ✅           | ✅  | ✅     |
-| `Link`                     | ✅           | ✅  | ✅     |
-| `NavLink`                  | ✅           | ⏳  |
-| `Navigate`                 | ✅           |     |
-| `Outlet`                   | ✅           | ✅  | ✅     |
-| `Route`                    | ✅           | ❌  | ❌     |
-| `Routes`                   | ✅           | ❌  | ❌     |
-| `ScrollRestoration`        | ✅           | ⏳  |
-| **ROUTERS**                | -            | -   |
-| `BrowserRouter`            | ✅           | ❌  | ❌     |
-| `DataBrowserRouter`        | ✅           | ✅  | ✅     |
-| `DataHashRouter`           | ✅           | ✅  |        |
-| `DataMemoryRouter`         | ✅           | ✅  |        |
-| `HashRouter`               | ✅           | ❌  |        |
-| `HistoryRouter`            | ✅           | ❌  |        |
-| `MemoryRouter`             | ✅           | ❌  |        |
-| `NativeRouter`             | ✅           | ❌  |        |
-| `Router`                   | ✅           | ❌  |        |
-| `StaticRouter`             | ✅           | ❌  |        |
-| **HOOKS**                  | -            | -   | -      |
-| `useActionData`            | ✅           | ✅  | ⏳     |
-| `useAsyncValue`            | ✅           | ⏳  |        |
-| `useAsyncError`            | ✅           | ⏳  |        |
-| `useFetcher`               | ✅           | ✅  | ✅     |
-| `useFetchers`              | ✅           | ✅  | ⏳     |
-| `useFormAction`            | ✅           | ✅  | ✅     |
-| `useHref`                  | ✅           | ✅  |        |
-| `useInRouterContext`       | ✅           |     |        |
-| `useLinkClickHandler`      | ✅           |     |        |
-| `useLinkPressHandler`      | ✅           |     |        |
-| `useLoaderData`            | ✅           | ✅  | ✅     |
-| `useLocation`              | ✅           | ✅  | ✅     |
-| `useMatch`                 | ✅           |     |
-| `useMatches`               | ✅           | ✅  | ✅     |
-| `useNavigate`              | ✅           | ✅  | ✅     |
-| `useNavigation`            | ✅           | ✅  | ✅     |
-| `useNavigationType`        | ✅           | ✅  | ✅     |
-| `useOutlet`                | ✅           |     |        |
-| `useOutletContext`         | ✅           |     |        |
-| `useParams`                | ✅           |     |        |
-| `useResolvedPath`          | ✅           | ✅  |        |
-| `useRevalidator`           | ✅           | ⏳  |        |
-| `useRouteError`            | ✅           | ✅  |        |
-| `useRouteLoaderData`       | ✅           | ✅  | ✅     |
-| `useRoutes`                | ✅           | ❌  |        |
-| `useSearchParams`          | ✅           |     |        |
-| `useSubmit`                | ✅           | ✅  |        |
-| **FETCH UTILITIES**        | -            | -   |        |
-| `json`                     | ✅           | ✅  |        |
-| `redirect`                 | ✅           | ✅  |        |
-| **UTILITIES**              | -            | -   |        |
-| `createRoutesFromChildren` | ✅           | ❌  |        |
-| `createSearchParams`       | ✅           |     |        |
-| `defer`                    | ✅           | ✅  |        |
-| `generatePath`             | ✅           |     |        |
-| `isRouteErrorResponse`     | ✅           | ✅  |        |
-| `matchPath`                | ✅           |     |        |
-| `matchRoutes`              | ✅           |     |        |
-| `renderMatches`            | ✅           |     |        |
-| `resolvePath`              | ✅           |     |        |
+| API                        | React Router | Preact | Vue | Svelte |
+| -------------------------- | ------------ | ------ | --- | ------ |
+| **ROUTE**                  | -            | -      | -   | -      |
+| `action`                   | ✅           | ✅     | ✅  | ✅     |
+| `caseSensitive`            | ✅           | ✅     | ✅  | ✅     |
+| `children`                 | ✅           | ✅     | ✅  | ✅     |
+| `element`                  | ✅           | ✅     | ✅  | ✅     |
+| `errorElement`             | ✅           | ✅     | ✅  |        |
+| `id`                       | ✅           | ✅     | ✅  | ✅     |
+| `index`                    | ✅           | ✅     | ✅  | ✅     |
+| `loader`                   | ✅           | ✅     | ✅  | ✅     |
+| `path`                     | ✅           | ✅     | ✅  | ✅     |
+| `shouldRevalidate`         | ✅           | ✅     | ✅  | ✅     |
+| **COMPONENTS**             | -            | -      | -   |
+| `Await`                    | ✅           | ✅     | ✅  |        |
+| `Form`                     | ✅           | ✅     | ✅  | ✅     |
+| `Link`                     | ✅           | ✅     | ✅  | ✅     |
+| `NavLink`                  | ✅           | ✅     | ⏳  |
+| `Navigate`                 | ✅           | ✅     |     |
+| `Outlet`                   | ✅           | ✅     | ✅  | ✅     |
+| `Route`                    | ✅           | ❌     | ❌  | ❌     |
+| `Routes`                   | ✅           | ❌     | ❌  | ❌     |
+| `ScrollRestoration`        | ✅           | ✅     | ⏳  |
+| **ROUTERS**                | -            | -      | -   |
+| `BrowserRouter`            | ✅           | ❌     | ❌  | ❌     |
+| `DataBrowserRouter`        | ✅           | ✅     | ✅  | ✅     |
+| `DataHashRouter`           | ✅           | ✅     | ✅  |        |
+| `DataMemoryRouter`         | ✅           | ✅     | ✅  |        |
+| `HashRouter`               | ✅           | ❌     | ❌  |        |
+| `HistoryRouter`            | ✅           | ❌     | ❌  |        |
+| `MemoryRouter`             | ✅           | ❌     | ❌  |        |
+| `NativeRouter`             | ✅           | ❌     | ❌  |        |
+| `Router`                   | ✅           | ❌     | ❌  |        |
+| `StaticRouter`             | ✅           | ❌     | ❌  |        |
+| **HOOKS**                  | -            | -      | -   | -      |
+| `useActionData`            | ✅           | ✅     | ✅  | ⏳     |
+| `useAsyncValue`            | ✅           | ⏳     | ⏳  |        |
+| `useAsyncError`            | ✅           | ⏳     | ⏳  |        |
+| `useFetcher`               | ✅           | ✅     | ✅  | ✅     |
+| `useFetchers`              | ✅           | ✅     | ✅  | ⏳     |
+| `useFormAction`            | ✅           | ✅     | ✅  | ✅     |
+| `useHref`                  | ✅           | ✅     | ✅  |        |
+| `useInRouterContext`       | ✅           | ✅     |     |        |
+| `useLinkClickHandler`      | ✅           | ✅     |     |        |
+| `useLinkPressHandler`      | ✅           | ✅     |     |        |
+| `useLoaderData`            | ✅           | ✅     | ✅  | ✅     |
+| `useLocation`              | ✅           | ✅     | ✅  | ✅     |
+| `useMatch`                 | ✅           | ✅     |     |
+| `useMatches`               | ✅           | ✅     | ✅  | ✅     |
+| `useNavigate`              | ✅           | ✅     | ✅  | ✅     |
+| `useNavigation`            | ✅           | ✅     | ✅  | ✅     |
+| `useNavigationType`        | ✅           | ✅     | ✅  | ✅     |
+| `useOutlet`                | ✅           | ✅     |     |        |
+| `useOutletContext`         | ✅           | ✅     |     |        |
+| `useParams`                | ✅           | ✅     |     |        |
+| `useResolvedPath`          | ✅           | ✅     | ✅  |        |
+| `useRevalidator`           | ✅           | ✅     | ⏳  |        |
+| `useRouteError`            | ✅           | ✅     | ✅  |        |
+| `useRouteLoaderData`       | ✅           | ✅     | ✅  | ✅     |
+| `useRoutes`                | ✅           | ❌     | ❌  |        |
+| `useSearchParams`          | ✅           | ✅     |     |        |
+| `useSubmit`                | ✅           | ✅     | ✅  |        |
+| **FETCH UTILITIES**        | -            | -      | -   |        |
+| `json`                     | ✅           | ✅     | ✅  |        |
+| `redirect`                 | ✅           | ✅     | ✅  |        |
+| **UTILITIES**              | -            | -      | -   |        |
+| `createRoutesFromChildren` | ✅           | ✅     | ❌  |        |
+| `createSearchParams`       | ✅           | ✅     |     |        |
+| `defer`                    | ✅           | ✅     | ✅  |        |
+| `generatePath`             | ✅           | ✅     |     |        |
+| `isRouteErrorResponse`     | ✅           | ✅     | ✅  |        |
+| `matchPath`                | ✅           | ✅     |     |        |
+| `matchRoutes`              | ✅           | ✅     |     |        |
+| `renderMatches`            | ✅           | ✅     |     |        |
+| `resolvePath`              | ✅           | ✅     |     |        |
 
 ## Contributing
 
 We welcome contributions from the community! Feel free to open issues and/or PRs and if you have any questions specific to a framework, please reach out to the following "leads":
 
+- Preact - [@jacob-ebey][@jacob-ebey] or [@brophdawg11][brophdawg11]
 - Vue - [@brophdawg11][brophdawg11]
 - Svelte - [@austincrim][austincrim]
 
@@ -143,6 +145,7 @@ This repository uses [yarn workspaces][workspaces], and each implementation shou
 [rr-docs]: https://reactrouter.com/en/dev
 [rr-tutorial]: https://reactrouter.com/en/dev/getting-started/tutorial
 [workspaces]: https://classic.yarnpkg.com/lang/en/docs/workspaces
+[preact-readme]: ./packages/preact#readme
 [vue-readme]: ./packages/vue#readme
 [svelte-readme]: ./packages/svelte#readme
 [brophdawg11]: https://github.com/brophdawg11/

@@ -1,6 +1,6 @@
-# remix-router-vue
+# remix-router-preact
 
-Vue UI implementation of the `react-router-dom` API (driven by `@remix-run/router`)
+Preact UI implementation of the `react-router-dom` API (driven by `@remix-run/router`)
 
 > **Warning**
 >
@@ -9,100 +9,94 @@ Vue UI implementation of the `react-router-dom` API (driven by `@remix-run/route
 ## Installation
 
 ```bash
-npm install remix-router-vue
+npm install remix-router-preact
 
 # or
 
-yarn add remix-router-vue
+yarn add remix-router-preact
 ```
 
 ## Notable API Differences
 
-- For now, you must provide your routes through the `DataBrowserRouter` `routes` prop, we don't support the declarative JSX-style `<Route>` children approach used by `react-router-dom`
-- `<Await>` has a few small difference sbased on the Vue `<Suspense>` component
-  - Instead of taking an `errorElement` prop, `<Await>` leverages an `#error` scoped slot to render errors. For an example, please refer to the `/defer` route in the Vue reference application.
-  - `<Await>` will not capture and hand render-errors to the `#error` slot because render errors in Vue propagate to the _parent_ components of `<Suspense>`, and `<Await>` is a child component. See [Suspense Error Handling][suspense-error-handling] for more details
+n/a
 
 ## Example Usage
 
-Please refer to the [beta docs for `react-router@6.4`][rr-beta-docs] for reference on the APIs in question, but the following is a simple example of how to leverage `remix-router-vue` in a Vue application. You may also refer to the [reference application][reference-app] for a more extensive usage example.
+Please refer to the [beta docs for `react-router@6.4`][rr-docs] for reference on the APIs in question, but the following is a simple example of how to leverage `remix-router-preact` in a Preact application. You may also refer to the [reference application][reference-app] for a more extensive usage example.
 
-**App.vue**
+**App.jsx**
 
-```html
-<script setup>
-  import { DataBrowserRouter } from "remix-router-vue";
-  import { h } from "vue";
+```jsx
+import { createBrowserRouter, RouterProvider } from "remix-router-preact";
 
-  import Layout from "./Layout.vue";
-  import Index, { loader as indexLoader } from "./Index.vue";
+import Layout from "./Layout.jsx";
+import Index, { loader as indexLoader } from "./Index.jsx";
 
-  // Define your routes in a nested array, providing loaders and actions where
-  // appropriate
-  const routes = [
-    {
-      path: "/",
-      element: Layout,
-      children: [
-        {
-          index: true,
-          loader: indexLoader,
-          element: Index,
-        },
-      ],
-    },
-  ];
+// Define your routes in a nested array, providing loaders and actions where
+// appropriate
+const routes = [
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        index: true,
+        loader: indexLoader,
+        element: <Index />,
+      },
+    ],
+  },
+];
 
-  // Provide a fallbackElement to be displayed during the initial data load
-  const fallbackElement = () => h("p", "Loading..."),
-</script>
+// Provide a fallbackElement to be displayed during the initial data load
+const fallbackElement = () => h("p", "Loading..."),
 
-<template>
-  <DataBrowserRouter :routes="routes" :fallbackElement="fallbackElement" />
+function App() {
+  return <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
 </template>
 ```
 
-**Layout.vue**
+**Layout.jsx**
 
-```html
-<script setup>
-  import { Outlet } from "remix-router-vue";
-</script>
+```jsx
+import { Outlet } from "remix-router-preact";
 
-<template>
-  <!-- Render global-layout stuff here, such as a header and nav bar -->
-  <h1>Welcome to my Vue Application!</h1>
-  <nav><!-- nav links --></nav>
+export default function Layout() {
+  return (
+    <>
+      {/* Render global-layout stuff here, such as a header and nav bar */}
+      <h1>Welcome to my Vue Application!</h1>
+      <nav><{/* nav links */}</nav>
 
-  <!-- Render matching child routes via <Outlet /> -->
-  <Outlet />
-</template>
+      {/* Render matching child routes via <Outlet /> */}
+      <Outlet />
+    </>
+  );
+}
 ```
 
-**Index.vue**
+**Index.jsx**
 
-```html
-<script>
-  import { useLoaderData } from 'remix-router-vue';
+```jsx
+import { useLoaderData } from 'remix-router-vue';
 
-  export async function loader() {
-    // Load your data here and return whatever you need access to in the UI
-    return { ... };
-  };
-</script>
+export async function loader() {
+  // Load your data here and return whatever you need access to in the UI
+  return { ... };
+};
 
-<script setup>
-  // Use the useLoaderData composition API method to access the data returned
-  // from your loader
+export default function Index() {
+  // Use the useLoaderData hook to access the data returned from your loader
   const data = useLoaderData();
-</script>
 
-<template>
-  <p>Check out my data!</p>
-  <pre>{{ data }}</pre>
-</template>
+return (
+  <>
+    <p>Check out my data!</p>
+    <pre>{ data }</pre>
+  </>
+);
+}
 ```
 
-[rr-beta-docs]: https://beta.reactrouter.com/en/dev
+[rr-docs]: https://reactrouter.com/en/dev
 [reference-app]: ./reference-app/
-[suspense-error-handling]: https://vuejs.org/guide/built-ins/suspense.html#error-handling

@@ -969,52 +969,6 @@ export function RouterProvider({
   );
 }
 
-export interface MemoryRouterProps {
-  basename?: string;
-  children?: Preact.ComponentChildren;
-  initialEntries?: InitialEntry[];
-  initialIndex?: number;
-}
-
-/**
- * A <Router> that stores all entries in memory.
- *
- * @see https://reactrouter.com/docs/en/v6/routers/memory-router
- */
-export function MemoryRouter({
-  basename,
-  children,
-  initialEntries,
-  initialIndex,
-}: MemoryRouterProps) {
-  let historyRef = PreactHooks.useRef<MemoryHistory>();
-  if (historyRef.current == null) {
-    historyRef.current = createMemoryHistory({
-      initialEntries,
-      initialIndex,
-      v5Compat: true,
-    });
-  }
-
-  let history = historyRef.current;
-  let [state, setState] = PreactHooks.useState({
-    action: history.action,
-    location: history.location,
-  });
-
-  PreactHooks.useLayoutEffect(() => history.listen(setState), [history]);
-
-  return (
-    <Router
-      basename={basename}
-      children={children}
-      location={state.location}
-      navigationType={state.action}
-      navigator={history}
-    />
-  );
-}
-
 export interface NavigateProps {
   to: To;
   replace?: boolean;
@@ -1148,7 +1102,7 @@ export interface RouterProps {
  *
  * @see https://reactrouter.com/docs/en/v6/routers/router
  */
-export function Router({
+function Router({
   basename: basenameProp = "/",
   children = null,
   location: locationProp,
@@ -1222,24 +1176,6 @@ export function Router({
 export interface RoutesProps {
   children?: Preact.ComponentChildren;
   location?: Partial<Location> | string;
-}
-
-/**
- * A container for a nested tree of <Route> elements that renders the branch
- * that best matches the current location.
- *
- * @see https://reactrouter.com/docs/en/v6/components/routes
- */
-export function Routes({ children, location }: RoutesProps) {
-  let dataRouterContext = PreactHooks.useContext(DataRouterContext);
-  // When in a DataRouterContext _without_ children, we use the router routes
-  // directly.  If we have children, then we're in a descendant tree and we
-  // need to use child routes.
-  let routes =
-    dataRouterContext && !children
-      ? (dataRouterContext.router.routes as DataRouteObject[])
-      : createRoutesFromChildren(children);
-  return useRoutes(routes, location);
 }
 
 export interface AwaitResolveRenderFunction {
@@ -1457,6 +1393,8 @@ export function createRoutesFromChildren(
   return routes;
 }
 
+export { createRoutesFromChildren as createRoutesFromElements };
+
 /**
  * Renders the result of `matchRoutes()` into a React element.
  */
@@ -1491,112 +1429,6 @@ declare global {
 ////////////////////////////////////////////////////////////////////////////////
 //#region Components
 ////////////////////////////////////////////////////////////////////////////////
-
-export interface BrowserRouterProps {
-  basename?: string;
-  children?: Preact.ComponentChildren;
-  window?: Window;
-}
-
-/**
- * A `<Router>` for use in web browsers. Provides the cleanest URLs.
- */
-export function BrowserRouter({
-  basename,
-  children,
-  window,
-}: BrowserRouterProps) {
-  let historyRef = PreactHooks.useRef<BrowserHistory>();
-  if (historyRef.current == null) {
-    historyRef.current = createBrowserHistory({ window, v5Compat: true });
-  }
-
-  let history = historyRef.current;
-  let [state, setState] = PreactHooks.useState({
-    action: history.action,
-    location: history.location,
-  });
-
-  PreactHooks.useLayoutEffect(() => history.listen(setState), [history]);
-
-  return (
-    <Router
-      basename={basename}
-      children={children}
-      location={state.location}
-      navigationType={state.action}
-      navigator={history}
-    />
-  );
-}
-
-export interface HashRouterProps {
-  basename?: string;
-  children?: Preact.ComponentChildren;
-  window?: Window;
-}
-
-/**
- * A `<Router>` for use in web browsers. Stores the location in the hash
- * portion of the URL so it is not sent to the server.
- */
-export function HashRouter({ basename, children, window }: HashRouterProps) {
-  let historyRef = PreactHooks.useRef<HashHistory>();
-  if (historyRef.current == null) {
-    historyRef.current = createHashHistory({ window, v5Compat: true });
-  }
-
-  let history = historyRef.current;
-  let [state, setState] = PreactHooks.useState({
-    action: history.action,
-    location: history.location,
-  });
-
-  PreactHooks.useLayoutEffect(() => history.listen(setState), [history]);
-
-  return (
-    <Router
-      basename={basename}
-      children={children}
-      location={state.location}
-      navigationType={state.action}
-      navigator={history}
-    />
-  );
-}
-
-export interface HistoryRouterProps {
-  basename?: string;
-  children?: Preact.ComponentChildren;
-  history: History;
-}
-
-/**
- * A `<Router>` that accepts a pre-instantiated history object. It's important
- * to note that using your own history object is highly discouraged and may add
- * two versions of the history library to your bundles unless you use the same
- * version of the history library that React Router uses internally.
- */
-function HistoryRouter({ basename, children, history }: HistoryRouterProps) {
-  const [state, setState] = PreactHooks.useState({
-    action: history.action,
-    location: history.location,
-  });
-
-  PreactHooks.useLayoutEffect(() => history.listen(setState), [history]);
-
-  return (
-    <Router
-      basename={basename}
-      children={children}
-      location={state.location}
-      navigationType={state.action}
-      navigator={history}
-    />
-  );
-}
-
-export { HistoryRouter as unstable_HistoryRouter };
 
 type t = Preact.Attributes;
 export interface LinkProps
