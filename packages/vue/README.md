@@ -18,8 +18,7 @@ yarn add remix-router-vue
 
 ## Notable API Differences
 
-- For now, you must provide your routes through the `DataBrowserRouter` `routes` prop, we don't support the declarative JSX-style `<Route>` children approach used by `react-router-dom`
-- `<Await>` has a few small difference sbased on the Vue `<Suspense>` component
+- `<Await>` has a few small differences based on the Vue `<Suspense>` component
   - Instead of taking an `errorElement` prop, `<Await>` leverages an `#error` scoped slot to render errors. For an example, please refer to the `/defer` route in the Vue reference application.
   - `<Await>` will not capture and hand render-errors to the `#error` slot because render errors in Vue propagate to the _parent_ components of `<Suspense>`, and `<Await>` is a child component. See [Suspense Error Handling][suspense-error-handling] for more details
 

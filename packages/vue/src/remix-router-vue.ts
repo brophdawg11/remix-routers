@@ -430,7 +430,7 @@ export function useFetchers(): Fetcher[] {
 //#region Components
 
 export const RouterProvider = defineComponent({
-  name: "DataBrowserRouter",
+  name: "RouterProvider",
   props: {
     router: {
       type: Object as PropType<Router>,

@@ -20,7 +20,7 @@ _Note: If you are using TypeScript you will need to use `patch-package` and copy
 
 ## Notable API Differences
 
-- For now, you must provide your routes through the `DataBrowserRouter` `routes` prop, we don't support the declarative JSX-style `<Route>` children approach used by `react-router-dom`
+n/a
 
 ## Example Usage
 
