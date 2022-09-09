@@ -1178,6 +1178,24 @@ export interface RoutesProps {
   location?: Partial<Location> | string;
 }
 
+/**
+ * A container for a nested tree of <Route> elements that renders the branch
+ * that best matches the current location.
+ *
+ * @see https://reactrouter.com/docs/en/v6/components/routes
+ */
+function Routes({ children, location }: RoutesProps) {
+  let dataRouterContext = PreactHooks.useContext(DataRouterContext);
+  // When in a DataRouterContext _without_ children, we use the router routes
+  // directly.  If we have children, then we're in a descendant tree and we
+  // need to use child routes.
+  let routes =
+    dataRouterContext && !children
+      ? (dataRouterContext.router.routes as DataRouteObject[])
+      : createRoutesFromChildren(children);
+  return useRoutes(routes, location);
+}
+
 export interface AwaitResolveRenderFunction {
   (data: Awaited<any>): any;
 }
