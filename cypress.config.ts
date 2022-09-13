@@ -7,6 +7,7 @@ module.exports = defineConfig({
   integrationFolder: "../../cypress/integration",
   fixturesFolder: false,
   pluginsFile: false,
+  screenshotOnRunFailure: false,
   supportFile: false,
   video: false,
   env: {
