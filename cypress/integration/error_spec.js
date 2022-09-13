@@ -4,7 +4,7 @@ const { conditionalDescribe } = require("../utils/utils");
 conditionalDescribe(
   { react: true, vue: true, svelte: false },
   "Error Handling",
-  () => {
+  ({ library }) => {
     beforeEach(() => {
       cy.visit("http://localhost:3000/");
     });
@@ -20,7 +20,7 @@ conditionalDescribe(
       // Ensure we can recover
       cy.go("back");
 
-      cy.get("h1").should("have.text", "Root Layout");
+      cy.get("h1").should("have.text", `Root Layout (${library})`);
       cy.get("h2").should("have.text", "Index Page");
     });
 
@@ -46,7 +46,7 @@ conditionalDescribe(
       // Ensure we can recover
       cy.go("back");
 
-      cy.get("h1").should("have.text", "Root Layout");
+      cy.get("h1").should("have.text", `Root Layout (${library})`);
       cy.get("h2").should("have.text", "Index Page");
     });
 
@@ -60,7 +60,7 @@ conditionalDescribe(
       // Ensure we can recover
       cy.go("back");
 
-      cy.get("h1").should("have.text", "Root Layout");
+      cy.get("h1").should("have.text", `Root Layout (${library})`);
       cy.get("h2").should("have.text", "Index Page");
     });
 
@@ -79,12 +79,12 @@ conditionalDescribe(
       );
 
       // We should still be rendering the root layout
-      cy.get("h1").should("have.text", "Root Layout");
+      cy.get("h1").should("have.text", `Root Layout (${library})`);
 
       // Ensure we can recover
       cy.go("back");
 
-      cy.get("h1").should("have.text", "Root Layout");
+      cy.get("h1").should("have.text", `Root Layout (${library})`);
       cy.get("h2").should("have.text", "Index Page");
     });
   }

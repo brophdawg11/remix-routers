@@ -43,7 +43,7 @@
     "prepublishOnly": "rm -rf dist && npm run build"
   },
   "dependencies": {
-    "@remix-run/router": "0.2.0-pre.9",
+    "@remix-run/router": "0.2.0-pre.10",
     "vue": "3.2.36"
   },
   "peerDependencies": {

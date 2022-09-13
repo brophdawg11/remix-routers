@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { DataBrowserRouter, RouteObject } from "remix-router-vue";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  RouteObject,
+} from "remix-router-vue";
 import { h } from "vue";
 
 import Boundary from "~/components/Boundary.vue";
@@ -81,9 +85,10 @@ const routes: RouteObject[] = [
   },
 ];
 
+const router = createBrowserRouter(routes);
 const fallbackElement = () => h("p", "Loading...");
 </script>
 
 <template>
-  <DataBrowserRouter :routes="routes" :fallbackElement="fallbackElement" />
+  <RouterProvider :router="router" :fallbackElement="fallbackElement" />
 </template>
