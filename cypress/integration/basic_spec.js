@@ -37,7 +37,8 @@ conditionalDescribe(
     });
 
     it("displays the index page and router info", () => {
-      cy.get("h1").should("have.text", "Root Layout");
+      let library = Cypress.env("UI_LIBRARY");
+      cy.get("h1").should("have.text", `Root Layout (${library})`);
       cy.get("h2").should("have.text", "Index Page");
 
       assertHooks({

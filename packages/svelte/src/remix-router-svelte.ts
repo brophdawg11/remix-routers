@@ -24,8 +24,9 @@ import { getFormSubmissionInfo, type SubmitOptions } from "./dom";
 // export from remix-router-svelte
 export interface RouteObject extends AgnosticRouteObject {
   children?: RouteObject[];
-  element?: SvelteComponent | null;
-  errorElement?: SvelteComponent | null;
+  element?: typeof SvelteComponent | null;
+  // TODO: Not yet implemented
+  // errorElement?: typeof SvelteComponent | null;
 }
 
 export interface DataRouteObject extends RouteObject {
@@ -286,7 +287,9 @@ function enhanceManualRouteObjects(routes: RouteObject[]): RouteObject[] {
   return routes.map((route) => {
     let routeClone = { ...route };
     if (routeClone.hasErrorBoundary == null) {
-      routeClone.hasErrorBoundary = routeClone.errorElement != null;
+      // TODO: Wire up once errorElement is added
+      // routeClone.hasErrorBoundary = routeClone.errorElement != null;
+      routeClone.hasErrorBoundary = false;
     }
     if (routeClone.children) {
       routeClone.children = enhanceManualRouteObjects(routeClone.children);

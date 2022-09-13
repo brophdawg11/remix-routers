@@ -35,7 +35,7 @@
   let navigate = useNavigate();
 </script>
 
-<h1>Root Layout</h1>
+<h1>Root Layout (svelte)</h1>
 <nav>
   {#each Object.entries(links) as [text, href]}
     <Link to={href}>{text}</Link>
