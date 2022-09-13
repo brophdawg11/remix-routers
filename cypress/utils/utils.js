@@ -7,9 +7,9 @@ function conditionalDescribe(opts, description, cb) {
   }
   if (opts[library] === false) {
     console.warn(`Skipping test suite for ${library}: ${description}`);
-    describe.skip(description, cb);
+    describe.skip(description, () => cb({ library }));
   } else {
-    describe(description, cb);
+    describe(description, () => cb({ library }));
   }
 }
 

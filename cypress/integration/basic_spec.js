@@ -31,13 +31,12 @@ function assertHooks(hooks) {
 conditionalDescribe(
   { react: true, vue: true, svelte: true },
   "Basic Navigation",
-  () => {
+  ({ library }) => {
     beforeEach(() => {
       cy.visit("http://localhost:3000/");
     });
 
     it("displays the index page and router info", () => {
-      let library = Cypress.env("UI_LIBRARY");
       cy.get("h1").should("have.text", `Root Layout (${library})`);
       cy.get("h2").should("have.text", "Index Page");
 
