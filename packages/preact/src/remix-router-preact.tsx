@@ -1360,6 +1360,9 @@ export function createRoutesFromChildren(
 
   const c = Array.isArray(children) ? children : children ? [children] : [];
 
+  // TODO: What's going on with the type here?  Only fails on build but IDE
+  // doesn't complain
+  // @ts-expect-error
   c.forEach((element: Preact.VNode<any>, index) => {
     if (!Preact.isValidElement(element)) {
       // Ignore non-elements. This allows people to more easily inline
