@@ -4,6 +4,7 @@ import {
   defer,
   useAsyncError,
   useLoaderData,
+  useLocation,
 } from "remix-router-preact";
 
 const resolve = (d: string, ms: number): Promise<string> =>
@@ -32,13 +33,17 @@ function ErrorElement() {
 }
 
 export default function Defer() {
+  let location = useLocation();
   let data = useLoaderData() as LoaderData;
 
   return (
     <>
       <p id="critical-data">Critical Data: {data.critical}</p>
 
-      <Suspense fallback={<p id="lazy-value">Loading data...</p>}>
+      <Suspense
+        fallback={<p id="lazy-value">Loading data...</p>}
+        key={`success-${location.key}`}
+      >
         <Await resolve={data.lazy}>
           {(value: Awaited<typeof data.lazy>) => (
             <p id="lazy-value">Value: {value}</p>
@@ -46,7 +51,10 @@ export default function Defer() {
         </Await>
       </Suspense>
 
-      <Suspense fallback={<p id="lazy-error">Loading error...</p>}>
+      <Suspense
+        fallback={<p id="lazy-error">Loading error...</p>}
+        key={`error-${location.key}`}
+      >
         <Await resolve={data.lazyError} errorElement={<ErrorElement />}>
           {() => <p>Nope!</p>}
         </Await>
