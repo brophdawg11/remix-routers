@@ -32,7 +32,7 @@ const navigate = useNavigate();
 </script>
 
 <template>
-  <h1>Root Layout</h1>
+  <h1>Root Layout (vue)</h1>
   <nav>
     <Link v-for="(href, text) in links" :key="href" :to="href">{{ text }}</Link>
     <button id="back" @click="() => navigate(-1)">Go Back</button>

@@ -1,9 +1,10 @@
 import {
   AbortedDeferredError,
   Action as NavigationType,
-  createBrowserRouter,
-  createHashRouter,
-  createMemoryRouter,
+  createBrowserHistory,
+  createHashHistory,
+  createMemoryHistory,
+  createRouter,
   invariant,
   isRouteErrorResponse,
   resolveTo,
@@ -13,7 +14,6 @@ import {
   type FormEncType,
   type FormMethod,
   type HydrationState,
-  type InitialEntry,
   type Location,
   type Navigation,
   type Path,
@@ -85,6 +85,72 @@ export interface RouteContext {
 // Wrapper context holding the captured render error
 export interface RouteErrorContext {
   error: unknown;
+}
+//#endregion
+
+////////////////////////////////////////////////////////////////////////////////
+//#region Routers
+
+interface CreateRouterOpts {
+  basename?: string;
+  hydrationData?: HydrationState;
+}
+
+interface CreateMemoryRouterOpts extends CreateRouterOpts {
+  initialEntries?: string[];
+  initialIndex?: number;
+}
+
+interface CreateBrowserRouterOpts extends CreateRouterOpts {
+  window?: Window;
+}
+
+interface CreateHashRouterOpts extends CreateRouterOpts {
+  window?: Window;
+}
+
+export function createMemoryRouter(
+  routes: RouteObject[],
+  {
+    basename,
+    hydrationData,
+    initialEntries,
+    initialIndex,
+  }: CreateMemoryRouterOpts = {}
+) {
+  return createRouter({
+    basename,
+    history: createMemoryHistory({
+      initialEntries,
+      initialIndex,
+    }),
+    hydrationData,
+    routes: enhanceManualRouteObjects(routes),
+  }).initialize();
+}
+
+export function createBrowserRouter(
+  routes: RouteObject[],
+  { basename, hydrationData, window }: CreateBrowserRouterOpts = {}
+) {
+  return createRouter({
+    basename,
+    history: createBrowserHistory({ window }),
+    hydrationData,
+    routes: enhanceManualRouteObjects(routes),
+  }).initialize();
+}
+
+export function createHashRouter(
+  routes: RouteObject[],
+  { basename, hydrationData, window }: CreateHashRouterOpts = {}
+) {
+  return createRouter({
+    basename,
+    history: createHashHistory({ window }),
+    hydrationData,
+    routes: enhanceManualRouteObjects(routes),
+  }).initialize();
 }
 //#endregion
 
@@ -363,27 +429,11 @@ export function useFetchers(): Fetcher[] {
 ////////////////////////////////////////////////////////////////////////////////
 //#region Components
 
-function setupRouter(router: Router, fallbackElement?: Component) {
-  let stateRef = shallowRef<RouterState>(router.state);
-  router.subscribe((state) => (stateRef.value = state));
-
-  provide<RouterContext>(RouterContextSymbol, { router, stateRef });
-
-  return () => {
-    let state = stateRef.value;
-    if (!state.initialized) {
-      return fallbackElement ? h(fallbackElement) : h("span");
-    }
-
-    return h(OutletImpl, { root: true });
-  };
-}
-
-export const DataBrowserRouter = defineComponent({
-  name: "DataBrowserRouter",
+export const RouterProvider = defineComponent({
+  name: "RouterProvider",
   props: {
-    routes: {
-      type: Array as PropType<RouteObject[]>,
+    router: {
+      type: Object as PropType<Router>,
       required: true,
     },
     fallbackElement: {
@@ -394,61 +444,21 @@ export const DataBrowserRouter = defineComponent({
     },
   },
   setup(props) {
-    let router = createBrowserRouter({
-      routes: enhanceManualRouteObjects(props.routes),
-      hydrationData: props.hydrationData,
-    }).initialize();
-    return setupRouter(router, props.fallbackElement);
-  },
-});
+    let { router, fallbackElement } = props;
 
-export const DataHashRouter = defineComponent({
-  name: "DataHashRouter",
-  props: {
-    routes: {
-      type: Array as PropType<RouteObject[]>,
-      required: true,
-    },
-    fallbackElement: {
-      type: Object as PropType<Component>,
-    },
-    hydrationData: {
-      type: Object as PropType<HydrationState>,
-    },
-  },
-  setup(props) {
-    let router = createHashRouter({
-      routes: enhanceManualRouteObjects(props.routes),
-      hydrationData: props.hydrationData,
-    }).initialize();
-    return setupRouter(router, props.fallbackElement);
-  },
-});
+    let stateRef = shallowRef<RouterState>(router.state);
+    router.subscribe((state) => (stateRef.value = state));
 
-export const DataMemoryRouter = defineComponent({
-  name: "DataMemoryRouter",
-  props: {
-    initialEntries: {
-      type: Array as PropType<InitialEntry[]>,
-    },
-    initialIndex: {
-      type: Number,
-    },
-    routes: {
-      type: Array as PropType<RouteObject[]>,
-      required: true,
-    },
-    fallbackElement: {
-      type: Object as PropType<Component>,
-    },
-  },
-  setup(props) {
-    let router = createMemoryRouter({
-      routes: enhanceManualRouteObjects(props.routes),
-      initialEntries: props.initialEntries,
-      initialIndex: props.initialIndex,
-    }).initialize();
-    return setupRouter(router, props.fallbackElement);
+    provide<RouterContext>(RouterContextSymbol, { router, stateRef });
+
+    return () => {
+      let state = stateRef.value;
+      if (!state.initialized) {
+        return fallbackElement ? h(fallbackElement) : h("span");
+      }
+
+      return h(OutletImpl, { root: true });
+    };
   },
 });
 

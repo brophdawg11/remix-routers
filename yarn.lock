@@ -2885,7 +2885,7 @@ react-refresh@^0.13.0:
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.13.0.tgz#cbd01a4482a177a5da8d44c9755ebb1f26d5a1c1"
   integrity sha512-XP8A9BT0CpRBD+NYLLeIhld/RqG9+gktUjW1FkE+Vm7OCinbG1SshcK5tb9ls4kzvjZr9mOQc7HYgBngEyPAXg==
 
-react-router-dom@^6.4.0-pre.14:
+react-router-dom@^6.4.0-pre.15:
   version "6.4.0-pre.15"
   resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.4.0-pre.15.tgz#081020661da63cd7013117e0a7da4f05f1cdc2f8"
   integrity sha512-WHi91wUicH+iOIeJCy0RH4xyHMv1Dhr8pwZ3ESfYawx8makp6RFMr4SYmHufJzjv23Q9c4/sQxvsPt2Jky/osA==

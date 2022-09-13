@@ -68,20 +68,21 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `Routes`                   | ✅           | ❌     | ❌  | ❌     |
 | `ScrollRestoration`        | ✅           | ✅     | ⏳  |
 | **ROUTERS**                | -            | -      | -   |
+| `createBrowserRouter`      | ✅           | ✅     | ✅  | ✅     |
+| `createHashRouter`         | ✅           | ✅     | ✅  | ✅     |
+| `createMemoryRouter`       | ✅           | ✅     | ✅  | ✅     |
 | `BrowserRouter`            | ✅           | ❌     | ❌  | ❌     |
-| `DataBrowserRouter`        | ✅           | ✅     | ✅  | ✅     |
-| `DataHashRouter`           | ✅           | ✅     | ✅  |        |
-| `DataMemoryRouter`         | ✅           | ✅     | ✅  |        |
-| `HashRouter`               | ✅           | ❌     | ❌  |        |
-| `HistoryRouter`            | ✅           | ❌     | ❌  |        |
-| `MemoryRouter`             | ✅           | ❌     | ❌  |        |
-| `NativeRouter`             | ✅           | ❌     | ❌  |        |
-| `Router`                   | ✅           | ❌     | ❌  |        |
-| `StaticRouter`             | ✅           | ❌     | ❌  |        |
+| `HashRouter`               | ✅           | ❌     | ❌  | ❌     |
+| `HistoryRouter`            | ✅           | ❌     | ❌  | ❌     |
+| `MemoryRouter`             | ✅           | ❌     | ❌  | ❌     |
+| `NativeRouter`             | ✅           | ❌     | ❌  | ❌     |
+| `Router`                   | ✅           | ❌     | ❌  | ❌     |
+| `RouterProvider`           | ✅           | ✅     | ✅  | ✅     |
+| `StaticRouter`             | ✅           | ❌     | ❌  | ❌     |
 | **HOOKS**                  | -            | -      | -   | -      |
 | `useActionData`            | ✅           | ✅     | ✅  | ⏳     |
-| `useAsyncValue`            | ✅           | ⏳     | ⏳  |        |
-| `useAsyncError`            | ✅           | ⏳     | ⏳  |        |
+| `useAsyncValue`            | ✅           | ✅     | ⏳  |        |
+| `useAsyncError`            | ✅           | ✅     | ⏳  |        |
 | `useFetcher`               | ✅           | ✅     | ✅  | ✅     |
 | `useFetchers`              | ✅           | ✅     | ✅  | ⏳     |
 | `useFormAction`            | ✅           | ✅     | ✅  | ✅     |
@@ -100,7 +101,7 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `useOutletContext`         | ✅           | ✅     |     |        |
 | `useParams`                | ✅           | ✅     |     |        |
 | `useResolvedPath`          | ✅           | ✅     | ✅  |        |
-| `useRevalidator`           | ✅           | ✅     | ⏳  |        |
+| `useRevalidator`           | ✅           | ⏳     | ⏳  |        |
 | `useRouteError`            | ✅           | ✅     | ✅  |        |
 | `useRouteLoaderData`       | ✅           | ✅     | ✅  | ✅     |
 | `useRoutes`                | ✅           | ❌     | ❌  |        |
@@ -110,7 +111,7 @@ _Legend:_ ✅ (Included), ⏳ (Coming soon), ❌ (Not planned), Empty (Status un
 | `json`                     | ✅           | ✅     | ✅  |        |
 | `redirect`                 | ✅           | ✅     | ✅  |        |
 | **UTILITIES**              | -            | -      | -   |        |
-| `createRoutesFromChildren` | ✅           | ✅     | ❌  |        |
+| `createRoutesFromChildren` | ✅           | ✅     | ❌  | ❌     |
 | `createSearchParams`       | ✅           | ✅     |     |        |
 | `defer`                    | ✅           | ✅     | ✅  |        |
 | `generatePath`             | ✅           | ✅     |     |        |
