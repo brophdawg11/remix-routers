@@ -31,7 +31,7 @@ export default function Root() {
 
   return (
     <>
-      <h1>Root Layout</h1>
+      <h1>Root Layout (preact)</h1>
       <nav>
         {Object.entries(links).map(([text, href]) => (
           <Link key={href} to={href}>

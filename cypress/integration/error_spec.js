@@ -2,7 +2,7 @@
 const { conditionalDescribe } = require("../utils/utils");
 
 conditionalDescribe(
-  { react: true, vue: true, svelte: false },
+  { react: true, preact: true, vue: true, svelte: false },
   "Error Handling",
   ({ library }) => {
     beforeEach(() => {
