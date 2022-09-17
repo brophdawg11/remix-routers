@@ -1,16 +1,16 @@
 {
-  "name": "remix-router-vue",
+  "name": "remix-router-preact",
   "version": "0.5.1",
-  "description": "A Vue UI layer for nested + data-driven routing via @remix-run/router",
-  "author": "matt@brophy.org",
+  "description": "A Preact UI layer for nested + data-driven routing via @remix-run/router",
+  "author": "jacob.ebey@live.com",
   "license": "MIT",
-  "main": "dist/remix-router-vue.umd.js",
-  "module": "dist/remix-router-vue.es.js",
+  "main": "dist/remix-router-preact.umd.js",
+  "module": "dist/remix-router-preact.es.js",
   "types": "dist/src/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/remix-router-vue.es.js",
-      "require": "./dist/remix-router-vue.umd.js"
+      "import": "./dist/remix-router-preact.es.js",
+      "require": "./dist/remix-router-preact.umd.js"
     }
   },
   "sideEffects": false,
@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brophdawg11/remix-routers.git",
-    "directory": "packages/vue"
+    "directory": "packages/preact"
   },
   "bugs": {
     "url": "https://github.com/brophdawg11/remix-routers/issues"
@@ -27,7 +27,7 @@
     "remix",
     "remix-run",
     "router",
-    "vue"
+    "preact"
   ],
   "files": [
     "dist/**"
@@ -46,10 +46,13 @@
     "@remix-run/router": "0.2.0-pre.10"
   },
   "peerDependencies": {
-    "vue": ">=3.2.0"
+    "preact": "^10.0.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "2.3.3",
-    "vue": "3.2.36"
+    "@babel/plugin-transform-react-jsx": "^7.19.0",
+    "@babel/plugin-transform-react-jsx-development": "^7.18.6",
+    "@preact/preset-vite": "^2.4.0",
+    "preact": "^10.10.6",
+    "rollup-plugin-analyzer": "^4.0.0"
   }
 }

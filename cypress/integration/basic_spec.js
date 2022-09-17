@@ -29,7 +29,7 @@ function assertHooks(hooks) {
 }
 
 conditionalDescribe(
-  { react: true, vue: true, svelte: true },
+  { react: true, preact: true, vue: true, svelte: true },
   "Basic Navigation",
   ({ library }) => {
     beforeEach(() => {

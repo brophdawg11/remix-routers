@@ -7,7 +7,7 @@ function testJson(selector, cb) {
 }
 
 conditionalDescribe(
-  { react: true, vue: true, svelte: true },
+  { react: true, preact: true, vue: true, svelte: true },
   "Redirects",
   () => {
     beforeEach(() => {
