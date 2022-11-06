@@ -190,7 +190,6 @@ export function useFormAction(action = "."): string {
   let resolvedAction = action ?? ".";
   let location = useLocation();
   let { pathname, search, hash } = get(location);
-  console.log(getPathContributingMatches(matches));
   let path = resolveTo(
     resolvedAction,
     getPathContributingMatches(matches).map((match) => match.pathnameBase),
