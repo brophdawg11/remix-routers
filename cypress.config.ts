@@ -1,6 +1,7 @@
 import { defineConfig } from "cypress";
+import { parse } from "node:path";
 
-const library = process.cwd().split("/").slice(-1)[0].replace("-stub", "");
+const library = parse(process.cwd()).name.replace("-stub", "");
 console.log(`Running Cypress integration tests for library: ${library}`);
 
 module.exports = defineConfig({
