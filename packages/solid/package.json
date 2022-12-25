@@ -1,5 +1,5 @@
 {
-  "name": "vite-template-solid",
+  "name": "remix-router-solid",
   "version": "0.0.0",
   "description": "",
   "scripts": {
@@ -16,6 +16,7 @@
     "vite-plugin-solid": "^2.5.0"
   },
   "dependencies": {
+    "@remix-run/router": "0.2.0-pre.10",
     "solid-js": "^1.6.6"
   }
 }

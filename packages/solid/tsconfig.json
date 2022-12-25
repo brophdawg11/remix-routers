@@ -9,7 +9,20 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "types": ["vite/client"],
-    "noEmit": true,
-    "isolatedModules": true
-  }
+    "isolatedModules": true,
+    "allowJs": false,
+    "baseUrl": ".",
+    "declaration": true,
+    "declarationDir": "dist",
+    "emitDeclarationOnly": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "outDir": "dist",
+    "paths": {
+      "~/*" : ["./reference-app/*"]
+    } ,
+    "resolveJsonModule": true,
+    "rootDir": "."
+  },
+  "include": ["./**/*.ts", "./**/*.tsx"]
 }
