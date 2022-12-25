@@ -13,10 +13,10 @@ import {
   Accessor,
   createContext,
   createSignal,
+  JSX,
   onCleanup,
   Show,
   useContext,
-  type Component,
 } from "solid-js";
 
 interface CreateRouterOpts {
@@ -26,7 +26,7 @@ interface CreateRouterOpts {
 
 export interface RouteObject extends AgnosticRouteObject {
   children?: RouteObject[];
-  element?: Component | null;
+  element?: JSX.Element | null;
 }
 
 export interface DataRouteObject extends RouteObject {
@@ -172,7 +172,7 @@ const RouteWrapper = (props: RouteWrapperTypes) => {
         ),
       }}
     >
-      {props.match.route.element!({})}
+      {props.match.route.element!}
     </RouteContext.Provider>
   );
 };
