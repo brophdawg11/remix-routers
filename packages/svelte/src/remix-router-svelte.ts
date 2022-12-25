@@ -14,6 +14,8 @@ import {
   type AgnosticRouteMatch,
   createBrowserHistory,
   createHashHistory,
+  joinPaths,
+  createPath,
 } from "@remix-run/router";
 import { onDestroy, type SvelteComponent } from "svelte";
 import { derived, get, writable, type Readable } from "svelte/store";
@@ -172,24 +174,49 @@ export function useMatches() {
   );
 }
 
-export function useFormAction(action = "."): string {
-  let { router } = getRouterContext();
-  let route = getRouteContext();
-  let location = useLocation();
-  let { pathname } = get(location);
+function getPathContributingMatches(matches: DataRouteMatch[]) {
+  return matches.filter(
+    (match, index) =>
+      index === 0 ||
+      (!match.route.index &&
+        match.pathnameBase !== matches[index - 1].pathnameBase)
+  );
+}
 
+export function useFormAction(action = "."): string {
+  let basename = getRouterContext().router.basename;
+  let matches = getRouterContext().router.state.matches;
+  let [match] = matches.slice(-1);
+  let resolvedAction = action ?? ".";
+  let location = useLocation();
+  let { pathname, search, hash } = get(location);
   let path = resolveTo(
-    action,
-    router.state.matches.map((match) => match.pathnameBase),
+    resolvedAction,
+    getPathContributingMatches(matches).map((match) => match.pathnameBase),
     pathname
   );
-
-  let search = path.search;
-  if (action === "." && route.index) {
-    search = search ? search.replace(/^\?/, "?index&") : "?index";
+  if (action == null) {
+    path.search = search;
+    path.hash = hash;
+    if (match.route.index) {
+      let params = new URLSearchParams(path.search);
+      params.delete("index");
+      path.search = params.toString() ? `?${params.toString()}` : "";
+    }
   }
 
-  return path.pathname + search;
+  if ((!action || action === ".") && match.route.index) {
+    path.search = path.search
+      ? path.search.replace(/^\?/, "?index&")
+      : "?index";
+  }
+
+  if (basename !== "/") {
+    path.pathname =
+      path.pathname === "/" ? basename : joinPaths([basename, path.pathname]);
+  }
+
+  return createPath(path);
 }
 
 let fetcherId = 0;
