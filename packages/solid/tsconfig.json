@@ -19,7 +19,8 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "outDir": "dist",
     "paths": {
-      "~/*" : ["./reference-app/*"]
+      "~/*" : ["./reference-app/*"],
+      "remix-router-solid" : ["./src/index.ts"]
     } ,
     "resolveJsonModule": true,
     "rootDir": "."

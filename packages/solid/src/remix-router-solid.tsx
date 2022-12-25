@@ -11,9 +11,9 @@ import {
 } from "@remix-run/router";
 import {
   Accessor,
+  Component,
   createContext,
   createSignal,
-  JSX,
   onCleanup,
   Show,
   useContext,
@@ -26,7 +26,7 @@ interface CreateRouterOpts {
 
 export interface RouteObject extends AgnosticRouteObject {
   children?: RouteObject[];
-  element?: JSX.Element | null;
+  element?: Component | null;
 }
 
 export interface DataRouteObject extends RouteObject {
@@ -106,7 +106,11 @@ export const RouterProvider = (props: RouterProviderProps) => {
   );
 };
 
-export type OutletImpProps = { root: boolean };
+export const Outlet = () => {
+  return <OutletImp root={false} />;
+};
+
+type OutletImpProps = { root: boolean };
 
 const OutletImp = (props: OutletImpProps) => {
   const { router, stateRef } = getRouterContext();
@@ -172,7 +176,7 @@ const RouteWrapper = (props: RouteWrapperTypes) => {
         ),
       }}
     >
-      {props.match.route.element!}
+      {props.match.route.element!({})}
     </RouteContext.Provider>
   );
 };
