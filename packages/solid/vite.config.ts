@@ -13,7 +13,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      "~": resolve(__dirname, "./reference-app"),
+      "~": resolve(__dirname, "./referance-app"),
       "remix-router-solid": resolve(__dirname, "src/index.ts"),
     },
   },

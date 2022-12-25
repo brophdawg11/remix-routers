@@ -5,8 +5,9 @@ import {
   RouterProvider,
 } from "remix-router-solid";
 import { Root } from "./routes/Root";
-import { Child } from "./routes/child";
 import { Index } from "./routes/Index";
+import { Parent, parentLoader } from "./routes/nested/parent";
+import { Child, childLoader } from "./routes/nested/child";
 
 const App: Component = () => {
   const routes: RouteObject[] = [
@@ -15,7 +16,12 @@ const App: Component = () => {
       element: Root,
       children: [
         { index: true, element: Index },
-        { path: "/child", element: Child },
+        {
+          path: "parent",
+          element: Parent,
+          loader: parentLoader,
+          children: [{ path: "child", element: Child, loader: childLoader }],
+        },
       ],
     },
   ];

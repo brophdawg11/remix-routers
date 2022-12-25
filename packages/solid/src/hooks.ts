@@ -1,5 +1,6 @@
 import { To } from "@remix-run/router";
-import { getRouterContext } from "./remix-router-solid";
+import { Accessor } from "solid-js";
+import { getRouteContext, getRouterContext } from "./remix-router-solid";
 
 export const useNavigationType = () => {
   const ctx = getRouterContext();
@@ -28,6 +29,10 @@ export const useNavigation = () => {
   return () => ctx.stateRef().navigation;
 };
 
+/**
+ * TODO:
+ * - Add support for relative paths
+ */
 export const useNavigate = () => {
   const { router } = getRouterContext();
 
@@ -41,4 +46,13 @@ export const useNavigate = () => {
   };
 
   return navigate;
+};
+
+export const useRouteLoaderData = (routeId: string) => {
+  const ctx = getRouterContext();
+  return () => ctx.stateRef().loaderData[routeId] as unknown;
+};
+
+export const useLoaderData = <Data>(): Accessor<Data> => {
+  return useRouteLoaderData(getRouteContext().id) as Accessor<Data>;
 };

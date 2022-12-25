@@ -22,6 +22,8 @@ import {
 } from "solid-js";
 import { shouldProcessLinkClick } from "./dom";
 
+export { json } from "@remix-run/router";
+
 interface CreateRouterOpts {
   basename?: string;
   hydrationData?: HydrationState;
@@ -156,7 +158,7 @@ export interface RouteContextData {
 
 const RouteContext = createContext<RouteContextData>();
 
-const getRouteContext = () => {
+export const getRouteContext = () => {
   const ctx = useContext(RouteContext);
   invariant(ctx != null, "No Route Context Available");
   return ctx;
@@ -220,4 +222,3 @@ export const Link = (props: LinkProps) => {
     </a>
   );
 };
-
