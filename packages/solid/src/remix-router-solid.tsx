@@ -13,11 +13,14 @@ import {
   Accessor,
   Component,
   createContext,
+  createEffect,
   createSignal,
+  JSX,
   onCleanup,
   Show,
   useContext,
 } from "solid-js";
+import { shouldProcessLinkClick } from "./dom";
 
 interface CreateRouterOpts {
   basename?: string;
@@ -113,13 +116,14 @@ export const Outlet = () => {
 type OutletImpProps = { root: boolean };
 
 const OutletImp = (props: OutletImpProps) => {
-  const { router, stateRef } = getRouterContext();
+  const { stateRef } = getRouterContext();
   const routeContext = props.root ? null : getRouteContext();
-  const { matches } = router.state;
 
-  const idx = matches.findIndex((m) => m.route.id === routeContext?.id);
+  const matches = () => stateRef().matches;
 
-  if (idx < 0 && !props.root) {
+  const idx = () => matches().findIndex((m) => m.route.id === routeContext?.id);
+
+  if (idx() < 0 && !props.root) {
     throw new Error(
       `Unable to find <Outlet /> match for route id ${
         routeContext?.id || "_root_"
@@ -127,16 +131,20 @@ const OutletImp = (props: OutletImpProps) => {
     );
   }
 
-  const matchToRender = matches[idx + 1];
+  createEffect(() => {
+    stateRef();
+  });
+
+  const matchToRender = () => matches()[idx() + 1];
 
   return (
-    <Show when={matchToRender} fallback={null}>
-      <RouteWrapper
-        location={stateRef().location}
-        match={matchToRender}
-        root={props.root}
-      />
-    </Show>
+      <Show when={matchToRender()} fallback={null}>
+        <RouteWrapper
+          location={stateRef().location}
+          match={matchToRender()}
+          root={props.root}
+        />
+      </Show>
   );
 };
 
@@ -178,5 +186,37 @@ const RouteWrapper = (props: RouteWrapperTypes) => {
     >
       {props.match.route.element!({})}
     </RouteContext.Provider>
+  );
+};
+
+export interface LinkProps
+  extends Omit<JSX.AnchorHTMLAttributes<HTMLAnchorElement>, "href"> {
+  to: string;
+}
+/**
+ * 
+ * TODO:
+ * - Add support for relativeLink in `to` prop
+ */
+export const Link = (props: LinkProps) => {
+  const { router } = getRouterContext();
+
+  return (
+    <a
+      href={props.to}
+      onClick={(e) => {
+        const target =
+          typeof props.target === "string" ? props.target : undefined;
+
+        if (!shouldProcessLinkClick(e, target)) {
+          return;
+        }
+
+        e.preventDefault();
+        router.navigate(props.to);
+      }}
+    >
+      {props.children}
+    </a>
   );
 };
