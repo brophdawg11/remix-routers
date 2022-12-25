@@ -36,7 +36,7 @@ conditionalDescribe(
       cy.visit("http://localhost:3000/");
     });
 
-    it("displays the index page and router info", () => {
+    it.only("displays the index page and router info", () => {
       cy.get("h1").should("have.text", `Root Layout (${library})`);
       cy.get("h2").should("have.text", "Index Page");
 

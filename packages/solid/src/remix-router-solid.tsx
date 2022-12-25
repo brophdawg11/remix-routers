@@ -81,7 +81,7 @@ export interface RouterContextData {
 }
 const RouterContext = createContext<RouterContextData>();
 
-const getRouterContext = () => {
+export const getRouterContext = () => {
   const ctx = useContext(RouterContext);
   invariant(ctx != null, "No Router Context Available");
   return ctx;
@@ -138,13 +138,13 @@ const OutletImp = (props: OutletImpProps) => {
   const matchToRender = () => matches()[idx() + 1];
 
   return (
-      <Show when={matchToRender()} fallback={null}>
-        <RouteWrapper
-          location={stateRef().location}
-          match={matchToRender()}
-          root={props.root}
-        />
-      </Show>
+    <Show when={matchToRender()} fallback={null}>
+      <RouteWrapper
+        location={stateRef().location}
+        match={matchToRender()}
+        root={props.root}
+      />
+    </Show>
   );
 };
 
@@ -194,7 +194,7 @@ export interface LinkProps
   to: string;
 }
 /**
- * 
+ *
  * TODO:
  * - Add support for relativeLink in `to` prop
  */
@@ -220,3 +220,4 @@ export const Link = (props: LinkProps) => {
     </a>
   );
 };
+

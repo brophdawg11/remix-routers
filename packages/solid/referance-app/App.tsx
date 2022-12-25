@@ -6,13 +6,17 @@ import {
 } from "remix-router-solid";
 import { Root } from "./routes/Root";
 import { Child } from "./routes/child";
+import { Index } from "./routes/Index";
 
 const App: Component = () => {
   const routes: RouteObject[] = [
     {
       path: "/",
       element: Root,
-      children: [{ path: "/child", element: Child }],
+      children: [
+        { index: true, element: Index },
+        { path: "/child", element: Child },
+      ],
     },
   ];
 
