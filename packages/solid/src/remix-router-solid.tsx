@@ -22,7 +22,7 @@ import {
 } from "solid-js";
 import { shouldProcessLinkClick } from "./dom";
 
-export { json } from "@remix-run/router";
+export { json, redirect } from "@remix-run/router";
 
 interface CreateRouterOpts {
   basename?: string;
