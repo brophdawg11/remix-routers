@@ -1,32 +1,33 @@
 import { To } from "@remix-run/router";
-import { Accessor } from "solid-js";
-import { getRouteContext, getRouterContext } from "./remix-router-solid";
+import { Accessor, useContext } from "solid-js";
+import { RouteErrorContext } from "./components/Error";
+import { useRoute, useRouter, useRouterState } from "./context";
 
 export const useNavigationType = () => {
-  const ctx = getRouterContext();
-  return () => ctx.stateRef().historyAction;
+  const routerState = useRouterState();
+  return () => routerState.historyAction;
 };
 
 export const useLocation = () => {
-  const ctx = getRouterContext();
-  return () => ctx.stateRef().location;
+  const routerState = useRouterState();
+  return () => routerState.location;
 };
 
 export const useMatches = () => {
-  const ctx = getRouterContext();
+  const routerState = useRouterState();
   return () =>
-    ctx.stateRef().matches.map((match) => ({
+    routerState.matches.map((match) => ({
       id: match.route.id,
       pathname: match.pathname,
       params: match.params,
-      data: ctx.stateRef().loaderData[match.route.id] as unknown,
+      data: routerState.loaderData[match.route.id] as unknown,
       handle: match.route.handle as unknown,
     }));
 };
 
 export const useNavigation = () => {
-  const ctx = getRouterContext();
-  return () => ctx.stateRef().navigation;
+  const routerState = useRouterState();
+  return () => routerState.navigation;
 };
 
 /**
@@ -34,7 +35,7 @@ export const useNavigation = () => {
  * - Add support for relative paths
  */
 export const useNavigate = () => {
-  const { router } = getRouterContext();
+  const router = useRouter();
 
   const navigate = (to: To | number) => {
     if (typeof to === "number") {
@@ -48,11 +49,19 @@ export const useNavigate = () => {
   return navigate;
 };
 
-export const useRouteLoaderData = (routeId: string) => {
-  const ctx = getRouterContext();
-  return () => ctx.stateRef().loaderData[routeId] as unknown;
+export const useRouteLoaderData = (routeId: Accessor<string>) => {
+  const routerState = useRouterState();
+  return () => routerState.loaderData[routeId()] as unknown;
 };
 
 export const useLoaderData = <Data>(): Accessor<Data> => {
-  return useRouteLoaderData(getRouteContext().id) as Accessor<Data>;
+  return useRouteLoaderData(useRoute().id) as Accessor<Data>;
+};
+
+export const useRouteError = () => {
+  const routerState = useRouterState();
+  const routeId = useRoute().id;
+  const errorCtx = useContext(RouteErrorContext);
+
+  return () => errorCtx?.error || (routerState.errors?.[routeId()] as unknown);
 };
