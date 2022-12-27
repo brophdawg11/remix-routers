@@ -9,7 +9,7 @@ module.exports = defineConfig({
   fixturesFolder: false,
   pluginsFile: false,
   supportFile: false,
-  video: false,
+  video: true,
   env: {
     UI_LIBRARY: library,
   },

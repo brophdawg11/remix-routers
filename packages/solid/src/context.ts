@@ -29,3 +29,9 @@ export const useRoute = () => {
 
   return routeData;
 };
+
+export const AsyncErrorContext = createContext<unknown>();
+
+export const useAsyncError = () => {
+  return useContext(AsyncErrorContext);
+};

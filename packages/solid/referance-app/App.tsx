@@ -11,6 +11,7 @@ import { Child, childLoader } from "./routes/nested/child";
 import { Boundary } from "./components/Boundary";
 import { ErrorComp, errorLoader } from "./routes/Error";
 import { Redirect, redirectLoader } from "./routes/Redirect";
+import { Defer, deferLoader } from "./routes/Defer";
 
 const App: Component = () => {
   const routes: RouteObject[] = [
@@ -31,6 +32,11 @@ const App: Component = () => {
         },
         { path: "error", loader: errorLoader, element: ErrorComp },
         { path: "redirect", loader: redirectLoader, element: Redirect },
+        {
+          path: "defer",
+          loader: deferLoader,
+          element: Defer,
+        },
       ],
     },
   ];

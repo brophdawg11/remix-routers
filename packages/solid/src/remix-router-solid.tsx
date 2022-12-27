@@ -18,7 +18,7 @@ import {
 } from "./context";
 import { shouldProcessLinkClick } from "./dom";
 
-export { json, redirect } from "@remix-run/router";
+export { json, redirect, defer } from "@remix-run/router";
 
 interface CreateRouterOpts {
   basename?: string;
