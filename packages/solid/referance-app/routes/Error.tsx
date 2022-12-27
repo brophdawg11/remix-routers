@@ -11,7 +11,6 @@ export const errorLoader: LoaderFunction = async ({ request }) => {
 };
 
 export const ErrorComp = () => {
-  console.log("ErrorCompo");
   const data = useLoaderData<ReturnType<typeof errorLoader>>();
 
   return <h2>Render Error: {data().foo.bar}; </h2>;

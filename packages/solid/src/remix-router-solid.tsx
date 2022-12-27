@@ -80,7 +80,6 @@ export const RouterProvider = (props: RouterProviderProps) => {
   const [routerState, setRouteState] = createStore(router.state);
 
   router.subscribe((state) => {
-    console.log({ newState: state });
     setRouteState(state);
   });
 
@@ -128,7 +127,11 @@ const OutletImp = (props: OutletImpProps) => {
         }
         return (
           <Show when={matchToRenderValue} fallback={null}>
-            <RouteWrapper id={() => matchToRenderValue?.route.id!}>
+            <RouteWrapper
+              id={() => matchToRenderValue?.route.id!}
+              root={props.root}
+              match={matchToRenderValue!}
+            >
               {matchToRenderValue?.route.element!}
             </RouteWrapper>
           </Show>

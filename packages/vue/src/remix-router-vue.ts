@@ -447,9 +447,7 @@ export const RouterProvider = defineComponent({
     let { router, fallbackElement } = props;
 
     let stateRef = shallowRef<RouterState>(router.state);
-    router.subscribe(
-      (state) => (console.log(router), (stateRef.value = state))
-    );
+    router.subscribe((state) => (stateRef.value = state));
 
     provide<RouterContext>(RouterContextSymbol, { router, stateRef });
 

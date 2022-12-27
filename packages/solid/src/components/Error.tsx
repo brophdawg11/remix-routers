@@ -1,4 +1,5 @@
 import {
+  Accessor,
   Component,
   createContext,
   createSignal,
@@ -17,16 +18,14 @@ export const RouteErrorContext = createContext<RouteErrorContextData>();
 
 export interface ErrorBoundaryProps {
   component: Component;
-  error: unknown;
+  error: Accessor<unknown>;
   children: Component;
 }
 
 export const ErrorBoundary = (props: ErrorBoundaryProps) => {
-  console.log("Inside ErrorBoundary");
-  const [error, setError] = createSignal(props.error);
+  const [error, setError] = createSignal(props.error());
 
   onError((err) => {
-    console.log("Inside ErrorBoundary onError");
     setError(err);
   });
 
