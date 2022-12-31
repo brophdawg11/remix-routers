@@ -385,7 +385,13 @@ export function useFetcher<TData = unknown>(): Ref<
 
   watch(
     stateRef,
-    () => (fetcherRef.value = router.getFetcher<TData>(fetcherKey))
+    () => (
+      console.log({
+        newFetcher: router.getFetcher(fetcherKey),
+        key: fetcherKey,
+      }),
+      (fetcherRef.value = router.getFetcher<TData>(fetcherKey))
+    )
   );
 
   onUnmounted(() => router.deleteFetcher(fetcherKey));

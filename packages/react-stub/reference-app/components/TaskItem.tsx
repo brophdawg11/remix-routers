@@ -1,4 +1,4 @@
-import { Link, useFetcher } from "react-router-dom";
+import { Link, useFetcher,  } from "react-router-dom";
 
 import type { Task } from "../tasks";
 
@@ -8,7 +8,7 @@ export interface TaskItemProps {
 
 export default function TaskItem({ task }: TaskItemProps) {
   let fetcher = useFetcher();
-  let isDeleting = fetcher.formData != null;
+  let isDeleting = fetcher.formData != null; 
 
   return (
     <>

@@ -1,9 +1,9 @@
 import {
   createBrowserHistory,
   createRouter,
-  type Router,
-  type AgnosticRouteObject,
-  type HydrationState,
+  Router,
+  AgnosticRouteObject,
+  HydrationState,
   AgnosticRouteMatch,
 } from "@remix-run/router";
 import { Component, JSX, onCleanup, Show } from "solid-js";
@@ -19,6 +19,7 @@ import {
 import { shouldProcessLinkClick } from "./dom";
 
 export { json, redirect, defer } from "@remix-run/router";
+export type { LoaderFunction, ActionFunction } from "@remix-run/router";
 
 interface CreateRouterOpts {
   basename?: string;
@@ -80,10 +81,12 @@ export const RouterProvider = (props: RouterProviderProps) => {
   const [routerState, setRouteState] = createStore(router.state);
 
   router.subscribe((state) => {
+    console.log("State changed to", state);
     setRouteState(state);
   });
 
   onCleanup(() => {
+    console.log("disposing router state");
     router.dispose();
   });
 

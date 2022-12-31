@@ -1,4 +1,4 @@
-import { type Component } from "solid-js";
+import type { Component } from "solid-js";
 import {
   createBrowserRouter,
   RouteObject,
@@ -12,8 +12,11 @@ import { Boundary } from "./components/Boundary";
 import { ErrorComp, errorLoader } from "./routes/Error";
 import { Redirect, redirectLoader } from "./routes/Redirect";
 import { Defer, deferLoader } from "./routes/Defer";
+import { Tasks, tasksAction, tasksLoader } from "./routes/tasks/Tasks";
+import { Task, taskLoader } from "./routes/tasks/Task";
+import { NewTask, newTaskAction } from "./routes/tasks/NewTask";
 
-const App: Component = () => {
+export const App: Component = () => {
   const routes: RouteObject[] = [
     {
       path: "/",
@@ -37,13 +40,30 @@ const App: Component = () => {
           loader: deferLoader,
           element: Defer,
         },
+        {
+          path: "tasks",
+          loader: tasksLoader,
+          action: tasksAction,
+          element: Tasks,
+          children: [
+            {
+              path: ":id",
+              loader: taskLoader,
+              element: Task,
+            },
+            { path: "new", action: newTaskAction, element: NewTask },
+          ],
+        },
       ],
     },
   ];
 
   const router = createBrowserRouter(routes);
+    
+    const fetcher1 = router.getFetcher("1");
+    const fetcher2 = router.getFetcher("2");
+
 
   return <RouterProvider router={router} />;
 };
 
-export default App;

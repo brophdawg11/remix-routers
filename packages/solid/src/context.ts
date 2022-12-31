@@ -1,5 +1,6 @@
 import { invariant, Router, RouterState } from "@remix-run/router";
 import { Accessor, createContext, useContext } from "solid-js";
+import { DataRouteMatch } from "./remix-router-solid";
 
 export const RouterStateContext = createContext<RouterState>();
 
@@ -10,8 +11,7 @@ export const useRouterState = () => {
   return routerState;
 };
 
-// Immutable Router
-export const RouterContext = createContext<Omit<Router, "state">>();
+export const RouterContext = createContext<Router>();
 
 export const useRouter = () => {
   const router = useContext(RouterContext);
@@ -20,7 +20,10 @@ export const useRouter = () => {
   return router;
 };
 
-export const RouteContext = createContext<{ id: Accessor<string> }>();
+export const RouteContext = createContext<{
+  id: Accessor<string>;
+  matches: DataRouteMatch[];
+}>();
 
 export const useRoute = () => {
   const routeData = useContext(RouteContext);

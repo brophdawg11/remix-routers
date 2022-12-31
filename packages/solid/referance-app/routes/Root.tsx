@@ -30,7 +30,7 @@ export const Root = () => {
   };
 
   const navigate = useNavigate();
-
+    const router = navigate
   return (
     <>
       <h1>Root Layout (solid)</h1>
