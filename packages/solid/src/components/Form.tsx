@@ -26,7 +26,6 @@ export const FormImpl = (props: FormImplProps) => {
           return;
         }
         e.preventDefault();
-        console.log("Fetching for key", props.fetcherKey);
         submitImpl(
           router,
           defaultAction(),

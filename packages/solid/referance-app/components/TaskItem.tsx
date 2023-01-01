@@ -7,11 +7,8 @@ export interface TaskItemProps {
 }
 
 export const TaskItem = ({ task }: TaskItemProps)  => {
-  console.log("Calling TaskItem");
   let fetcher = useFetcher();
   let isDeleting = () => {
-      debugger;
-      console.log("Recalculating isDeleting");
       return fetcher().formData != null
     };
  const Form = fetcher().Form

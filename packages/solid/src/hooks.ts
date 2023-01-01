@@ -233,7 +233,6 @@ export const submitImpl = (
   if (fetcherKey && routeId) {
     router.fetch(fetcherKey, routeId, href, opts);
   } else {
-    console.log("Not here");
     router.navigate(href, opts);
   }
 };

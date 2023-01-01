@@ -81,12 +81,10 @@ export const RouterProvider = (props: RouterProviderProps) => {
   const [routerState, setRouteState] = createStore(router.state);
 
   router.subscribe((state) => {
-    console.log("State changed to", state);
     setRouteState(state);
   });
 
   onCleanup(() => {
-    console.log("disposing router state");
     router.dispose();
   });
 
