@@ -5,6 +5,8 @@ import {
   AgnosticRouteObject,
   HydrationState,
   AgnosticRouteMatch,
+  createMemoryHistory,
+  createHashHistory,
 } from "@remix-run/router";
 import { Component, JSX, onCleanup, Show } from "solid-js";
 import { createStore } from "solid-js/store";
@@ -18,7 +20,7 @@ import {
 } from "./context";
 import { shouldProcessLinkClick } from "./dom";
 
-export { json, redirect, defer } from "@remix-run/router";
+export { json, redirect, defer, isRouteErrorResponse } from "@remix-run/router";
 export type { LoaderFunction, ActionFunction } from "@remix-run/router";
 
 interface CreateRouterOpts {
@@ -59,6 +61,44 @@ export function createBrowserRouter(
     hydrationData,
   }).initialize();
 }
+
+export interface CreateMemoryRouterOps extends CreateRouterOpts {
+  initialEntries?: string[];
+  initialIndex?: number;
+}
+
+export const createMemoryRouter = (
+  routes: RouteObject[],
+  {
+    basename,
+    hydrationData,
+    initialEntries,
+    initialIndex,
+  }: CreateMemoryRouterOps = {}
+) => {
+  return createRouter({
+    basename,
+    history: createMemoryHistory({ initialEntries, initialIndex }),
+    hydrationData,
+    routes: enhanceManualRouteObjects(routes),
+  }).initialize();
+};
+
+export interface CreateHashRouterOpts extends CreateRouterOpts {
+  window?: Window;
+}
+
+export const createHashRouter = (
+  routes: RouteObject[],
+  { basename, hydrationData, window }: CreateHashRouterOpts = {}
+) => {
+  return createRouter({
+    basename,
+    history: createHashHistory({ window }),
+    hydrationData,
+    routes: enhanceManualRouteObjects(routes),
+  }).initialize();
+};
 
 const enhanceManualRouteObjects = (routes: RouteObject[]): RouteObject[] => {
   return routes.map((route) => {

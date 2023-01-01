@@ -38,3 +38,9 @@ export const AsyncErrorContext = createContext<unknown>();
 export const useAsyncError = () => {
   return useContext(AsyncErrorContext);
 };
+
+export interface RouteErrorContextData {
+  error: unknown;
+}
+
+export const RouteErrorContext = createContext<RouteErrorContextData>();

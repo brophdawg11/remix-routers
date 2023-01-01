@@ -16,9 +16,13 @@ import {
   onCleanup,
   useContext,
 } from "solid-js";
-import { RouteErrorContext } from "./components/Error";
 import { FormImpl, FormProps } from "./components/Form";
-import { useRoute, useRouter, useRouterState } from "./context";
+import {
+  RouteErrorContext,
+  useRoute,
+  useRouter,
+  useRouterState,
+} from "./context";
 import { getFormSubmissionInfo, SubmitOptions } from "./dom";
 import { DataRouteMatch } from "./remix-router-solid";
 

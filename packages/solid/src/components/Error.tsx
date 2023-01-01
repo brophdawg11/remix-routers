@@ -1,7 +1,6 @@
 import {
   Accessor,
   Component,
-  createContext,
   createSignal,
   JSX,
   onError,
@@ -9,12 +8,8 @@ import {
 } from "solid-js";
 import { useRouteError } from "../hooks";
 import { isRouteErrorResponse } from "@remix-run/router";
+import { RouteErrorContext } from "src/context";
 
-export interface RouteErrorContextData {
-  error: unknown;
-}
-
-export const RouteErrorContext = createContext<RouteErrorContextData>();
 
 export interface ErrorBoundaryProps {
   component: Component;
