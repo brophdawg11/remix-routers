@@ -5,11 +5,11 @@ const library = parse(process.cwd()).name.replace("-stub", "");
 console.log(`Running Cypress integration tests for library: ${library}`);
 
 module.exports = defineConfig({
-  integrationFolder: "../../cypress/partial-integration",
+  integrationFolder: "../../cypress/integration",
   fixturesFolder: false,
   pluginsFile: false,
   supportFile: false,
-  video: true,
+  video: false,
   env: {
     UI_LIBRARY: library,
   },
