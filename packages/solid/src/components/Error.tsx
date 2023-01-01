@@ -8,7 +8,7 @@ import {
 } from "solid-js";
 import { useRouteError } from "../hooks";
 import { isRouteErrorResponse } from "@remix-run/router";
-import { RouteErrorContext } from "src/context";
+import { RouteErrorContext } from "../context";
 
 
 export interface ErrorBoundaryProps {

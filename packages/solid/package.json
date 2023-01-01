@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "integration:test": "cypress run --config-file ./../../cypress.config.ts"
+    "integration:open": "cypress open --config-file ../../cypress.config.ts",
+    "integration:start": "vite --mode=production --port 3000",
+    "integration:test": "cypress run --config-file ../../cypress.config.ts",
+    "integration": "start-server-and-test integration:start http-get://localhost:3000/ integration:test",
+    "prepublishOnly": "rm -rf dist && npm run build"
   },
   "license": "MIT",
   "devDependencies": {

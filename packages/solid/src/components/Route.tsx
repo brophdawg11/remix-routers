@@ -1,5 +1,5 @@
 import { Accessor, Component, Show, splitProps } from "solid-js";
-import { DataRouteMatch } from "src/remix-router-solid";
+import { DataRouteMatch } from "../remix-router-solid";
 import { RouteContext, useRouterState } from "../context";
 import { DefaultErrorElement, ErrorBoundary } from "./Error";
 

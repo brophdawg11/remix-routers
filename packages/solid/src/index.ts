@@ -21,6 +21,7 @@ export type {
 } from "./remix-router-solid";
 
 export type { RouteContext, RouteErrorContext } from "./context";
+export { useAsyncError } from "./context";
 
 export {
   useNavigationType,
